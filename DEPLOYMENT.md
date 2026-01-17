@@ -11,6 +11,7 @@
 ### 1. Database Setup
 
 #### Create MySQL Database
+
 1. Login to cPanel
 2. Go to **MySQL Databases**
 3. Create database: `qqbmuabu_maker_dz`
@@ -18,6 +19,7 @@
 5. Add user to database with **ALL PRIVILEGES**
 
 #### Import Database Schema
+
 1. Go to **phpMyAdmin**
 2. Select database `qqbmuabu_maker_dz`
 3. Click **SQL** tab
@@ -40,6 +42,7 @@
 ### 3. Clone Repository
 
 In cPanel Terminal or SSH:
+
 ```bash
 cd ~/public_html
 rm -f .htaccess index.html  # Remove default files
@@ -99,6 +102,7 @@ chmod +x build-frontend.sh deploy-cpanel.sh
 ### 7. Verify Deployment
 
 Visit these URLs:
+
 - `https://maker-dz.net` → Should show the website
 - `https://maker-dz.net/api/health` → Should show `{"status":"OK"}`
 
@@ -116,26 +120,31 @@ Then restart in cPanel.
 ## Troubleshooting
 
 ### "Cannot GET /"
+
 - Check if `public/index.html` exists
 - Rebuild frontend: `./build-frontend.sh`
 - Restart app
 
 ### Database Connection Error
+
 - Verify credentials in `.env`
 - Check user has database access in cPanel MySQL Databases
 - Verify database name includes prefix
 
 ### "Module not found"
+
 - Run `npm install` in `/public_html`
 - Check Node.js version is 18+
 - Restart app
 
 ### API Returns 500 Error
+
 - Check error log in cPanel (check with support how to access)
 - Verify environment variables are set
 - Check database tables exist
 
 ### Frontend Shows Old Version
+
 - Run `./build-frontend.sh`
 - Clear browser cache
 - Restart app
