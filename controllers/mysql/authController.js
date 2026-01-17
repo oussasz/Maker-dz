@@ -46,24 +46,28 @@ export const login = async (req, res) => {
 
 export const register = async (req, res) => {
   try {
+    console.log("=== register called ===");
     const { username, email, role, password } = req.body;
-    console.log("Registering user with data:", { username, email, role });
+    console.log("Registering user:", { username, email, role, hasPassword: !!password });
 
     // Validate required fields
     if (!username || !email || !password) {
-      console.error("Missing required fields:", {
-        username: !!username,
-        email: !!email,
-        password: !!password,
+      console.log("Missing required fields");
+      return res.status(400).json({ 
+        error: "Missing required fields",
+        missing: {
+          username: !username,
+          email: !email,
+          password: !password
+        }
       });
-      return res.status(400).json({ error: "Missing required fields" });
     }
 
     // Check if email already exists
     console.log("Checking if email exists...");
     const existingEmail = await User.findByEmail(email);
     if (existingEmail) {
-      console.log("Email already exists:", email);
+      console.log("Email already exists");
       return res.status(400).json({ error: "Email already taken" });
     }
 
@@ -71,7 +75,7 @@ export const register = async (req, res) => {
     console.log("Checking if username exists...");
     const existingUsername = await User.findByUsername(username);
     if (existingUsername) {
-      console.log("Username already exists:", username);
+      console.log("Username already exists");
       return res.status(400).json({ error: "Username already taken" });
     }
 
@@ -82,22 +86,17 @@ export const register = async (req, res) => {
       role: role || "customer",
       password,
     });
+    console.log("User created successfully, ID:", user.id);
 
-    console.log("User registered successfully:", user.id);
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
-    console.error("Error registering user:", error);
+    console.error("Error registering user:", error.message);
     console.error("Error stack:", error.stack);
-    console.error("Error details:", {
-      message: error.message,
-      code: error.code,
-      sqlMessage: error.sqlMessage,
-      sql: error.sql,
-    });
-    res.status(500).json({
+    console.error("SQL Error:", error.sqlMessage || "N/A");
+    res.status(500).json({ 
       error: "Error registering user",
-      details:
-        process.env.NODE_ENV === "development" ? error.message : undefined,
+      details: error.message,
+      code: error.code || "UNKNOWN"
     });
   }
 };

@@ -173,7 +173,7 @@ export const createProduct = async (req, res) => {
  */
 export const getProducts = async (req, res) => {
   try {
-    console.log("Fetching products with query:", req.query);
+    console.log("=== getProducts called ===");
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
@@ -189,15 +189,15 @@ export const getProducts = async (req, res) => {
     if (req.query.minPrice) filters.min_price = parseFloat(req.query.minPrice);
     if (req.query.maxPrice) filters.max_price = parseFloat(req.query.maxPrice);
 
-    console.log("Product filters:", filters);
+    console.log("Filters:", filters);
     const { products, total } = await Product.findAll({
       filters,
       limit,
       offset,
       sort,
     });
+    console.log(`Found ${products.length} products, total: ${total}`);
 
-    console.log(`Found ${products.length} products out of ${total} total`);
     res.status(200).json({
       products,
       pagination: {
@@ -208,18 +208,12 @@ export const getProducts = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error fetching products:", error.message);
     console.error("Error stack:", error.stack);
-    console.error("Error details:", {
-      message: error.message,
-      code: error.code,
-      sqlMessage: error.sqlMessage,
-      sql: error.sql,
-    });
-    res.status(500).json({
+    res.status(500).json({ 
       error: "Error fetching products",
-      details:
-        process.env.NODE_ENV === "development" ? error.message : undefined,
+      details: error.message,
+      code: error.code || "UNKNOWN"
     });
   }
 };

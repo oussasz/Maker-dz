@@ -68,6 +68,23 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Simple ping endpoint (no database required)
+app.get("/api/ping", (req, res) => {
+  res.json({
+    status: "OK",
+    message: "Server is running",
+    timestamp: new Date().toISOString(),
+    env: {
+      DB_HOST: process.env.DB_HOST ? "set" : "missing",
+      DB_USER: process.env.DB_USER ? "set" : "missing",
+      DB_NAME: process.env.DB_NAME ? "set" : "missing",
+      DB_PASSWORD: process.env.DB_PASSWORD ? "set" : "missing",
+      JWT_SECRET: process.env.JWT_SECRET ? "set" : "missing",
+      CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME ? "set" : "missing",
+    },
+  });
+});
+
 // Debug endpoint to check MySQL connection
 app.get("/api/health", async (req, res) => {
   try {
@@ -76,6 +93,10 @@ app.get("/api/health", async (req, res) => {
       "SELECT DATABASE() as db, VERSION() as version",
     );
 
+    // Check if tables exist
+    const [tables] = await pool.query("SHOW TABLES");
+    const tableNames = tables.map((t) => Object.values(t)[0]);
+
     res.json({
       status: "OK",
       database: rows[0].db || "not selected",
@@ -83,6 +104,8 @@ app.get("/api/health", async (req, res) => {
       host: process.env.DB_HOST,
       dbUser: process.env.DB_USER,
       dbName: process.env.DB_NAME,
+      tables: tableNames,
+      tableCount: tableNames.length,
     });
   } catch (error) {
     res.status(500).json({
