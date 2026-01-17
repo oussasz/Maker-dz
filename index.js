@@ -80,12 +80,17 @@ app.get("/api/health", async (req, res) => {
       database: rows[0].db || "not selected",
       mysqlVersion: rows[0].version,
       host: process.env.DB_HOST,
-      port: process.env.DB_PORT,
+      dbUser: process.env.DB_USER,
+      dbName: process.env.DB_NAME,
     });
   } catch (error) {
     res.status(500).json({
       status: "ERROR",
       error: error.message,
+      code: error.code,
+      host: process.env.DB_HOST || "not set",
+      dbUser: process.env.DB_USER || "not set",
+      dbName: process.env.DB_NAME || "not set",
     });
   }
 });
