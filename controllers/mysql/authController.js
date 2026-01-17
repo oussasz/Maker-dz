@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { User } from "../../models/mysql/index.js";
-import passport from "../../middleware/passport.js";
+import passport from "../../middleware/mysql/passport.js";
 
 export const login = async (req, res) => {
   try {

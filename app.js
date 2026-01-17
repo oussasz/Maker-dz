@@ -1,6 +1,4 @@
 // app.js - Entry point for cPanel Passenger
-// Passenger expects this specific format
-
 import "dotenv/config";
 import express from "express";
 import bodyParser from "body-parser";
@@ -9,6 +7,17 @@ import session from "express-session";
 import path from "path";
 import { fileURLToPath } from "url";
 import mysql from "mysql2/promise";
+import passport from "passport";
+
+// Import routes directly (synchronous)
+import authRoute from "./Routes/mysql/authRoute.js";
+import productRoute from "./Routes/mysql/productRoute.js";
+import userRoute from "./Routes/mysql/userRoute.js";
+import orderRoute from "./Routes/mysql/orderRoute.js";
+import categoryRoute from "./Routes/mysql/categoryRoute.js";
+import cartRoute from "./Routes/mysql/cartRoute.js";
+import wishlistRoute from "./Routes/mysql/wishlistRoute.js";
+import citiesRoute from "./Routes/citiesRoute.js";
 
 // Get __dirname equivalent in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -16,19 +25,15 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// Add your cPanel domain here
+// CORS - Allow your domains
 const allowedOrigins = [
-  process.env.FRONTEND_URL || "https://maker-dz.net",
   "https://maker-dz.net",
   "https://www.maker-dz.net",
-  "https://maker-app-frontend.vercel.app",
-  "https://maker-app-frontend-ruddy.vercel.app",
-  "https://maker-dz.vercel.app",
+  process.env.FRONTEND_URL,
   "http://localhost:3000",
   "http://localhost:5173",
-];
+].filter(Boolean);
 
-// CORS configuration
 app.use(
   cors({
     origin: allowedOrigins,
@@ -48,22 +53,21 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false, // Set to false for testing
+      secure: false,
       maxAge: 24 * 60 * 60 * 1000,
     },
   }),
 );
 
-// Database pool (created once)
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Database pool
 let dbPool = null;
 
-const getDB = async () => {
+export const getDB = async () => {
   if (!dbPool) {
-    console.log("Creating database pool...");
-    console.log("DB_HOST:", process.env.DB_HOST);
-    console.log("DB_NAME:", process.env.DB_NAME);
-    console.log("DB_USER:", process.env.DB_USER);
-
     dbPool = mysql.createPool({
       host: process.env.DB_HOST || "localhost",
       port: parseInt(process.env.DB_PORT) || 3306,
@@ -73,29 +77,23 @@ const getDB = async () => {
       waitForConnections: true,
       connectionLimit: 10,
     });
-    console.log("Database pool created");
+    console.log("✅ Database pool created");
   }
   return dbPool;
 };
 
-// Simple test endpoint - works without database
+// ============ API ROUTES (MUST BE BEFORE STATIC FILES) ============
+
+// Test endpoint
 app.get("/api/ping", (req, res) => {
   res.json({
     status: "OK",
     message: "Server is running!",
     timestamp: new Date().toISOString(),
-    nodeVersion: process.version,
-    env: {
-      DB_HOST: process.env.DB_HOST ? "✓ set" : "✗ missing",
-      DB_USER: process.env.DB_USER ? "✓ set" : "✗ missing",
-      DB_NAME: process.env.DB_NAME ? "✓ set" : "✗ missing",
-      DB_PASSWORD: process.env.DB_PASSWORD ? "✓ set" : "✗ missing",
-      JWT_SECRET: process.env.JWT_SECRET ? "✓ set" : "✗ missing",
-    },
   });
 });
 
-// Health check with database
+// Health check
 app.get("/api/health", async (req, res) => {
   try {
     const pool = await getDB();
@@ -104,7 +102,6 @@ app.get("/api/health", async (req, res) => {
     );
     const [tables] = await pool.query("SHOW TABLES");
     const tableNames = tables.map((t) => Object.values(t)[0]);
-
     res.json({
       status: "OK",
       database: rows[0].db,
@@ -113,70 +110,30 @@ app.get("/api/health", async (req, res) => {
       tableCount: tableNames.length,
     });
   } catch (error) {
-    console.error("Health check error:", error);
-    res.status(500).json({
-      status: "ERROR",
-      error: error.message,
-      code: error.code,
-    });
+    res.status(500).json({ status: "ERROR", error: error.message });
   }
 });
 
-// Flag to track if routes are loaded
-let routesLoaded = false;
+// Register all API routes
+app.use("/api", authRoute);
+app.use("/api", productRoute);
+app.use("/api", userRoute);
+app.use("/api", orderRoute);
+app.use("/api", categoryRoute);
+app.use("/api", cartRoute);
+app.use("/api", wishlistRoute);
+app.use("/api", citiesRoute);
 
-// Lazy load routes
-const loadRoutes = async () => {
-  if (routesLoaded) return;
+console.log("✅ All API routes registered");
 
-  try {
-    console.log("Loading routes...");
+// ============ STATIC FILES (AFTER API ROUTES) ============
 
-    // Import passport
-    const passportModule = await import("./middleware/mysql/passport.js");
-    const passport = passportModule.default;
-    app.use(passport.initialize());
-    app.use(passport.session());
-
-    // Import routes
-    const authRoute = (await import("./Routes/mysql/authRoute.js")).default;
-    const productRoute = (await import("./Routes/mysql/productRoute.js"))
-      .default;
-    const userRoute = (await import("./Routes/mysql/userRoute.js")).default;
-    const orderRoute = (await import("./Routes/mysql/orderRoute.js")).default;
-    const categoryRoute = (await import("./Routes/mysql/categoryRoute.js"))
-      .default;
-    const cartRoute = (await import("./Routes/mysql/cartRoute.js")).default;
-    const wishlistRoute = (await import("./Routes/mysql/wishlistRoute.js"))
-      .default;
-    const citiesRoute = (await import("./Routes/citiesRoute.js")).default;
-
-    // Register routes
-    app.use("/api", authRoute);
-    app.use("/api", productRoute);
-    app.use("/api", userRoute);
-    app.use("/api", orderRoute);
-    app.use("/api", categoryRoute);
-    app.use("/api", cartRoute);
-    app.use("/api", wishlistRoute);
-    app.use("/api", citiesRoute);
-
-    routesLoaded = true;
-    console.log("✅ All routes loaded successfully");
-  } catch (error) {
-    console.error("❌ Error loading routes:", error);
-    console.error(error.stack);
-  }
-};
-
-// Load routes immediately
-loadRoutes();
-
-// Serve static files (frontend)
+// Serve frontend static files
 app.use(express.static(path.join(__dirname, "public")));
 
-// Catch-all for frontend routing
+// Frontend catch-all (for React Router) - MUST BE LAST
 app.get("*", (req, res) => {
+  // Don't serve index.html for API routes
   if (req.path.startsWith("/api")) {
     return res.status(404).json({ error: "API endpoint not found" });
   }
@@ -185,18 +142,14 @@ app.get("*", (req, res) => {
 
 // Error handler
 app.use((err, req, res, next) => {
-  console.error("Express error:", err);
-  res
-    .status(500)
-    .json({ error: "Internal server error", details: err.message });
+  console.error("Error:", err);
+  res.status(500).json({ error: "Internal server error" });
 });
-
-// Export for Passenger
-export default app;
 
 // Start server
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📍 Environment: ${process.env.NODE_ENV || "development"}`);
 });
+
+export default app;
