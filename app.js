@@ -35,7 +35,7 @@ app.use(
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-  })
+  }),
 );
 
 app.use(express.json());
@@ -51,7 +51,7 @@ app.use(
       secure: false, // Set to false for testing
       maxAge: 24 * 60 * 60 * 1000,
     },
-  })
+  }),
 );
 
 // Database pool (created once)
@@ -63,7 +63,7 @@ const getDB = async () => {
     console.log("DB_HOST:", process.env.DB_HOST);
     console.log("DB_NAME:", process.env.DB_NAME);
     console.log("DB_USER:", process.env.DB_USER);
-    
+
     dbPool = mysql.createPool({
       host: process.env.DB_HOST || "localhost",
       port: parseInt(process.env.DB_PORT) || 3306,
@@ -99,7 +99,9 @@ app.get("/api/ping", (req, res) => {
 app.get("/api/health", async (req, res) => {
   try {
     const pool = await getDB();
-    const [rows] = await pool.query("SELECT DATABASE() as db, VERSION() as version");
+    const [rows] = await pool.query(
+      "SELECT DATABASE() as db, VERSION() as version",
+    );
     const [tables] = await pool.query("SHOW TABLES");
     const tableNames = tables.map((t) => Object.values(t)[0]);
 
@@ -126,10 +128,10 @@ let routesLoaded = false;
 // Lazy load routes
 const loadRoutes = async () => {
   if (routesLoaded) return;
-  
+
   try {
     console.log("Loading routes...");
-    
+
     // Import passport
     const passportModule = await import("./middleware/mysql/passport.js");
     const passport = passportModule.default;
@@ -138,12 +140,15 @@ const loadRoutes = async () => {
 
     // Import routes
     const authRoute = (await import("./Routes/mysql/authRoute.js")).default;
-    const productRoute = (await import("./Routes/mysql/productRoute.js")).default;
+    const productRoute = (await import("./Routes/mysql/productRoute.js"))
+      .default;
     const userRoute = (await import("./Routes/mysql/userRoute.js")).default;
     const orderRoute = (await import("./Routes/mysql/orderRoute.js")).default;
-    const categoryRoute = (await import("./Routes/mysql/categoryRoute.js")).default;
+    const categoryRoute = (await import("./Routes/mysql/categoryRoute.js"))
+      .default;
     const cartRoute = (await import("./Routes/mysql/cartRoute.js")).default;
-    const wishlistRoute = (await import("./Routes/mysql/wishlistRoute.js")).default;
+    const wishlistRoute = (await import("./Routes/mysql/wishlistRoute.js"))
+      .default;
     const citiesRoute = (await import("./Routes/citiesRoute.js")).default;
 
     // Register routes
@@ -181,7 +186,9 @@ app.get("*", (req, res) => {
 // Error handler
 app.use((err, req, res, next) => {
   console.error("Express error:", err);
-  res.status(500).json({ error: "Internal server error", details: err.message });
+  res
+    .status(500)
+    .json({ error: "Internal server error", details: err.message });
 });
 
 // Export for Passenger
