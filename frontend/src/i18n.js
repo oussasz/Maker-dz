@@ -53,6 +53,7 @@ i18n
       "seller_updateproduct",
       "seller_orderlist",
       "footer",
+      "customer",
     ],
     defaultNS: "translation",
   });

@@ -2,6 +2,7 @@ import React from "react";
 import { useEffect } from "react";
 import "./App.css";
 import Home from "./pages/shared/HomeRedesigned";
+import CustomerHome from "./pages/user/CustomerHome";
 import Wishlist from "./pages/user/Wishlist";
 import Signup from "./pages/auth/SignupEnhanced";
 import Login from "./pages/auth/LoginEnhanced";
@@ -44,6 +45,19 @@ import useAxiosPrivate from "./hooks/useAxiosPrivate";
 import useWishlistStore from "./store/wishlistStore";
 import Checkout from "./pages/user/Checkout";
 
+// Smart Home component that shows different content based on auth status
+const SmartHome = () => {
+  const { isAuthenticated, user } = useAuth();
+
+  // Show customer shopping interface for logged-in customers
+  if (isAuthenticated && user?.role === "customer") {
+    return <CustomerHome />;
+  }
+
+  // Show landing page for visitors
+  return <Home />;
+};
+
 function App() {
   const { isAuthenticated, user } = useAuth();
   const axiosPrivate = useAxiosPrivate();
@@ -73,7 +87,7 @@ function App() {
           path="/"
           element={
             <PublicCustomerRoute>
-              <Home />
+              <SmartHome />
             </PublicCustomerRoute>
           }
         />

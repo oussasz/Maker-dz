@@ -696,37 +696,6 @@ const JoinAsSellerSection = () => {
                 </motion.button>
               </Link>
             </motion.div>
-
-            {/* Right - Stats/Highlights */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="grid grid-cols-2 gap-6"
-            >
-              {[
-                { number: "0%", label: t("trust_no_fees") || "Platform Fees" },
-                {
-                  number: "24h",
-                  label: t("trust_quick_setup") || "Quick Setup",
-                },
-                { number: "3", label: t("trust_languages") || "Languages" },
-                {
-                  number: "∞",
-                  label: t("trust_products") || "Product Listings",
-                },
-              ].map((stat, index) => (
-                <div
-                  key={index}
-                  className="text-center p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10"
-                >
-                  <p className="text-3xl md:text-4xl font-bold text-amber-400">
-                    {stat.number}
-                  </p>
-                  <p className="text-white/60 text-sm mt-1">{stat.label}</p>
-                </div>
-              ))}
-            </motion.div>
           </div>
         </div>
 
@@ -772,9 +741,15 @@ const CTASection = () => {
   const { t } = useTranslation("home");
 
   return (
-    <section className="py-24 md:py-32 bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 relative overflow-hidden">
+    <section
+      className="py-24 md:py-32 relative overflow-hidden bg-cover bg-center"
+      style={{ backgroundImage: "url('/BG2.webp')" }}
+    >
+      {/* Dark overlay for readability */}
+      <div className="absolute inset-0 bg-black/40 z-0"></div>
+
       {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
+      <div className="absolute inset-0 opacity-10 z-0">
         <svg
           className="w-full h-full"
           viewBox="0 0 100 100"
@@ -803,9 +778,11 @@ const CTASection = () => {
           <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
             {t("cta_title")}
           </h2>
+
           <p className="text-xl md:text-2xl text-white/90 mb-10 max-w-2xl mx-auto">
             {t("cta_subtitle")}
           </p>
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/products">
               <motion.button
@@ -817,6 +794,7 @@ const CTASection = () => {
                 <ArrowRight className="w-5 h-5" />
               </motion.button>
             </Link>
+
             <Link to="/signup">
               <motion.button
                 whileHover={{ scale: 1.02 }}
