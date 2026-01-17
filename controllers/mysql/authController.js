@@ -48,18 +48,23 @@ export const register = async (req, res) => {
   try {
     console.log("=== register called ===");
     const { username, email, role, password } = req.body;
-    console.log("Registering user:", { username, email, role, hasPassword: !!password });
+    console.log("Registering user:", {
+      username,
+      email,
+      role,
+      hasPassword: !!password,
+    });
 
     // Validate required fields
     if (!username || !email || !password) {
       console.log("Missing required fields");
-      return res.status(400).json({ 
+      return res.status(400).json({
         error: "Missing required fields",
         missing: {
           username: !username,
           email: !email,
-          password: !password
-        }
+          password: !password,
+        },
       });
     }
 
@@ -93,10 +98,10 @@ export const register = async (req, res) => {
     console.error("Error registering user:", error.message);
     console.error("Error stack:", error.stack);
     console.error("SQL Error:", error.sqlMessage || "N/A");
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Error registering user",
       details: error.message,
-      code: error.code || "UNKNOWN"
+      code: error.code || "UNKNOWN",
     });
   }
 };

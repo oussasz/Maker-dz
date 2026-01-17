@@ -210,10 +210,10 @@ export const getProducts = async (req, res) => {
   } catch (error) {
     console.error("Error fetching products:", error.message);
     console.error("Error stack:", error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Error fetching products",
       details: error.message,
-      code: error.code || "UNKNOWN"
+      code: error.code || "UNKNOWN",
     });
   }
 };

@@ -9,8 +9,11 @@ export const connectDB = async () => {
       console.log("Host:", process.env.DB_HOST || "localhost");
       console.log("Database:", process.env.DB_NAME || "not set");
       console.log("User:", process.env.DB_USER || "not set");
-      console.log("Password:", process.env.DB_PASSWORD ? "***SET***" : "NOT SET");
-      
+      console.log(
+        "Password:",
+        process.env.DB_PASSWORD ? "***SET***" : "NOT SET",
+      );
+
       pool = mysql.createPool({
         host: process.env.DB_HOST || "localhost",
         port: process.env.DB_PORT || 3306,
@@ -27,12 +30,14 @@ export const connectDB = async () => {
       // Test connection
       const [rows] = await pool.query("SELECT 1 as test");
       console.log("✅ MySQL database connected successfully");
-      
+
       // Check if users table exists
       try {
         const [tables] = await pool.query("SHOW TABLES LIKE 'users'");
         if (tables.length === 0) {
-          console.log("⚠️ WARNING: 'users' table does not exist! Run setup-database.php first.");
+          console.log(
+            "⚠️ WARNING: 'users' table does not exist! Run setup-database.php first.",
+          );
         } else {
           console.log("✅ 'users' table exists");
         }

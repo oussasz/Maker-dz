@@ -80,7 +80,9 @@ app.get("/api/ping", (req, res) => {
       DB_NAME: process.env.DB_NAME ? "set" : "missing",
       DB_PASSWORD: process.env.DB_PASSWORD ? "set" : "missing",
       JWT_SECRET: process.env.JWT_SECRET ? "set" : "missing",
-      CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME ? "set" : "missing",
+      CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME
+        ? "set"
+        : "missing",
     },
   });
 });
