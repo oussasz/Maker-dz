@@ -163,14 +163,16 @@ const HeroSection = () => {
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
               </Link>
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="px-8 py-4 bg-white/10 backdrop-blur-md text-white font-semibold rounded-full border border-white/30 hover:bg-white/20 transition-colors flex items-center gap-3"
-              >
-                <Play className="w-5 h-5" />
-                {t("watch_story")}
-              </motion.button>
+              <Link to="/signup">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="px-8 py-4 bg-white/10 backdrop-blur-md text-white font-semibold rounded-full border border-white/30 hover:bg-white/20 transition-colors flex items-center gap-3"
+                >
+                  <HandHeart className="w-5 h-5" />
+                  {t("join_artisan")}
+                </motion.button>
+              </Link>
             </motion.div>
           </div>
         </div>
