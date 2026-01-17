@@ -15,10 +15,12 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import useAuth from "../../store/authStore";
 
 const Hero = () => {
   const { t, i18n } = useTranslation("hero");
   const isRTL = i18n.language === "ar";
+  const { isAuthenticated } = useAuth();
   return (
     <div className="w-full flex flex-col lg:flex-row items-start gap-6 lg:gap-12 mt-6">
       {/* Sidebar Categories */}
@@ -79,11 +81,21 @@ const Hero = () => {
                 {t("subtitle1")}
               </p>
 
-              <div className="flex items-center gap-2 cursor-pointer hover:text-secondary duration-200">
-                <p className="text-base sm:text-lg md:text-xl underline font-medium">
-                  {t("shop_now")}
-                </p>
-                <ArrowRight size={20} className="sm:w-6 sm:h-6" color="white" />
+              <div className="flex items-center gap-4 flex-wrap">
+                <div className="flex items-center gap-2 cursor-pointer hover:text-secondary duration-200">
+                  <p className="text-base sm:text-lg md:text-xl underline font-medium">
+                    {t("shop_now")}
+                  </p>
+                  <ArrowRight size={20} className="sm:w-6 sm:h-6" color="white" />
+                </div>
+                {!isAuthenticated && (
+                  <Link
+                    to="/signup"
+                    className="bg-white text-primary font-semibold py-2 px-4 sm:py-3 sm:px-6 rounded-md text-sm sm:text-base hover:bg-secondary hover:text-white transition-colors duration-200"
+                  >
+                    {t("join_as_artisan")}
+                  </Link>
+                )}
               </div>
             </div>
             <img
@@ -101,11 +113,21 @@ const Hero = () => {
                 {t("title2")}
               </h1>
 
-              <div className="flex items-center gap-2 cursor-pointer hover:text-secondary duration-200">
-                <p className="text-base sm:text-lg md:text-xl underline font-medium">
-                  {t("shop_now")}
-                </p>
-                <ArrowRight size={20} className="sm:w-6 sm:h-6" color="white" />
+              <div className="flex items-center gap-4 flex-wrap">
+                <div className="flex items-center gap-2 cursor-pointer hover:text-secondary duration-200">
+                  <p className="text-base sm:text-lg md:text-xl underline font-medium">
+                    {t("shop_now")}
+                  </p>
+                  <ArrowRight size={20} className="sm:w-6 sm:h-6" color="white" />
+                </div>
+                {!isAuthenticated && (
+                  <Link
+                    to="/signup"
+                    className="bg-white text-primary font-semibold py-2 px-4 sm:py-3 sm:px-6 rounded-md text-sm sm:text-base hover:bg-secondary hover:text-white transition-colors duration-200"
+                  >
+                    {t("join_as_artisan")}
+                  </Link>
+                )}
               </div>
             </div>
             <img
