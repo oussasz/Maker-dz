@@ -62,7 +62,9 @@ i18n.on("languageChanged", (lng) => {
 
   html.lang = lng;
 
-  html.dir = lng === "ar" ? "rtl" : "ltr";
+  // Only set font for Arabic, don't change dir to avoid layout issues
+  // The dir="rtl" attribute breaks flexbox layouts throughout the app
+  // Instead, we rely on CSS font rules for Arabic text rendering
 
   // Store language preference
   localStorage.setItem("i18nextLng", lng);
