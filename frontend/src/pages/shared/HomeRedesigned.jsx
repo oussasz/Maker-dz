@@ -623,59 +623,9 @@ const FeaturedProductsSection = ({ products }) => {
 };
 
 // ============================================
-// JOIN AS SELLER - Craftsmen Registration CTA
+// JOIN AS SELLER + TRUST - Combined Section
 // ============================================
 const JoinAsSellerSection = () => {
-  const { t } = useTranslation("home");
-
-  return (
-    <section className="relative h-[60vh] min-h-[400px] max-h-[500px] overflow-hidden">
-      {/* Background Image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url('/CAM-Ain-Temouchent.webp')` }}
-      />
-
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
-
-      {/* Content */}
-      <div className="relative h-full max-w-7xl mx-auto px-6 md:px-12 flex items-center">
-        <motion.div
-          initial={{ opacity: 0, x: -30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          className="max-w-lg"
-        >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight">
-            {t("seller_title")}{" "}
-            <span className="text-amber-400">
-              {t("seller_title_highlight")}
-            </span>
-          </h2>
-
-          <p className="text-white/80 text-lg mb-8">{t("seller_subtitle")}</p>
-
-          <Link to="/signup">
-            <motion.button
-              whileHover={{ scale: 1.03, x: 5 }}
-              whileTap={{ scale: 0.98 }}
-              className="group px-8 py-4 bg-white text-gray-900 font-bold rounded-full inline-flex items-center gap-3 shadow-2xl hover:shadow-amber-500/20 transition-shadow"
-            >
-              {t("seller_cta_start")}
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </motion.button>
-          </Link>
-        </motion.div>
-      </div>
-    </section>
-  );
-};
-
-// ============================================
-// TRUST & SHIPPING - Confidence Builders
-// ============================================
-const TrustSection = () => {
   const { t } = useTranslation("home");
 
   const features = [
@@ -683,52 +633,126 @@ const TrustSection = () => {
       icon: Globe,
       title: t("trust_worldwide"),
       description: t("trust_worldwide_desc"),
-      color: "from-blue-500 to-cyan-500",
     },
     {
       icon: Shield,
       title: t("trust_verified"),
       description: t("trust_verified_desc"),
-      color: "from-emerald-500 to-green-500",
     },
     {
       icon: HandHeart,
       title: t("trust_direct"),
       description: t("trust_direct_desc"),
-      color: "from-amber-500 to-orange-500",
     },
     {
       icon: Award,
       title: t("trust_secure"),
       description: t("trust_secure_desc"),
-      color: "from-purple-500 to-pink-500",
     },
   ];
 
   return (
-    <section className="py-20 bg-gray-900">
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {features.map((feature, index) => (
+    <section className="relative overflow-hidden">
+      {/* Background Image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url('/CAM-Ain-Temouchent.webp')` }}
+      />
+
+      {/* Dark Overlay */}
+      <div className="absolute inset-0 bg-black/75" />
+
+      {/* Content Container */}
+      <div className="relative">
+        {/* Top Section - Join as Seller */}
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-20 md:py-28">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-12">
+            {/* Left - Text Content */}
             <motion.div
-              key={feature.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="text-center"
+              className="max-w-xl"
             >
-              <div
-                className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center`}
-              >
-                <feature.icon className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-2">
-                {feature.title}
-              </h3>
-              <p className="text-gray-400 text-sm">{feature.description}</p>
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight">
+                {t("seller_title")}{" "}
+                <span className="text-amber-400">
+                  {t("seller_title_highlight")}
+                </span>
+              </h2>
+
+              <p className="text-white/70 text-lg mb-8">
+                {t("seller_subtitle")}
+              </p>
+
+              <Link to="/signup">
+                <motion.button
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group px-8 py-4 bg-white text-gray-900 font-bold rounded-full inline-flex items-center gap-3 shadow-2xl hover:shadow-amber-500/20 transition-all"
+                >
+                  {t("seller_cta_start")}
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </motion.button>
+              </Link>
             </motion.div>
-          ))}
+
+            {/* Right - Stats/Highlights */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="grid grid-cols-2 gap-6"
+            >
+              {[
+                { number: "0%", label: t("trust_no_fees") || "Platform Fees" },
+                { number: "24h", label: t("trust_quick_setup") || "Quick Setup" },
+                { number: "3", label: t("trust_languages") || "Languages" },
+                { number: "∞", label: t("trust_products") || "Product Listings" },
+              ].map((stat, index) => (
+                <div
+                  key={index}
+                  className="text-center p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10"
+                >
+                  <p className="text-3xl md:text-4xl font-bold text-amber-400">
+                    {stat.number}
+                  </p>
+                  <p className="text-white/60 text-sm mt-1">{stat.label}</p>
+                </div>
+              ))}
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Divider Line */}
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
+          <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+        </div>
+
+        {/* Bottom Section - Trust Features */}
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {features.map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="text-center group"
+              >
+                <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center group-hover:bg-amber-500/20 group-hover:border-amber-500/30 transition-all duration-300">
+                  <feature.icon className="w-7 h-7 text-white group-hover:text-amber-400 transition-colors" />
+                </div>
+                <h3 className="text-base font-semibold text-white mb-2">
+                  {feature.title}
+                </h3>
+                <p className="text-white/50 text-sm leading-relaxed">
+                  {feature.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -834,7 +858,6 @@ const Home = () => {
       <CraftCategoriesSection />
       <FeaturedProductsSection products={products} />
       <JoinAsSellerSection />
-      <TrustSection />
       <CTASection />
     </main>
   );
