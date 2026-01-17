@@ -5,6 +5,7 @@ Use this checklist to ensure a smooth deployment to cPanel.
 ## Pre-Deployment
 
 ### Repository Setup
+
 - [ ] Repository created on GitHub/GitLab
 - [ ] All code pushed to main branch
 - [ ] .env.example file included (without sensitive data)
@@ -13,6 +14,7 @@ Use this checklist to ensure a smooth deployment to cPanel.
 - [ ] CPANEL_DEPLOYMENT.md reviewed
 
 ### Code Configuration
+
 - [ ] FRONTEND_URL added to allowed origins in index.js
 - [ ] Google OAuth callback URL updated for production domain
 - [ ] All hardcoded URLs replaced with environment variables
@@ -20,6 +22,7 @@ Use this checklist to ensure a smooth deployment to cPanel.
 - [ ] Logging configured
 
 ### Environment Variables Prepared
+
 - [ ] NODE_ENV=production
 - [ ] PORT configured
 - [ ] MONGODB_URL with connection string
@@ -36,6 +39,7 @@ Use this checklist to ensure a smooth deployment to cPanel.
 ## Database Setup
 
 ### MongoDB Configuration
+
 - [ ] MongoDB Atlas account created (or other MongoDB service)
 - [ ] Database cluster created
 - [ ] Database user created with appropriate permissions
@@ -47,11 +51,13 @@ Use this checklist to ensure a smooth deployment to cPanel.
 ## cPanel Configuration
 
 ### Initial Setup
+
 - [ ] cPanel account accessed
 - [ ] Domain/subdomain configured and pointing to server
 - [ ] SSL certificate installed (Let's Encrypt or custom)
 
 ### Node.js Application Setup
+
 - [ ] "Setup Node.js App" accessed in cPanel
 - [ ] Application created with:
   - [ ] Correct Node.js version (18+)
@@ -62,6 +68,7 @@ Use this checklist to ensure a smooth deployment to cPanel.
   - [ ] Port assigned by cPanel
 
 ### Git Deployment Setup
+
 - [ ] "Git Version Control" accessed in cPanel
 - [ ] Repository cloned with:
   - [ ] Correct clone URL
@@ -69,6 +76,7 @@ Use this checklist to ensure a smooth deployment to cPanel.
   - [ ] SSH keys configured (if using private repo)
 
 ### Environment Variables in cPanel
+
 - [ ] All environment variables added in Node.js App settings
 - [ ] Variables match .env.example structure
 - [ ] Sensitive values are unique and secure
@@ -78,6 +86,7 @@ Use this checklist to ensure a smooth deployment to cPanel.
 ## Deployment
 
 ### First Deployment
+
 - [ ] Code pushed to repository
 - [ ] Repository pulled in cPanel (via Git interface or terminal)
 - [ ] Dependencies installed: `npm install --production`
@@ -85,6 +94,7 @@ Use this checklist to ensure a smooth deployment to cPanel.
 - [ ] No startup errors in logs
 
 ### Testing
+
 - [ ] Base URL accessible (https://yourdomain.com)
 - [ ] Health check endpoint working: /api/health
 - [ ] API endpoints responding
@@ -97,6 +107,7 @@ Use this checklist to ensure a smooth deployment to cPanel.
 ## Post-Deployment
 
 ### Security
+
 - [ ] All default secrets changed
 - [ ] MongoDB IP whitelist tightened (if possible)
 - [ ] Strong passwords used
@@ -105,12 +116,14 @@ Use this checklist to ensure a smooth deployment to cPanel.
 - [ ] Firewall rules reviewed
 
 ### Monitoring
+
 - [ ] Application logs accessible
 - [ ] Error logging working
 - [ ] Health check endpoint monitored
 - [ ] MongoDB performance monitored
 
 ### Documentation
+
 - [ ] Production URLs documented
 - [ ] Environment variables documented (securely)
 - [ ] Deployment process documented
@@ -120,6 +133,7 @@ Use this checklist to ensure a smooth deployment to cPanel.
 ## Frontend Integration
 
 ### Frontend Configuration
+
 - [ ] Frontend API URL updated to production backend
 - [ ] Frontend CORS origin added to backend
 - [ ] Frontend deployed (Vercel/Netlify/cPanel)
@@ -129,6 +143,7 @@ Use this checklist to ensure a smooth deployment to cPanel.
 ## Troubleshooting Resources
 
 If issues occur, check:
+
 - [ ] Application logs in cPanel
 - [ ] MongoDB connection logs
 - [ ] Node.js version compatibility
@@ -140,6 +155,7 @@ If issues occur, check:
 ## Maintenance
 
 ### Regular Tasks
+
 - [ ] Monitor application logs weekly
 - [ ] Check disk space usage
 - [ ] Update dependencies monthly
@@ -148,6 +164,7 @@ If issues occur, check:
 - [ ] Test backup restoration
 
 ### Update Procedure
+
 - [ ] Code changes pushed to repository
 - [ ] Git pull in cPanel
 - [ ] Run `npm install` if dependencies changed

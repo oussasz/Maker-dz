@@ -179,6 +179,7 @@ pm2 startup
 ### Setting up .htaccess
 
 The `.htaccess` file is already configured. Ensure it's in your public_html or web root directory to:
+
 - Force HTTPS
 - Proxy requests to Node.js app
 
@@ -187,9 +188,11 @@ The `.htaccess` file is already configured. Ensure it's in your public_html or w
 For the frontend (React/Vite app):
 
 ### Option 1: Separate Static Hosting
+
 Deploy the frontend on Vercel/Netlify and update CORS settings
 
 ### Option 2: Serve from Same cPanel
+
 1. Build the frontend: `npm run build`
 2. Copy the `dist` folder to public_html
 3. Configure .htaccess to serve static files and proxy API requests
@@ -207,6 +210,7 @@ Deploy the frontend on Vercel/Netlify and update CORS settings
 ## 📞 Support
 
 If you encounter issues:
+
 1. Check cPanel error logs
 2. Review MongoDB connection status
 3. Verify all environment variables

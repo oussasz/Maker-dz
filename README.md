@@ -75,6 +75,7 @@ FRONTEND_URL=https://yourdomain.com
 ## 📚 API Endpoints
 
 ### Authentication
+
 - `POST /api/auth/register` - Register new user
 - `POST /api/auth/login` - Login user
 - `POST /api/auth/refresh` - Refresh access token
@@ -82,6 +83,7 @@ FRONTEND_URL=https://yourdomain.com
 - `GET /api/auth/google/callback` - Google OAuth callback
 
 ### Products
+
 - `GET /api/products` - Get all products (with filters)
 - `GET /api/products/:id` - Get single product
 - `POST /api/products` - Create product (seller only)
@@ -89,6 +91,7 @@ FRONTEND_URL=https://yourdomain.com
 - `DELETE /api/products/:id` - Delete product (seller only)
 
 ### Categories
+
 - `GET /api/categories` - Get all categories
 - `GET /api/categories/:id` - Get single category
 - `POST /api/categories` - Create category (admin only)
@@ -96,29 +99,34 @@ FRONTEND_URL=https://yourdomain.com
 - `DELETE /api/categories/:id` - Delete category (admin only)
 
 ### Cart
+
 - `GET /api/cart` - Get user cart
 - `POST /api/cart` - Add item to cart
 - `PUT /api/cart/:itemId` - Update cart item
 - `DELETE /api/cart/:itemId` - Remove item from cart
 
 ### Orders
+
 - `GET /api/orders` - Get user orders
 - `GET /api/orders/:id` - Get single order
 - `POST /api/orders` - Create new order
 - `PUT /api/orders/:id` - Update order status
 
 ### Wishlist
+
 - `GET /api/wishlist` - Get user wishlist
 - `POST /api/wishlist` - Add item to wishlist
 - `DELETE /api/wishlist/:itemId` - Remove from wishlist
 
 ### Users
+
 - `GET /api/users/profile` - Get user profile
 - `PUT /api/users/profile` - Update user profile
 - `GET /api/users/addresses` - Get user addresses
 - `POST /api/users/addresses` - Add new address
 
 ### Cities
+
 - `GET /api/cities` - Get Algerian cities list
 
 ## 🗂️ Project Structure
@@ -173,6 +181,7 @@ This project is licensed under the ISC License.
 ## 📞 Support
 
 For deployment issues, refer to:
+
 - [CPANEL_DEPLOYMENT.md](CPANEL_DEPLOYMENT.md) - Complete deployment guide
 - [CATEGORY_SETUP_GUIDE.md](CATEGORY_SETUP_GUIDE.md) - Category management
 - [GOOGLE_OAUTH_SETUP.md](GOOGLE_OAUTH_SETUP.md) - OAuth configuration
@@ -180,6 +189,7 @@ For deployment issues, refer to:
 ## 🔄 Migration from Vercel
 
 This repository is optimized for cPanel but maintains compatibility with Vercel. Key differences:
+
 - Uses `server.js` as entry point instead of serverless functions
 - Includes `.htaccess` for Apache/cPanel
 - PM2 configuration for process management

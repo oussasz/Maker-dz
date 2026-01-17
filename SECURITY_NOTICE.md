@@ -2,7 +2,7 @@
 
 ## ⚠️ Important: Handling Sensitive Information
 
-This repository contains configuration files that reference sensitive credentials. 
+This repository contains configuration files that reference sensitive credentials.
 
 ### Files Containing Secrets (NEVER commit these):
 
@@ -17,12 +17,14 @@ This repository contains configuration files that reference sensitive credential
 ## 🛡️ Security Best Practices
 
 ### ✅ DO:
+
 - Keep `.env` in `.gitignore` (already configured)
 - Use `.env.example` with placeholder values
 - Reference credentials by saying "see .env file"
 - Use environment variables in cPanel
 
 ### ❌ DON'T:
+
 - Commit actual API keys or secrets to Git
 - Share `.env` file publicly
 - Include credentials in documentation
