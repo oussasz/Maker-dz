@@ -1,10 +1,10 @@
 import "dotenv/config";
 import express from "express";
-import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import cors from "cors";
 import session from "express-session";
 import passport from "./middleware/passport.js";
+import { connectDB } from "./config/database.js";
 import authRoute from "./Routes/authRoute.js";
 import productRoute from "./Routes/productRoute.js";
 import userRoute from "./Routes/userRoute.js";
@@ -63,67 +63,30 @@ app.get("/", (req, res) => {
   res.json({ status: "API is running" });
 });
 
-// Debug endpoint to check MongoDB connection
+// Debug endpoint to check MySQL connection
 app.get("/api/health", async (req, res) => {
   try {
-    // Force connection attempt
-    await connectDB();
-
-    const dbState = mongoose.connection.readyState;
-    const states = ["disconnected", "connected", "connecting", "disconnecting"];
-
-    // Get actual database name from connection
-    const actualDbName =
-      mongoose.connection.db?.databaseName || "not connected";
-
+    const pool = await connectDB();
+    const [rows] = await pool.query('SELECT DATABASE() as db, VERSION() as version');
+    
     res.json({
       status: "OK",
-      mongodb: states[dbState] || "unknown",
-      hasMongoUrl: !!process.env.MONGODB_URL,
-      hasDbName: !!process.env.DATABASE_NAME,
-      configuredDbName: process.env.DATABASE_NAME,
-      actualDbName: actualDbName,
-      lastError: connectionError,
+      database: rows[0].db || "not selected",
+      mysqlVersion: rows[0].version,
+      host: process.env.DB_HOST,
+      port: process.env.DB_PORT,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ 
+      status: "ERROR",
+      error: error.message 
+    });
   }
 });
 
-// MongoDB connection with caching for serverless
-let isConnected = false;
-let connectionError = null;
-
-const connectDB = async () => {
-  if (isConnected) return;
-
-  try {
-    const connectionString = process.env.MONGODB_URL;
-    const DBName = process.env.DATABASE_NAME;
-
-    if (!connectionString) {
-      connectionError = "MONGODB_URL is not defined";
-      console.error(connectionError);
-      return;
-    }
-
-    await mongoose.connect(connectionString, {
-      dbName: DBName,
-      bufferCommands: false,
-    });
-    isConnected = true;
-    connectionError = null;
-    console.log("Connected to MongoDB");
-  } catch (error) {
-    connectionError = error.message;
-    console.error("MongoDB connection error:", error);
-  }
-};
-
-// Connect on each request (serverless pattern)
-app.use(async (req, res, next) => {
-  await connectDB();
-  next();
+// Initialize MySQL connection on startup
+connectDB().catch(err => {
+  console.error('Failed to connect to MySQL:', err);
 });
 
 // Routes
