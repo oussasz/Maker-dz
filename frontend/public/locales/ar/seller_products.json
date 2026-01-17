@@ -1,0 +1,14 @@
+{
+  "loading_products": "جاري تحميل المنتجات...",
+  "product_management": "إدارة المنتجات",
+  "add_product": "إضافة منتج",
+  "search_products_placeholder": "البحث عن المنتجات...",
+  "sort_by_placeholder": "الترتيب حسب",
+  "name_asc": "الاسم (أ-ي)",
+  "name_desc": "الاسم (ي-أ)",
+  "price_asc": "السعر (من الأقل للأعلى)",
+  "price_desc": "السعر (من الأعلى للأقل)",
+  "newest": "الأحدث",
+  "oldest": "الأقدم",
+  "no_products_found": "لم يتم العثور على منتجات."
+}
