@@ -25,7 +25,7 @@ i18n
       },
     },
     react: {
-      useSuspense: false,
+      useSuspense: true,
     },
     interpolation: {
       escapeValue: false,
