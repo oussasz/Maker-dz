@@ -1,0 +1,9 @@
+{
+  "login_to_your_account": "Log in to your account",
+  "email": "Email",
+  "password": "Password",
+  "invalid_credentials_error": "Invalid email or password. Please try again.",
+  "login_button": "Log in",
+  "dont_have_account": "don't have an account?",
+  "signup_link": "Sign up"
+}
