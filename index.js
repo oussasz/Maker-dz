@@ -124,17 +124,12 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// Start server (cPanel will run this in production)
+// Start server
 const PORT = process.env.PORT || 3001;
 
-// Only start server if not imported as a module
-if (import.meta.url === `file://${process.argv[1]}`) {
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`📍 Environment: ${process.env.NODE_ENV || "development"}`);
-    console.log(`📍 Google OAuth: http://localhost:${PORT}/api/auth/google`);
-  });
-}
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📍 Environment: ${process.env.NODE_ENV || "production"}`);
+});
 
-// For compatibility with both cPanel and Vercel
 export default app;
