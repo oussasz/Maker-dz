@@ -35,7 +35,7 @@ export default function UpdateProduct() {
 
   const [productData, setProductData] = useState(initialProductState);
   const [productAttributes, setProductAttributes] = useState(
-    initialProductAttributes
+    initialProductAttributes,
   );
   const [variantOptions, setVariantOptions] = useState({});
   const [variantVariables, setVariantVariables] = useState([]);
@@ -88,7 +88,7 @@ export default function UpdateProduct() {
         variantOptions,
         variantVariables,
         variants,
-        productAttributes
+        productAttributes,
       );
 
       if (result.success) {
@@ -119,11 +119,13 @@ export default function UpdateProduct() {
           variant="outline"
           size="icon"
           onClick={() => navigate(-1)}
-          className="shrink-0"> 
-            
+          className="shrink-0"
+        >
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800">{t("update_product")}</h1>
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800">
+          {t("update_product")}
+        </h1>
       </div>
 
       <Tabs value={step} onValueChange={setStep} className="space-y-8">
@@ -181,7 +183,8 @@ export default function UpdateProduct() {
             <Button
               className="w-40"
               onClick={handleSubmit}
-              disabled={isSubmitting}>
+              disabled={isSubmitting}
+            >
               {isSubmitting ? t("updating_product") : t("save_product")}
             </Button>
           </div>

@@ -139,10 +139,7 @@ const Sidebar = ({ activeTab, navItems }) => {
                 <Menu size={24} className="text-gray-700" />
               </button>
             </SheetTrigger>
-            <SheetContent
-              side="left"
-              className="w-64 p-0 flex flex-col"
-            >
+            <SheetContent side="left" className="w-64 p-0 flex flex-col">
               <SidebarContent />
             </SheetContent>
           </Sheet>
