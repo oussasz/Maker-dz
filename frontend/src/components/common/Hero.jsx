@@ -74,7 +74,9 @@ const Hero = () => {
         <SwiperSlide>
           <div className="relative flex items-center px-4 sm:px-6 md:px-8 lg:px-12 w-full h-[20vh] sm:h-[70vh] md:h-[80vh] bg-primary">
             <div className="z-20 text-white max-w-4xl">
-              <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-8xl ${isRTL ? "font-rubik" : "!font-hero"} mb-3 sm:mb-4 leading-tight`}>
+              <h1
+                className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-8xl ${isRTL ? "font-rubik" : "!font-hero"} mb-3 sm:mb-4 leading-tight`}
+              >
                 {t("title1")}
               </h1>
               <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold mb-4 sm:mb-6">
@@ -86,7 +88,11 @@ const Hero = () => {
                   <p className="text-base sm:text-lg md:text-xl underline font-medium">
                     {t("shop_now")}
                   </p>
-                  <ArrowRight size={20} className="sm:w-6 sm:h-6" color="white" />
+                  <ArrowRight
+                    size={20}
+                    className="sm:w-6 sm:h-6"
+                    color="white"
+                  />
                 </div>
                 {!isAuthenticated && (
                   <Link
@@ -118,7 +124,11 @@ const Hero = () => {
                   <p className="text-base sm:text-lg md:text-xl underline font-medium">
                     {t("shop_now")}
                   </p>
-                  <ArrowRight size={20} className="sm:w-6 sm:h-6" color="white" />
+                  <ArrowRight
+                    size={20}
+                    className="sm:w-6 sm:h-6"
+                    color="white"
+                  />
                 </div>
                 {!isAuthenticated && (
                   <Link

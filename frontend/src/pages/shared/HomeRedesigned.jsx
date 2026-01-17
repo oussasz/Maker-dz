@@ -626,138 +626,44 @@ const FeaturedProductsSection = ({ products }) => {
 const JoinAsSellerSection = () => {
   const { t } = useTranslation("home");
 
-  const benefits = [
-    {
-      icon: "🏪",
-      title: t("benefit1_title"),
-      description: t("benefit1_desc"),
-    },
-    {
-      icon: "🌍",
-      title: t("benefit2_title"),
-      description: t("benefit2_desc"),
-    },
-    {
-      icon: "💰",
-      title: t("benefit3_title"),
-      description: t("benefit3_desc"),
-    },
-    {
-      icon: "📦",
-      title: t("benefit4_title"),
-      description: t("benefit4_desc"),
-    },
-    {
-      icon: "🛡️",
-      title: t("benefit5_title"),
-      description: t("benefit5_desc"),
-    },
-    {
-      icon: "📈",
-      title: t("benefit6_title"),
-      description: t("benefit6_desc"),
-    },
-  ];
   return (
-    <section className="py-24 md:py-32 bg-gray-900 text-white overflow-hidden relative">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          }}
-        />
-      </div>
+    <section className="relative h-[60vh] min-h-[400px] max-h-[500px] overflow-hidden">
+      {/* Background Image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url('/CAM-Ain-Temouchent.webp')` }}
+      />
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12 relative">
-        {/* Section Header */}
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
+
+      {/* Content */}
+      <div className="relative h-full max-w-7xl mx-auto px-6 md:px-12 flex items-center">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="max-w-lg"
         >
-          <span className="inline-block px-4 py-2 bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-400 rounded-full text-sm font-medium mb-4 border border-amber-500/30">
-            {t("seller_badge")}
-          </span>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight">
             {t("seller_title")}{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">
+            <span className="text-amber-400">
               {t("seller_title_highlight")}
             </span>
           </h2>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            {t("seller_subtitle")}
-          </p>
-        </motion.div>
 
-        {/* Benefits Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-          {benefits.map((benefit, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/10 hover:border-amber-500/30 transition-all duration-300 group"
+          <p className="text-white/80 text-lg mb-8">{t("seller_subtitle")}</p>
+
+          <Link to="/signup">
+            <motion.button
+              whileHover={{ scale: 1.03, x: 5 }}
+              whileTap={{ scale: 0.98 }}
+              className="group px-8 py-4 bg-white text-gray-900 font-bold rounded-full inline-flex items-center gap-3 shadow-2xl hover:shadow-amber-500/20 transition-shadow"
             >
-              <span className="text-4xl mb-4 block">{benefit.icon}</span>
-              <h3 className="text-xl font-bold text-white mb-2 group-hover:text-amber-400 transition-colors">
-                {benefit.title}
-              </h3>
-              <p className="text-gray-400">{benefit.description}</p>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* CTA Box */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 rounded-3xl p-8 md:p-12 text-center"
-        >
-          <div className="max-w-2xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-amber-500/20 text-amber-400 px-4 py-2 rounded-full text-sm font-medium mb-6">
-              <Sparkles className="w-4 h-4" />
-              {t("seller_cta_badge")}
-            </div>
-
-            <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              {t("seller_cta_title")}
-            </h3>
-            <p className="text-gray-300 text-lg mb-8">
-              {t("seller_cta_subtitle")}
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/signup">
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold rounded-full flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 w-full sm:w-auto"
-                >
-                  {t("seller_cta_start")}
-                  <ArrowRight className="w-5 h-5" />
-                </motion.button>
-              </Link>
-              <Link to="/about">
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="px-8 py-4 border border-white/30 text-white font-semibold rounded-full hover:bg-white/10 transition-colors w-full sm:w-auto"
-                >
-                  {t("seller_cta_learn")}
-                </motion.button>
-              </Link>
-            </div>
-
-            <p className="text-gray-500 text-sm mt-6">
-              {t("seller_cta_footer")}
-            </p>
-          </div>
+              {t("seller_cta_start")}
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </motion.button>
+          </Link>
         </motion.div>
       </div>
     </section>
