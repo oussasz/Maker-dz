@@ -23,7 +23,7 @@ const uploadToCloudinary = async (buffer, folder) => {
       (error, result) => {
         if (error) reject(error);
         else resolve(result.secure_url);
-      }
+      },
     );
     uploadStream.end(buffer);
   });
@@ -64,17 +64,30 @@ export const createProduct = async (req, res) => {
     }
 
     // Parse JSON fields
-    const parsedVariants = typeof variants === "string" ? JSON.parse(variants) : variants;
-    const parsedCategories = typeof categories === "string" ? JSON.parse(categories) : categories;
-    const parsedSpecs = typeof specifications === "string" ? JSON.parse(specifications) : specifications;
+    const parsedVariants =
+      typeof variants === "string" ? JSON.parse(variants) : variants;
+    const parsedCategories =
+      typeof categories === "string" ? JSON.parse(categories) : categories;
+    const parsedSpecs =
+      typeof specifications === "string"
+        ? JSON.parse(specifications)
+        : specifications;
     const parsedTags = typeof tags === "string" ? JSON.parse(tags) : tags;
-    const parsedVariantOptions = typeof variantOptions === "string" ? JSON.parse(variantOptions) : variantOptions;
-    const parsedVariantVariables = typeof variantVariables === "string" ? JSON.parse(variantVariables) : variantVariables;
+    const parsedVariantOptions =
+      typeof variantOptions === "string"
+        ? JSON.parse(variantOptions)
+        : variantOptions;
+    const parsedVariantVariables =
+      typeof variantVariables === "string"
+        ? JSON.parse(variantVariables)
+        : variantVariables;
 
     const files = req.files || [];
 
     // Upload main images to Cloudinary
-    const productImageFiles = files.filter((f) => f.fieldname === "productImages");
+    const productImageFiles = files.filter(
+      (f) => f.fieldname === "productImages",
+    );
     const mainImages = await Promise.all(
       productImageFiles.map(async (file) => {
         const optimizedBuffer = await sharp(file.buffer)
@@ -82,11 +95,13 @@ export const createProduct = async (req, res) => {
           .jpeg({ quality: 80 })
           .toBuffer();
         return await uploadToCloudinary(optimizedBuffer, "maker-dz/products");
-      })
+      }),
     );
 
     // Upload variant images
-    const variantImageFiles = files.filter((file) => file.fieldname.startsWith("variantImages_"));
+    const variantImageFiles = files.filter((file) =>
+      file.fieldname.startsWith("variantImages_"),
+    );
     await Promise.all(
       variantImageFiles.map(async (file) => {
         const index = file.fieldname.split("_")[1];
@@ -95,9 +110,12 @@ export const createProduct = async (req, res) => {
           .resize({ width: 1280 })
           .jpeg({ quality: 80 })
           .toBuffer();
-        const url = await uploadToCloudinary(optimizedBuffer, "maker-dz/variants");
+        const url = await uploadToCloudinary(
+          optimizedBuffer,
+          "maker-dz/variants",
+        );
         parsedVariants[index].images.push(url);
-      })
+      }),
     );
 
     // Generate unique slug
@@ -170,7 +188,12 @@ export const getProducts = async (req, res) => {
     if (req.query.minPrice) filters.min_price = parseFloat(req.query.minPrice);
     if (req.query.maxPrice) filters.max_price = parseFloat(req.query.maxPrice);
 
-    const { products, total } = await Product.findAll({ filters, limit, offset, sort });
+    const { products, total } = await Product.findAll({
+      filters,
+      limit,
+      offset,
+      sort,
+    });
 
     res.status(200).json({
       products,
@@ -211,7 +234,9 @@ export const getProduct = async (req, res) => {
     res.status(200).json(product);
   } catch (error) {
     console.error("Error fetching product:", error);
-    res.status(500).json({ error: "Error fetching product", details: error.message });
+    res
+      .status(500)
+      .json({ error: "Error fetching product", details: error.message });
   }
 };
 
@@ -292,11 +317,21 @@ export const updateProduct = async (req, res) => {
     }
 
     if (product.seller_id !== req.user.id && req.user.role !== "admin") {
-      return res.status(403).json({ error: "You can only update your own products" });
+      return res
+        .status(403)
+        .json({ error: "You can only update your own products" });
     }
 
     const updates = {};
-    const { name, description, basePrice, isActive, isFeatured, specifications, tags } = req.body;
+    const {
+      name,
+      description,
+      basePrice,
+      isActive,
+      isFeatured,
+      specifications,
+      tags,
+    } = req.body;
 
     if (name) {
       updates.name = name;
@@ -343,7 +378,9 @@ export const deleteProduct = async (req, res) => {
     }
 
     if (product.seller_id !== req.user.id && req.user.role !== "admin") {
-      return res.status(403).json({ error: "You can only delete your own products" });
+      return res
+        .status(403)
+        .json({ error: "You can only delete your own products" });
     }
 
     await Product.updateById(productId, { is_active: false });
@@ -367,7 +404,11 @@ export const searchProducts = async (req, res) => {
       return res.status(400).json({ error: "Search query is required" });
     }
 
-    const { products, total } = await Product.search(q, parseInt(limit), offset);
+    const { products, total } = await Product.search(
+      q,
+      parseInt(limit),
+      offset,
+    );
 
     res.status(200).json({
       products,

@@ -70,7 +70,12 @@ export const updateCart = async (req, res) => {
       if (update.quantity <= 0) {
         await Cart.removeItem(cart.id, update.productId, update.variantId);
       } else {
-        await Cart.updateItemQuantity(cart.id, update.productId, update.variantId, update.quantity);
+        await Cart.updateItemQuantity(
+          cart.id,
+          update.productId,
+          update.variantId,
+          update.quantity,
+        );
       }
     }
 
@@ -115,7 +120,9 @@ export const removeFromCart = async (req, res) => {
     const { productId, variantId } = req.query;
 
     if (!userId || !productId) {
-      return res.status(400).json({ error: "User ID and product ID are required" });
+      return res
+        .status(400)
+        .json({ error: "User ID and product ID are required" });
     }
 
     const cart = await Cart.getOrCreate(userId);

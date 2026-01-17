@@ -64,7 +64,7 @@ export const register = async (req, res) => {
     const user = await User.create({
       username,
       email,
-      role: role || 'customer',
+      role: role || "customer",
       password,
     });
 
@@ -136,13 +136,13 @@ export const googleAuthCallback = (req, res, next) => {
     if (err) {
       console.error("Google OAuth error:", err);
       return res.redirect(
-        `${process.env.FRONTEND_URL}/login?error=authentication_failed`
+        `${process.env.FRONTEND_URL}/login?error=authentication_failed`,
       );
     }
 
     if (!user) {
       return res.redirect(
-        `${process.env.FRONTEND_URL}/login?error=no_user_found`
+        `${process.env.FRONTEND_URL}/login?error=no_user_found`,
       );
     }
 
@@ -167,14 +167,14 @@ export const googleAuthCallback = (req, res, next) => {
       const redirectUrl = `${
         process.env.FRONTEND_URL
       }/auth/callback?accessToken=${accessToken}&refreshToken=${refreshToken}&user=${encodeURIComponent(
-        JSON.stringify(userData)
+        JSON.stringify(userData),
       )}`;
 
       res.redirect(redirectUrl);
     } catch (error) {
       console.error("Error generating tokens:", error);
       res.redirect(
-        `${process.env.FRONTEND_URL}/login?error=token_generation_failed`
+        `${process.env.FRONTEND_URL}/login?error=token_generation_failed`,
       );
     }
   })(req, res, next);

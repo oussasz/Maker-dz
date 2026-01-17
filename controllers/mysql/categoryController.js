@@ -2,12 +2,13 @@ import { Category } from "../../models/mysql/index.js";
 
 export const createCategory = async (req, res) => {
   try {
-    const { name, arabicName, frenchName, description, parentCategory, image } = req.body;
+    const { name, arabicName, frenchName, description, parentCategory, image } =
+      req.body;
     const slug = name.toLowerCase().replace(/ /g, "-");
 
     const categoryId = await Category.create({
       name,
-      arabic_name: arabicName, 
+      arabic_name: arabicName,
       french_name: frenchName,
       slug,
       description,
@@ -16,7 +17,7 @@ export const createCategory = async (req, res) => {
     });
 
     const savedCategory = await Category.findById(categoryId);
-    
+
     res.status(201).json(savedCategory);
   } catch (error) {
     console.error("Error creating category:", error);
@@ -38,11 +39,11 @@ export const getCategoryBySlug = async (req, res) => {
   try {
     const { slug } = req.params;
     const category = await Category.findBySlug(slug);
-    
+
     if (!category) {
       return res.status(404).json({ error: "Category not found" });
     }
-    
+
     res.status(200).json(category);
   } catch (error) {
     console.error("Error fetching category:", error);
@@ -64,7 +65,15 @@ export const getSubcategories = async (req, res) => {
 export const updateCategory = async (req, res) => {
   try {
     const { categoryId } = req.params;
-    const { name, arabicName, frenchName, description, parentCategory, image, isActive } = req.body;
+    const {
+      name,
+      arabicName,
+      frenchName,
+      description,
+      parentCategory,
+      image,
+      isActive,
+    } = req.body;
 
     const updates = {};
     if (name) {
@@ -79,7 +88,7 @@ export const updateCategory = async (req, res) => {
     if (isActive !== undefined) updates.is_active = isActive;
 
     const success = await Category.updateById(categoryId, updates);
-    
+
     if (!success) {
       return res.status(404).json({ error: "Category not found" });
     }
@@ -95,10 +104,10 @@ export const updateCategory = async (req, res) => {
 export const deleteCategory = async (req, res) => {
   try {
     const { categoryId } = req.params;
-    
+
     // Soft delete by setting is_active to false
     const success = await Category.updateById(categoryId, { is_active: false });
-    
+
     if (!success) {
       return res.status(404).json({ error: "Category not found" });
     }

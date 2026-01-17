@@ -1,17 +1,17 @@
-import { getConnection } from '../../config/database.js';
+import { getConnection } from "../../config/database.js";
 
 export const Category = {
   // Find all categories
   async findAll(options = {}) {
     const pool = await getConnection();
     const { activeOnly = false } = options;
-    
-    let query = 'SELECT * FROM categories';
+
+    let query = "SELECT * FROM categories";
     if (activeOnly) {
-      query += ' WHERE is_active = TRUE';
+      query += " WHERE is_active = TRUE";
     }
-    query += ' ORDER BY name ASC';
-    
+    query += " ORDER BY name ASC";
+
     const [rows] = await pool.query(query);
     return rows;
   },
@@ -19,28 +19,34 @@ export const Category = {
   // Find by ID
   async findById(id) {
     const pool = await getConnection();
-    const [rows] = await pool.query('SELECT * FROM categories WHERE id = ?', [id]);
+    const [rows] = await pool.query("SELECT * FROM categories WHERE id = ?", [
+      id,
+    ]);
     return rows[0] || null;
   },
 
   // Find by slug
   async findBySlug(slug) {
     const pool = await getConnection();
-    const [rows] = await pool.query('SELECT * FROM categories WHERE slug = ?', [slug]);
+    const [rows] = await pool.query("SELECT * FROM categories WHERE slug = ?", [
+      slug,
+    ]);
     return rows[0] || null;
   },
 
   // Find by name
   async findByName(name) {
     const pool = await getConnection();
-    const [rows] = await pool.query('SELECT * FROM categories WHERE name = ?', [name]);
+    const [rows] = await pool.query("SELECT * FROM categories WHERE name = ?", [
+      name,
+    ]);
     return rows[0] || null;
   },
 
   // Create category
   async create(data) {
     const pool = await getConnection();
-    
+
     const [result] = await pool.query(
       `INSERT INTO categories (name, arabic_name, french_name, slug, description, parent_category_id, image, is_active) 
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -52,8 +58,8 @@ export const Category = {
         data.description || null,
         data.parentCategory || null,
         data.image || null,
-        data.isActive !== false
-      ]
+        data.isActive !== false,
+      ],
     );
 
     return { id: result.insertId, ...data };
@@ -62,31 +68,60 @@ export const Category = {
   // Update category
   async updateById(id, updateData) {
     const pool = await getConnection();
-    
+
     const fields = [];
     const values = [];
 
-    if (updateData.name) { fields.push('name = ?'); values.push(updateData.name); }
-    if (updateData.arabicName !== undefined) { fields.push('arabic_name = ?'); values.push(updateData.arabicName); }
-    if (updateData.frenchName !== undefined) { fields.push('french_name = ?'); values.push(updateData.frenchName); }
-    if (updateData.slug) { fields.push('slug = ?'); values.push(updateData.slug); }
-    if (updateData.description !== undefined) { fields.push('description = ?'); values.push(updateData.description); }
-    if (updateData.parentCategory !== undefined) { fields.push('parent_category_id = ?'); values.push(updateData.parentCategory); }
-    if (updateData.image !== undefined) { fields.push('image = ?'); values.push(updateData.image); }
-    if (updateData.isActive !== undefined) { fields.push('is_active = ?'); values.push(updateData.isActive); }
+    if (updateData.name) {
+      fields.push("name = ?");
+      values.push(updateData.name);
+    }
+    if (updateData.arabicName !== undefined) {
+      fields.push("arabic_name = ?");
+      values.push(updateData.arabicName);
+    }
+    if (updateData.frenchName !== undefined) {
+      fields.push("french_name = ?");
+      values.push(updateData.frenchName);
+    }
+    if (updateData.slug) {
+      fields.push("slug = ?");
+      values.push(updateData.slug);
+    }
+    if (updateData.description !== undefined) {
+      fields.push("description = ?");
+      values.push(updateData.description);
+    }
+    if (updateData.parentCategory !== undefined) {
+      fields.push("parent_category_id = ?");
+      values.push(updateData.parentCategory);
+    }
+    if (updateData.image !== undefined) {
+      fields.push("image = ?");
+      values.push(updateData.image);
+    }
+    if (updateData.isActive !== undefined) {
+      fields.push("is_active = ?");
+      values.push(updateData.isActive);
+    }
 
     if (fields.length === 0) return null;
 
     values.push(id);
-    await pool.query(`UPDATE categories SET ${fields.join(', ')} WHERE id = ?`, values);
-    
+    await pool.query(
+      `UPDATE categories SET ${fields.join(", ")} WHERE id = ?`,
+      values,
+    );
+
     return this.findById(id);
   },
 
   // Delete category
   async deleteById(id) {
     const pool = await getConnection();
-    const [result] = await pool.query('DELETE FROM categories WHERE id = ?', [id]);
+    const [result] = await pool.query("DELETE FROM categories WHERE id = ?", [
+      id,
+    ]);
     return result.affectedRows > 0;
   },
 
@@ -94,8 +129,8 @@ export const Category = {
   async getSubcategories(parentId) {
     const pool = await getConnection();
     const [rows] = await pool.query(
-      'SELECT * FROM categories WHERE parent_category_id = ? ORDER BY name ASC',
-      [parentId]
+      "SELECT * FROM categories WHERE parent_category_id = ? ORDER BY name ASC",
+      [parentId],
     );
     return rows;
   },
@@ -104,10 +139,10 @@ export const Category = {
   async getRootCategories() {
     const pool = await getConnection();
     const [rows] = await pool.query(
-      'SELECT * FROM categories WHERE parent_category_id IS NULL ORDER BY name ASC'
+      "SELECT * FROM categories WHERE parent_category_id IS NULL ORDER BY name ASC",
     );
     return rows;
-  }
+  },
 };
 
 export default Category;
