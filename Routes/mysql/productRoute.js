@@ -16,7 +16,12 @@ const router = express.Router();
 
 router.get("/products", getProducts);
 router.post("/products", authenticateUser, upload.any(), createProduct);
-router.put("/products/:productId", authenticateUser, upload.any(), updateProduct);
+router.put(
+  "/products/:productId",
+  authenticateUser,
+  upload.any(),
+  updateProduct,
+);
 router.delete("/products/:productId", authenticateUser, deleteProduct);
 router.get("/products/:identifier", getProduct);
 router.get("/sellers/:sellerId/products", getSellerProducts);

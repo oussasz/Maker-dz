@@ -89,7 +89,13 @@ export const updateOrderStatus = async (req, res) => {
     const { orderId } = req.params;
     const { status } = req.body;
 
-    const validStatuses = ["pending", "processing", "shipped", "delivered", "cancelled"];
+    const validStatuses = [
+      "pending",
+      "processing",
+      "shipped",
+      "delivered",
+      "cancelled",
+    ];
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ error: "Invalid status" });
     }
@@ -124,16 +130,23 @@ export const getDashboardData = async (req, res) => {
     const totalOrders = orders.length;
     const totalRevenue = orders.reduce((sum, order) => {
       const orderItems = JSON.parse(order.items || "[]");
-      return sum + orderItems.reduce((itemSum, item) => {
-        if (item.sellerId == sellerId) {
-          return itemSum + (item.price * item.quantity);
-        }
-        return itemSum;
-      }, 0);
+      return (
+        sum +
+        orderItems.reduce((itemSum, item) => {
+          if (item.sellerId == sellerId) {
+            return itemSum + item.price * item.quantity;
+          }
+          return itemSum;
+        }, 0)
+      );
     }, 0);
 
-    const pendingOrders = orders.filter(o => o.order_status === "pending").length;
-    const processingOrders = orders.filter(o => o.order_status === "processing").length;
+    const pendingOrders = orders.filter(
+      (o) => o.order_status === "pending",
+    ).length;
+    const processingOrders = orders.filter(
+      (o) => o.order_status === "processing",
+    ).length;
 
     // Get seller products count
     const { total: totalProducts } = await Product.findAll({

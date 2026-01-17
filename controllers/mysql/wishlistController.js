@@ -6,13 +6,17 @@ export const addToWishlist = async (req, res) => {
     const { productId } = req.body;
 
     if (!userId || !productId) {
-      return res.status(400).json({ error: "userId and productId are required" });
+      return res
+        .status(400)
+        .json({ error: "userId and productId are required" });
     }
 
     // Check if already in wishlist
     const isInWishlist = await Wishlist.hasProduct(userId, productId);
     if (isInWishlist) {
-      return res.status(409).json({ error: "The product is already in wishlist" });
+      return res
+        .status(409)
+        .json({ error: "The product is already in wishlist" });
     }
 
     await Wishlist.addProduct(userId, productId);
@@ -35,7 +39,9 @@ export const removeFromWishlist = async (req, res) => {
     const { productId } = req.query;
 
     if (!userId || !productId) {
-      return res.status(400).json({ error: "userId and productId are required" });
+      return res
+        .status(400)
+        .json({ error: "userId and productId are required" });
     }
 
     const isInWishlist = await Wishlist.hasProduct(userId, productId);
@@ -74,19 +80,23 @@ export const getWishlist = async (req, res) => {
 
     if (onlyIDs === "true" || onlyIDs === true) {
       // Return only product IDs
-      const productIds = wishlist.products.map(p => p.product_id || p.productId);
+      const productIds = wishlist.products.map(
+        (p) => p.product_id || p.productId,
+      );
       return res.status(200).json({ productIds });
     }
 
     // Return full wishlist with product details
     const productsWithDetails = await Promise.all(
       wishlist.products.map(async (item) => {
-        const product = await Product.findById(item.product_id || item.productId);
+        const product = await Product.findById(
+          item.product_id || item.productId,
+        );
         return {
           ...item,
           product,
         };
-      })
+      }),
     );
 
     res.status(200).json({
@@ -107,7 +117,9 @@ export const checkWishlistItem = async (req, res) => {
     const { productId } = req.params;
 
     if (!userId || !productId) {
-      return res.status(400).json({ error: "userId and productId are required" });
+      return res
+        .status(400)
+        .json({ error: "userId and productId are required" });
     }
 
     const isInWishlist = await Wishlist.hasProduct(userId, productId);

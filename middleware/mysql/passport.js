@@ -35,7 +35,8 @@ passport.use(
         const userId = await User.create({
           google_id: profile.id,
           email: profile.emails[0].value,
-          username: profile.displayName || profile.emails[0].value.split("@")[0],
+          username:
+            profile.displayName || profile.emails[0].value.split("@")[0],
           first_name: profile.name?.givenName || "",
           last_name: profile.name?.familyName || "",
           profile_picture: profile.photos?.[0]?.value || "",
@@ -51,8 +52,8 @@ passport.use(
         console.error("Google OAuth error:", error);
         return done(error, null);
       }
-    }
-  )
+    },
+  ),
 );
 
 // Serialize user for the session

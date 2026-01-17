@@ -1,4 +1,9 @@
-import { User, Product, SellerProfile, Address } from "../../models/mysql/index.js";
+import {
+  User,
+  Product,
+  SellerProfile,
+  Address,
+} from "../../models/mysql/index.js";
 
 export const getUser = async (req, res) => {
   try {
@@ -21,14 +26,14 @@ export const getUser = async (req, res) => {
 export const getSellers = async (req, res) => {
   try {
     const sellers = await User.findByRole("seller");
-    
+
     // Get seller profiles for each seller
     const sellersWithProfiles = await Promise.all(
       sellers.map(async (seller) => {
         const profile = await SellerProfile.findByUserId(seller.id);
         const { password, ...sellerData } = seller;
         return { ...sellerData, profile };
-      })
+      }),
     );
 
     res.status(200).json(sellersWithProfiles);
@@ -41,10 +46,12 @@ export const getSellers = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     const userId = req.params.userId;
-    
+
     // Verify user is updating their own profile
     if (req.user.id !== parseInt(userId) && req.user.role !== "admin") {
-      return res.status(403).json({ error: "You can only update your own profile" });
+      return res
+        .status(403)
+        .json({ error: "You can only update your own profile" });
     }
 
     const { username, email, phone, profile } = req.body;
@@ -62,7 +69,7 @@ export const updateUser = async (req, res) => {
 
     const user = await User.findById(userId);
     const { password, ...userData } = user;
-    
+
     res.status(200).json({
       message: "User updated successfully",
       user: userData,
@@ -87,7 +94,7 @@ export const likeProduct = async (req, res) => {
     const isLiked = liked.includes(productId);
 
     if (isLiked) {
-      liked = liked.filter(id => id !== productId);
+      liked = liked.filter((id) => id !== productId);
       await User.updateById(userId, { liked: JSON.stringify(liked) });
       res.status(200).json({ message: "Product successfully unliked!" });
     } else {
@@ -116,7 +123,8 @@ export const getAddresses = async (req, res) => {
 export const addAddress = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { label, fullName, phone, wilaya, commune, address, isDefault } = req.body;
+    const { label, fullName, phone, wilaya, commune, address, isDefault } =
+      req.body;
 
     const addressId = await Address.create({
       user_id: userId,
@@ -145,7 +153,8 @@ export const updateAddress = async (req, res) => {
   try {
     const userId = req.user.id;
     const { addressId } = req.params;
-    const { label, fullName, phone, wilaya, commune, address, isDefault } = req.body;
+    const { label, fullName, phone, wilaya, commune, address, isDefault } =
+      req.body;
 
     const updates = {};
     if (label) updates.label = label;
@@ -162,7 +171,9 @@ export const updateAddress = async (req, res) => {
     }
 
     const updatedAddress = await Address.findById(addressId);
-    res.status(200).json({ message: "Address updated", address: updatedAddress });
+    res
+      .status(200)
+      .json({ message: "Address updated", address: updatedAddress });
   } catch (error) {
     console.error("Error updating address:", error);
     res.status(500).json({ error: "Error updating address" });
@@ -200,7 +211,8 @@ export const getSellerProfile = async (req, res) => {
 export const updateSellerProfile = async (req, res) => {
   try {
     const sellerId = req.user.id;
-    const { shopName, shopDescription, shopLogo, shopBanner, businessType } = req.body;
+    const { shopName, shopDescription, shopLogo, shopBanner, businessType } =
+      req.body;
 
     let profile = await SellerProfile.findByUserId(sellerId);
 
