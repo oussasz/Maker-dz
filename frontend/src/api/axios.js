@@ -4,12 +4,11 @@ import axios from "axios";
 const url = import.meta.env.VITE_API_URL || "https://maker-dz.net";
 
 export default axios.create({
-    baseURL: `${url}/api`
+  baseURL: `${url}/api`,
 });
 
 export const axiosPrivate = axios.create({
-    baseURL: `${url}/api`,
-    headers: { 'Content-Type': 'application/json' },
-    withCredentials: true
+  baseURL: `${url}/api`,
+  headers: { "Content-Type": "application/json" },
+  withCredentials: true,
 });
-
