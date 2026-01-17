@@ -9,6 +9,7 @@ Error message: **"Web application could not be started"**
 ## Why This Happens
 
 Common causes:
+
 1. **Missing dependencies** - node_modules not installed
 2. **Wrong Node.js version** - App requires specific version
 3. **Port binding issue** - App trying to use wrong port
@@ -26,6 +27,7 @@ Common causes:
 4. Check these settings:
 
 **Required Settings:**
+
 - ✓ **Node.js version**: 18.x or higher (recommended: 20.x)
 - ✓ **Application mode**: Production
 - ✓ **Application root**: `/home/qqbmuabu/maker-app-cpanel` (or your path)
@@ -35,11 +37,13 @@ Common causes:
 ### Step 2: Check the Error Log
 
 In the Node.js App interface:
+
 1. Scroll down to **"Open logs"** or **"Actions"**
 2. Click to view error logs
 3. Look for the startup error
 
 Common errors you might see:
+
 - `Cannot find module` - Missing dependencies
 - `SyntaxError` - Code syntax error
 - `Error: listen EADDRINUSE` - Port already in use
@@ -50,6 +54,7 @@ Common errors you might see:
 Click **"Run NPM Install"** button in cPanel Node.js App interface
 
 Or via SSH:
+
 ```bash
 cd ~/maker-app-cpanel
 rm -rf node_modules package-lock.json
@@ -59,6 +64,7 @@ npm install
 ### Step 4: Check package.json
 
 Your package.json must have:
+
 ```json
 {
   "type": "module",
@@ -74,6 +80,7 @@ Your package.json must have:
 ### Step 5: Verify Startup File
 
 Make sure `server.js` exists and imports from `index.js`:
+
 ```javascript
 import app from "./index.js";
 const PORT = process.env.PORT || 3001;
@@ -85,11 +92,13 @@ app.listen(PORT, () => {
 ### Step 6: Check Node Version Compatibility
 
 Some packages require specific Node.js versions:
+
 - **argon2** requires Node.js 18+
 - **sharp** requires Node.js 18+
 - **mysql2** works with Node.js 18+
 
 **Set Node.js version in cPanel:**
+
 1. Setup Node.js App → Select your app
 2. Change "Node.js version" to **20.x LTS** (recommended)
 3. Click "Save"
@@ -125,40 +134,51 @@ node server.js
 ## Most Likely Issues
 
 ### Issue 1: Node.js Version Too Old
+
 **Symptom:** App won't start, no clear error
-**Fix:** 
+**Fix:**
+
 1. cPanel → Setup Node.js App
 2. Change to Node.js 20.x
 3. Run NPM Install
 4. Restart
 
 ### Issue 2: Dependencies Not Installed
+
 **Symptom:** "Cannot find module" errors
 **Fix:**
+
 1. Click "Run NPM Install" in cPanel
 2. Wait for completion
 3. Click "Restart"
 
 ### Issue 3: Wrong Startup File
+
 **Symptom:** App won't start immediately
 **Fix:**
+
 1. Application startup file should be: `server.js`
 2. Make sure server.js exists in application root
 3. Restart app
 
 ### Issue 4: Port Configuration
+
 **Symptom:** Port binding errors
 **Fix:**
 Your server.js should use `process.env.PORT`:
+
 ```javascript
 const PORT = process.env.PORT || 3001;
 ```
+
 cPanel automatically sets the PORT variable.
 
 ### Issue 5: ES Modules Not Configured
+
 **Symptom:** "Cannot use import statement"
 **Fix:**
 Ensure package.json has:
+
 ```json
 {
   "type": "module"
@@ -206,6 +226,7 @@ After making changes:
 **Get the actual error:**
 
 Via SSH:
+
 ```bash
 cd ~/maker-app-cpanel
 node server.js 2>&1 | tee startup-error.log
@@ -214,6 +235,7 @@ node server.js 2>&1 | tee startup-error.log
 Then share the `startup-error.log` content.
 
 **Or check cPanel logs:**
+
 1. Setup Node.js App → Your app
 2. Click "Open logs"
 3. Look for the error message
@@ -222,6 +244,7 @@ Then share the `startup-error.log` content.
 ## Expected Behavior When Working
 
 When your app starts successfully, you should see in logs:
+
 ```
 🚀 Server running on port 3001
 📍 Environment: production
@@ -229,6 +252,7 @@ When your app starts successfully, you should see in logs:
 ```
 
 And this URL should work:
+
 - https://maker-dz.net/api/health
 
 ## Next Steps

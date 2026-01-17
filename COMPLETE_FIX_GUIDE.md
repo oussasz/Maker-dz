@@ -26,13 +26,13 @@ Your app configuration is correct, but the Node.js application itself won't star
 
 **Must have these exact settings:**
 
-| Setting | Value |
-|---------|-------|
-| **Node.js version** | 20.19.0 or 18.x (NOT 14.x or 16.x) |
-| **Application mode** | Production |
-| **Application root** | Full path to your app (e.g., `/home/qqbmuabu/maker-app-cpanel`) |
-| **Application URL** | maker-dz.net |
-| **Application startup file** | `server.js` |
+| Setting                      | Value                                                           |
+| ---------------------------- | --------------------------------------------------------------- |
+| **Node.js version**          | 20.19.0 or 18.x (NOT 14.x or 16.x)                              |
+| **Application mode**         | Production                                                      |
+| **Application root**         | Full path to your app (e.g., `/home/qqbmuabu/maker-app-cpanel`) |
+| **Application URL**          | maker-dz.net                                                    |
+| **Application startup file** | `server.js`                                                     |
 
 ### Step 3: Install Dependencies & Restart
 
@@ -52,11 +52,13 @@ Your app configuration is correct, but the Node.js application itself won't star
 **Your app requires Node.js 18+ or 20+**
 
 Why? These packages need modern Node:
+
 - `argon2`: requires Node 18+
 - `sharp`: requires Node 18+
 - `mysql2`: works best with Node 18+
 
 **How to change:**
+
 1. In Node.js App interface
 2. Find "Node.js version" dropdown
 3. Select **20.19.0 LTS** or **18.x**
@@ -69,12 +71,14 @@ Why? These packages need modern Node:
 To see the ACTUAL error:
 
 **Option A: In cPanel**
+
 1. Setup Node.js App → Your app
 2. Scroll to "Actions" or "Logs" section
 3. Click "Open logs" or "Show log"
 4. Look for red error messages
 
 **Option B: Via SSH**
+
 ```bash
 cd ~/maker-app-cpanel
 tail -100 ~/logs/*.log  # or wherever logs are
@@ -82,19 +86,20 @@ tail -100 ~/logs/*.log  # or wherever logs are
 
 **Common errors and fixes:**
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| `Cannot find module 'argon2'` | Dependencies not installed | Click "Run NPM Install" |
-| `Error: Cannot find module` | node_modules missing | Click "Run NPM Install" |
-| `node: /lib64/libstdc++.so.6: version GLIBCXX not found` | Node version too old | Change to Node 20.x |
-| `SyntaxError: Unexpected token 'import'` | ES modules issue | Check "type": "module" in package.json |
-| `Error: listen EADDRINUSE` | Port already used | Restart app in cPanel |
+| Error                                                    | Cause                      | Fix                                    |
+| -------------------------------------------------------- | -------------------------- | -------------------------------------- |
+| `Cannot find module 'argon2'`                            | Dependencies not installed | Click "Run NPM Install"                |
+| `Error: Cannot find module`                              | node_modules missing       | Click "Run NPM Install"                |
+| `node: /lib64/libstdc++.so.6: version GLIBCXX not found` | Node version too old       | Change to Node 20.x                    |
+| `SyntaxError: Unexpected token 'import'`                 | ES modules issue           | Check "type": "module" in package.json |
+| `Error: listen EADDRINUSE`                               | Port already used          | Restart app in cPanel                  |
 
 ### Check 3: Application Root Path
 
 The "Application root" must be the FULL path to where your files are.
 
 **Find your full path:**
+
 ```bash
 # SSH into cPanel
 cd ~
@@ -102,9 +107,11 @@ find . -name "server.js" -type f 2>/dev/null
 ```
 
 This will show paths like:
+
 - `/home/qqbmuabu/maker-app-cpanel/server.js`
 
 Your **Application root** should be:
+
 - `/home/qqbmuabu/maker-app-cpanel`
 
 ### Check 4: Files Exist
@@ -116,6 +123,7 @@ ls -la ~/maker-app-cpanel/
 ```
 
 Must have:
+
 - ✓ `server.js` (startup file)
 - ✓ `index.js` (main app)
 - ✓ `package.json` (dependencies)
@@ -126,11 +134,13 @@ Must have:
 Sometimes node_modules get corrupted.
 
 **Via cPanel:**
+
 1. Click "Stop App"
-2. Click "Run NPM Install" 
+2. Click "Run NPM Install"
 3. Click "Restart"
 
 **Via SSH:**
+
 ```bash
 cd ~/maker-app-cpanel
 rm -rf node_modules package-lock.json
@@ -144,11 +154,13 @@ Then restart in cPanel.
 ## Testing
 
 ### Test 1: Health Check
+
 ```bash
 curl https://maker-dz.net/api/health
 ```
 
 **If working, returns:**
+
 ```json
 {
   "status": "OK",
@@ -158,17 +170,22 @@ curl https://maker-dz.net/api/health
 ```
 
 **If not working, returns:**
+
 ```html
 <!doctype html>
-<html>...Web application could not be started...
+<html>
+  ...Web application could not be started...
+</html>
 ```
 
 ### Test 2: Products Endpoint
+
 ```bash
 curl https://maker-dz.net/api/products
 ```
 
 **Should return:**
+
 ```json
 {
   "products": [],
@@ -179,6 +196,7 @@ curl https://maker-dz.net/api/products
 ### Test 3: Manual Start (SSH)
 
 To see the exact error:
+
 ```bash
 cd ~/maker-app-cpanel
 
@@ -203,10 +221,12 @@ This will show you the exact error!
 
 **Cause:** Dependencies not installed  
 **Fix:**
+
 ```bash
 cd ~/maker-app-cpanel
 npm install
 ```
+
 Then restart in cPanel.
 
 ### Scenario 2: App starts but immediately crashes
@@ -214,6 +234,7 @@ Then restart in cPanel.
 **Cause:** Database connection issue  
 **Check:** Environment variables are set in cPanel Node.js App (you already did this ✓)  
 **Test:** SSH and run:
+
 ```bash
 mysql -h localhost -u qqbmuabu_admin -p qqbmuabu_maker_dz
 # Enter password: )]*I2*aHSCIKBbwG
@@ -255,6 +276,7 @@ cPanel automatically assigns the port.
 ## Expected Success Messages
 
 **In cPanel logs after restart:**
+
 ```
 🚀 Server running on port 3001
 📍 Environment: production
@@ -270,6 +292,7 @@ Testing database connection...
 ```
 
 **In browser when visiting /api/health:**
+
 ```json
 {
   "status": "OK",
@@ -290,12 +313,14 @@ Share these details:
 1. **Node.js version** from cPanel Node.js App interface
 2. **Error log** from cPanel (click "Open logs")
 3. **Result of manual start:**
+
 ```bash
 cd ~/maker-app-cpanel
 node server.js 2>&1 | head -50
 ```
 
 4. **Check node_modules:**
+
 ```bash
 ls ~/maker-app-cpanel/node_modules | wc -l
 # Should be > 100
