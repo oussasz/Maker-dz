@@ -17,7 +17,7 @@ import orderRoute from "./Routes/mysql/orderRoute.js";
 import categoryRoute from "./Routes/mysql/categoryRoute.js";
 import cartRoute from "./Routes/mysql/cartRoute.js";
 import wishlistRoute from "./Routes/mysql/wishlistRoute.js";
-import citiesRoute from "./Routes/citiesRoute.js";
+import citiesRoute from "./Routes/mysql/citiesRoute.js";
 
 // Get __dirname equivalent in ES modules
 const __filename = fileURLToPath(import.meta.url);
