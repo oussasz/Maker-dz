@@ -1,11 +1,39 @@
 // app.js - Entry point for cPanel Passenger
-import "dotenv/config";
+// Load environment variables manually for cPanel compatibility
+import { readFileSync, existsSync } from "fs";
+import { fileURLToPath } from "url";
+import path from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Try to load .env file manually (fallback if dotenv fails)
+const envPath = path.join(__dirname, ".env");
+if (existsSync(envPath)) {
+  try {
+    const envContent = readFileSync(envPath, "utf8");
+    envContent.split("\n").forEach((line) => {
+      const trimmed = line.trim();
+      if (trimmed && !trimmed.startsWith("#")) {
+        const [key, ...valueParts] = trimmed.split("=");
+        if (key && valueParts.length > 0) {
+          const value = valueParts.join("=").replace(/^["']|["']$/g, "");
+          if (!process.env[key]) {
+            process.env[key] = value;
+          }
+        }
+      }
+    });
+    console.log("✅ Environment variables loaded from .env");
+  } catch (e) {
+    console.log("⚠️ Could not load .env file:", e.message);
+  }
+}
+
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import session from "express-session";
-import path from "path";
-import { fileURLToPath } from "url";
 import mysql from "mysql2/promise";
 import passport from "passport";
 
@@ -18,10 +46,6 @@ import categoryRoute from "./Routes/mysql/categoryRoute.js";
 import cartRoute from "./Routes/mysql/cartRoute.js";
 import wishlistRoute from "./Routes/mysql/wishlistRoute.js";
 import citiesRoute from "./Routes/mysql/citiesRoute.js";
-
-// Get __dirname equivalent in ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
 
