@@ -68,11 +68,6 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Health check endpoint
-app.get("/", (req, res) => {
-  res.json({ status: "API is running" });
-});
-
 // Debug endpoint to check MySQL connection
 app.get("/api/health", async (req, res) => {
   try {
