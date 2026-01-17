@@ -47,20 +47,31 @@ export const login = async (req, res) => {
 export const register = async (req, res) => {
   try {
     const { username, email, role, password } = req.body;
-    console.log("Registering user with data:", req.body);
+    console.log("Registering user with data:", { username, email, role });
+
+    // Validate required fields
+    if (!username || !email || !password) {
+      console.error("Missing required fields:", { username: !!username, email: !!email, password: !!password });
+      return res.status(400).json({ error: "Missing required fields" });
+    }
 
     // Check if email already exists
+    console.log("Checking if email exists...");
     const existingEmail = await User.findByEmail(email);
     if (existingEmail) {
+      console.log("Email already exists:", email);
       return res.status(400).json({ error: "Email already taken" });
     }
 
     // Check if username already exists
+    console.log("Checking if username exists...");
     const existingUsername = await User.findByUsername(username);
     if (existingUsername) {
+      console.log("Username already exists:", username);
       return res.status(400).json({ error: "Username already taken" });
     }
 
+    console.log("Creating user...");
     const user = await User.create({
       username,
       email,
@@ -68,10 +79,21 @@ export const register = async (req, res) => {
       password,
     });
 
+    console.log("User registered successfully:", user.id);
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
     console.error("Error registering user:", error);
-    res.status(500).json({ error: "Error registering user" });
+    console.error("Error stack:", error.stack);
+    console.error("Error details:", {
+      message: error.message,
+      code: error.code,
+      sqlMessage: error.sqlMessage,
+      sql: error.sql
+    });
+    res.status(500).json({ 
+      error: "Error registering user",
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 };
 
