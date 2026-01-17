@@ -4,13 +4,20 @@ import User from "../models/SimpleUser.js";
 import jwt from "jsonwebtoken";
 
 // Configure Google OAuth Strategy
+const getCallbackUrl = () => {
+  let url = process.env.GOOGLE_CALLBACK_URL || "/api/auth/google/callback";
+  if (!url.endsWith("/callback")) {
+    url += "/callback";
+  }
+  return url;
+};
+
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL:
-        process.env.GOOGLE_CALLBACK_URL || "/api/auth/google/callback",
+      callbackURL: getCallbackUrl(),
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -45,8 +52,8 @@ passport.use(
       } catch (error) {
         return done(error, null);
       }
-    }
-  )
+    },
+  ),
 );
 
 // Serialize user for the session

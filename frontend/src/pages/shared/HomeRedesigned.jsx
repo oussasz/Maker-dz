@@ -706,9 +706,15 @@ const JoinAsSellerSection = () => {
             >
               {[
                 { number: "0%", label: t("trust_no_fees") || "Platform Fees" },
-                { number: "24h", label: t("trust_quick_setup") || "Quick Setup" },
+                {
+                  number: "24h",
+                  label: t("trust_quick_setup") || "Quick Setup",
+                },
                 { number: "3", label: t("trust_languages") || "Languages" },
-                { number: "∞", label: t("trust_products") || "Product Listings" },
+                {
+                  number: "∞",
+                  label: t("trust_products") || "Product Listings",
+                },
               ].map((stat, index) => (
                 <div
                   key={index}
