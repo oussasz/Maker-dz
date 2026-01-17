@@ -3,16 +3,20 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import session from "express-session";
-import passport from "./middleware/passport.js";
+import passport from "./middleware/mysql/passport.js";
 import { connectDB } from "./config/database.js";
-import authRoute from "./Routes/authRoute.js";
-import productRoute from "./Routes/productRoute.js";
-import userRoute from "./Routes/userRoute.js";
-import orderRoute from "./Routes/orderRoute.js";
-import categoryRoute from "./Routes/categoryRoute.js";
-import cartRoute from "./Routes/cartRoute.js";
+
+// MySQL Routes
+import authRoute from "./Routes/mysql/authRoute.js";
+import productRoute from "./Routes/mysql/productRoute.js";
+import userRoute from "./Routes/mysql/userRoute.js";
+import orderRoute from "./Routes/mysql/orderRoute.js";
+import categoryRoute from "./Routes/mysql/categoryRoute.js";
+import cartRoute from "./Routes/mysql/cartRoute.js";
+import wishlistRoute from "./Routes/mysql/wishlistRoute.js";
+
+// Keep original routes that don't need MySQL
 import indexRoute from "./Routes/indexRoute.js";
-import wishlistRoute from "./Routes/wishlistRoute.js";
 import citiesRoute from "./Routes/citiesRoute.js";
 
 const app = express();
@@ -34,7 +38,7 @@ app.use(
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-  })
+  }),
 );
 
 app.use(express.json());
@@ -51,7 +55,7 @@ app.use(
       secure: process.env.NODE_ENV === "production",
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     },
-  })
+  }),
 );
 
 // Initialize Passport
@@ -67,8 +71,10 @@ app.get("/", (req, res) => {
 app.get("/api/health", async (req, res) => {
   try {
     const pool = await connectDB();
-    const [rows] = await pool.query('SELECT DATABASE() as db, VERSION() as version');
-    
+    const [rows] = await pool.query(
+      "SELECT DATABASE() as db, VERSION() as version",
+    );
+
     res.json({
       status: "OK",
       database: rows[0].db || "not selected",
@@ -77,16 +83,16 @@ app.get("/api/health", async (req, res) => {
       port: process.env.DB_PORT,
     });
   } catch (error) {
-    res.status(500).json({ 
+    res.status(500).json({
       status: "ERROR",
-      error: error.message 
+      error: error.message,
     });
   }
 });
 
 // Initialize MySQL connection on startup
-connectDB().catch(err => {
-  console.error('Failed to connect to MySQL:', err);
+connectDB().catch((err) => {
+  console.error("Failed to connect to MySQL:", err);
 });
 
 // Routes
@@ -107,7 +113,7 @@ const PORT = process.env.PORT || 3001;
 if (import.meta.url === `file://${process.argv[1]}`) {
   app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`📍 Environment: ${process.env.NODE_ENV || "development"}`);
     console.log(`📍 Google OAuth: http://localhost:${PORT}/api/auth/google`);
   });
 }
