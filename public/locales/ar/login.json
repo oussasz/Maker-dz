@@ -1,9 +1,0 @@
-{
-  "login_to_your_account": "تسجيل الدخول إلى حسابك",
-  "email": "البريد الإلكتروني",
-  "password": "كلمة المرور",
-  "invalid_credentials_error": "بريد إلكتروني أو كلمة مرور غير صالحة. الرجاء المحاولة مرة أخرى.",
-  "login_button": "تسجيل الدخول",
-  "dont_have_account": "ليس لديك حساب؟",
-  "signup_link": "إنشاء حساب"
-}

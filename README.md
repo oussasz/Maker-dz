@@ -1,40 +1,76 @@
-# Maker DZ - Full Stack E-Commerce Platform
+# Maker DZ - cPanel Deployment
 
-Complete e-commerce platform for handmade Algerian products, deployed on cPanel with MySQL database.
+Algerian handcraft marketplace - Node.js backend + React frontend for cPanel hosting.
 
-## 🏗️ Architecture
+## Project Structure
 
-- **Backend**: Node.js + Express + MySQL
-- **Frontend**: React + Vite
-- **Database**: MySQL (cPanel)
-- **Deployment**: cPanel with Node.js support
-- **Domain**: https://maker-dz.net
-
-## 🚀 Quick Deployment on cPanel
-
-### One-Command Deployment
-```bash
-./deploy-cpanel.sh
+```
+maker-app-cpanel/
+├── app.js                    # Main entry point (Passenger compatible)
+├── .htaccess                 # Passenger configuration
+├── package.json              # Backend dependencies
+│
+├── config/
+│   ├── database.js           # MySQL connection
+│   └── schema.sql            # Database tables
+│
+├── controllers/mysql/        # Route handlers (MySQL)
+├── Routes/mysql/             # API routes (MySQL)
+├── models/mysql/             # Database models (MySQL)
+├── middleware/mysql/         # Auth middleware (MySQL)
+│
+├── utils/
+│   ├── algeria_cities.json   # City data
+│   └── dataloader.js         # Helper utilities
+│
+└── frontend/                 # React frontend (Vite)
+    ├── src/                  # Source code
+    ├── public/               # Static assets (images, locales)
+    └── dist/                 # BUILD OUTPUT → Deploy to public_html
 ```
 
-Then restart the app in cPanel → Setup Node.js App.
+## Deployment to cPanel
 
-## 📊 Complete Setup Guide
+### Backend (Node.js App)
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed setup instructions.
+Upload these to your cPanel Node.js app folder (e.g., `/home/username/Maker-dz/`):
 
-## 🔑 Key Features
+- `app.js`
+- `.htaccess`
+- `package.json`
+- `config/`
+- `controllers/`
+- `Routes/`
+- `models/`
+- `middleware/`
+- `utils/`
 
-- User authentication (Local + Google OAuth)
-- Product management with variants
-- Shopping cart and wishlist
-- Order management
-- Seller dashboard
-- Product reviews and ratings
-- Image uploads via Cloudinary
-- Multi-language support (English, French, Arabic)
-- Algeria-specific address system (Wilaya/Commune)
+### Frontend (Static Files)
 
-## 📄 License
+1. Build: `cd frontend && npm run build`
+2. Upload `frontend/dist/*` contents to `public_html/`
 
-Private - All rights reserved
+### Environment Variables (Set in cPanel)
+
+```
+DB_HOST=localhost
+DB_NAME=your_database
+DB_USER=your_user
+DB_PASSWORD=your_password
+JWT_SECRET=your_secret
+GOOGLE_CLIENT_ID=your_google_id
+GOOGLE_CLIENT_SECRET=your_google_secret
+CLOUDINARY_CLOUD_NAME=your_cloud
+CLOUDINARY_API_KEY=your_key
+CLOUDINARY_API_SECRET=your_secret
+```
+
+## API Endpoints
+
+- `GET /api/health` - Health check
+- `GET /api/products` - List products
+- `POST /api/register` - User registration
+- `POST /api/login` - User login
+- `GET /api/categories` - List categories
+- `GET /api/cart` - Get cart
+- `GET /api/wishlist` - Get wishlist
