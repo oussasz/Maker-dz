@@ -1,15 +1,18 @@
 # cPanel Debug Checklist - 500 Errors Fix
 
 ## Current Issues
+
 - `/api/products` returning 500 error
 - `/api/register` returning 500 error
 
 ## Most Likely Causes & Solutions
 
 ### 1. **Missing or Incorrect .env File** (MOST LIKELY)
+
 Your cPanel deployment likely doesn't have a `.env` file or has incorrect database credentials.
 
 **How to check on cPanel:**
+
 ```bash
 # SSH into your cPanel
 cd ~/your-app-folder
@@ -17,6 +20,7 @@ cat .env
 ```
 
 **Required environment variables:**
+
 ```env
 # Database Configuration
 DB_HOST=localhost
@@ -44,9 +48,11 @@ NODE_ENV=production
 ```
 
 ### 2. **Database Not Created or Tables Missing**
+
 Check if your MySQL database and tables exist.
 
 **How to check:**
+
 1. Log into cPanel → phpMyAdmin
 2. Select your database
 3. Check if these tables exist:
@@ -63,6 +69,7 @@ Check if your MySQL database and tables exist.
    - `seller_profiles`
 
 **If tables don't exist, run:**
+
 ```bash
 # SSH into cPanel
 cd ~/your-app-folder
@@ -70,38 +77,47 @@ mysql -u your_db_user -p your_db_name < config/schema.sql
 ```
 
 ### 3. **Check Server Logs**
+
 With the updated error logging, check your server logs:
 
 **Using PM2:**
+
 ```bash
 pm2 logs maker-app --lines 100
 ```
 
 **Or check Node.js logs in cPanel:**
+
 - Go to cPanel → Setup Node.js App
 - Click on your application
 - View logs section
 
 ### 4. **Database Connection Issues**
+
 Common database connection problems:
 
 **Error: "ER_ACCESS_DENIED_ERROR"**
+
 - Wrong username or password in `.env`
 - Fix: Update DB_USER and DB_PASSWORD
 
 **Error: "ER_BAD_DB_ERROR"**
+
 - Database doesn't exist
 - Fix: Create database in cPanel → MySQL Databases
 
 **Error: "ER_NOT_SUPPORTED_AUTH_MODE"**
+
 - MySQL 8+ using caching_sha2_password
 - Fix: Change user password type to mysql_native_password:
+
 ```sql
 ALTER USER 'your_user'@'localhost' IDENTIFIED WITH mysql_native_password BY 'your_password';
 FLUSH PRIVILEGES;
 ```
 
 ### 5. **Test Database Connection**
+
 Create a test script to verify database connection:
 
 ```bash
@@ -127,6 +143,7 @@ import('dotenv/config').then(() => {
 Or visit: `https://your-domain.com/api/health`
 
 ### 6. **Restart Your Application**
+
 After making changes:
 
 ```bash
@@ -138,6 +155,7 @@ pm2 restart maker-app
 ```
 
 ### 7. **Check File Permissions**
+
 Ensure your application files have correct permissions:
 
 ```bash
@@ -150,12 +168,15 @@ chmod 644 .env
 ## Step-by-Step Debug Process
 
 ### Step 1: Check if .env file exists
+
 ```bash
 ls -la .env
 ```
+
 If it doesn't exist, create it using the template above.
 
 ### Step 2: Verify database credentials
+
 ```bash
 # Try connecting manually
 mysql -h localhost -u your_db_user -p your_db_name
@@ -163,6 +184,7 @@ mysql -h localhost -u your_db_user -p your_db_name
 ```
 
 ### Step 3: Check application logs
+
 ```bash
 # Check PM2 logs
 pm2 logs --lines 50
@@ -172,12 +194,15 @@ tail -100 logs/error.log
 ```
 
 ### Step 4: Test the health endpoint
+
 ```bash
 curl https://your-domain.com/api/health
 ```
+
 This should return database connection status.
 
 ### Step 5: Test register endpoint manually
+
 ```bash
 curl -X POST https://your-domain.com/api/register \
   -H "Content-Type: application/json" \
@@ -185,6 +210,7 @@ curl -X POST https://your-domain.com/api/register \
 ```
 
 ### Step 6: Test products endpoint
+
 ```bash
 curl https://your-domain.com/api/products
 ```
@@ -192,15 +218,19 @@ curl https://your-domain.com/api/products
 ## Common cPanel Deployment Issues
 
 ### Issue: Environment variables not loading
+
 **Solution:** Ensure `.env` file is in the root of your application directory (same level as `server.js` or `index.js`)
 
 ### Issue: MySQL connection refused
+
 **Solution:** Use `localhost` not `127.0.0.1` for DB_HOST on cPanel
 
 ### Issue: Port already in use
+
 **Solution:** Change PORT in `.env` or let cPanel assign it automatically
 
 ### Issue: Module not found errors
+
 **Solution:** Run `npm install` in your application directory
 
 ## Quick Fix Commands
@@ -230,6 +260,7 @@ pm2 logs --lines 100
 ## Need More Help?
 
 After following these steps:
+
 1. Check the logs for specific error messages
 2. The updated code now logs detailed error information
 3. Share the error messages from the logs for more specific help

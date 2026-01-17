@@ -51,7 +51,11 @@ export const register = async (req, res) => {
 
     // Validate required fields
     if (!username || !email || !password) {
-      console.error("Missing required fields:", { username: !!username, email: !!email, password: !!password });
+      console.error("Missing required fields:", {
+        username: !!username,
+        email: !!email,
+        password: !!password,
+      });
       return res.status(400).json({ error: "Missing required fields" });
     }
 
@@ -88,11 +92,12 @@ export const register = async (req, res) => {
       message: error.message,
       code: error.code,
       sqlMessage: error.sqlMessage,
-      sql: error.sql
+      sql: error.sql,
     });
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Error registering user",
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 };

@@ -11,11 +11,17 @@ export const connectDB = async () => {
         port: process.env.DB_PORT || 3306,
         user: process.env.DB_USER || "not set",
         database: process.env.DB_NAME || "not set",
-        password: process.env.DB_PASSWORD ? "***set***" : "not set"
+        password: process.env.DB_PASSWORD ? "***set***" : "not set",
       });
 
-      if (!process.env.DB_USER || !process.env.DB_PASSWORD || !process.env.DB_NAME) {
-        throw new Error("Database credentials not configured. Please check .env file.");
+      if (
+        !process.env.DB_USER ||
+        !process.env.DB_PASSWORD ||
+        !process.env.DB_NAME
+      ) {
+        throw new Error(
+          "Database credentials not configured. Please check .env file.",
+        );
       }
 
       pool = mysql.createPool({

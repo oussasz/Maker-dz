@@ -7,15 +7,17 @@ Your app is returning 500 errors because the **`.env` file is missing or has wro
 ### Fix it in 3 steps:
 
 1. **SSH into cPanel and navigate to your app:**
+
    ```bash
    cd ~/maker-app-cpanel
    ```
 
 2. **Run the setup script:**
+
    ```bash
    ./setup-cpanel.sh
    ```
-   
+
    This will guide you through configuration.
 
 3. **Check if it's working:**
@@ -54,15 +56,19 @@ pm2 logs
 ## Diagnostic Tools
 
 ### Run Full Diagnostics
+
 ```bash
 ./diagnose.sh
 ```
+
 This checks everything and tells you exactly what's wrong.
 
 ### View Detailed Logs
+
 ```bash
 pm2 logs --lines 100
 ```
+
 With my updates, you'll see detailed error messages showing the exact problem.
 
 ## Documentation
@@ -80,6 +86,7 @@ I enhanced your code to show detailed error logging:
 3. **Product fetch errors** - Shows SQL errors and query details
 
 Now instead of generic "500 error", you'll see messages like:
+
 - ❌ "Database credentials not configured. Please check .env file."
 - ❌ "ER_ACCESS_DENIED_ERROR: Access denied for user..."
 - ❌ "Missing required fields: password"

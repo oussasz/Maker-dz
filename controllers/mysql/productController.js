@@ -214,11 +214,12 @@ export const getProducts = async (req, res) => {
       message: error.message,
       code: error.code,
       sqlMessage: error.sqlMessage,
-      sql: error.sql
+      sql: error.sql,
     });
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Error fetching products",
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 };

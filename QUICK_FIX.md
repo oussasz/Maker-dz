@@ -6,21 +6,25 @@
 
 1. **SSH into your cPanel server**
 2. **Navigate to your app directory:**
+
    ```bash
    cd ~/maker-app-cpanel  # or your app folder name
    ```
 
 3. **Check if .env exists:**
+
    ```bash
    ls -la .env
    ```
 
 4. **If .env doesn't exist, create it:**
+
    ```bash
    nano .env
    ```
-   
+
    Paste this (replace with YOUR actual values):
+
    ```env
    # Database
    DB_HOST=localhost
@@ -45,10 +49,11 @@
    NODE_ENV=production
    PORT=3001
    ```
-   
+
    Save with: `Ctrl+X`, then `Y`, then `Enter`
 
 5. **Restart your app:**
+
    ```bash
    pm2 restart all
    ```
@@ -76,6 +81,7 @@ This will tell you exactly what's wrong!
 ## 🗄️ Database Issues
 
 ### If database doesn't exist:
+
 1. Go to cPanel → MySQL® Databases
 2. Create a new database
 3. Create a database user
@@ -83,6 +89,7 @@ This will tell you exactly what's wrong!
 5. Update .env file with these credentials
 
 ### If tables don't exist:
+
 ```bash
 cd ~/maker-app-cpanel
 mysql -u your_db_user -p your_db_name < config/schema.sql
@@ -93,21 +100,25 @@ mysql -u your_db_user -p your_db_name < config/schema.sql
 ## 📊 Check Logs (Where the Real Error Is)
 
 ### View PM2 logs:
+
 ```bash
 pm2 logs --lines 100
 ```
 
 ### View specific app logs:
+
 ```bash
 pm2 logs maker-app --lines 50
 ```
 
 ### View errors only:
+
 ```bash
 pm2 logs --err --lines 50
 ```
 
 With my code updates, you'll now see detailed error messages like:
+
 - `Database credentials not configured`
 - `ER_ACCESS_DENIED_ERROR` (wrong password)
 - `ER_BAD_DB_ERROR` (database doesn't exist)
@@ -118,6 +129,7 @@ With my code updates, you'll now see detailed error messages like:
 ## 🔄 After Making Changes
 
 **Always restart after changes:**
+
 ```bash
 pm2 restart all
 pm2 logs  # Watch the logs
@@ -128,11 +140,13 @@ pm2 logs  # Watch the logs
 ## 🧪 Test Endpoints Manually
 
 ### Test database connection:
+
 ```bash
 curl http://localhost:3001/api/health
 ```
 
 ### Test register endpoint:
+
 ```bash
 curl -X POST http://localhost:3001/api/register \
   -H "Content-Type: application/json" \
@@ -145,6 +159,7 @@ curl -X POST http://localhost:3001/api/register \
 ```
 
 ### Test products endpoint:
+
 ```bash
 curl http://localhost:3001/api/products
 ```
@@ -166,12 +181,14 @@ curl http://localhost:3001/api/products
 ## 🆘 Still Not Working?
 
 Run the diagnostic script and share the output:
+
 ```bash
 ./diagnose.sh > diagnostic-output.txt
 cat diagnostic-output.txt
 ```
 
 Also check the detailed logs:
+
 ```bash
 pm2 logs --lines 200 > app-logs.txt
 cat app-logs.txt
