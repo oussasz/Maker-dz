@@ -126,14 +126,3 @@ app.get("*", (req, res) => {
 
 // Export app for server.js or direct use
 export default app;
-
-// Start server only if this file is run directly (not imported by server.js)
-const PORT = process.env.PORT || 3001;
-
-// Check if running directly or being imported
-if (process.argv[1] && process.argv[1].includes("index.js")) {
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`📍 Environment: ${process.env.NODE_ENV || "production"}`);
-  });
-}
