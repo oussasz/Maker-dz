@@ -1,0 +1,16 @@
+{
+  "title": "Votre Liste de Souhaits",
+  "items_saved": "{{count}} article sauvegardé pour plus tard",
+  "items_saved_plural": "{{count}} articles sauvegardés pour plus tard",
+  "empty_title": "Votre Liste de Souhaits est Vide",
+  "empty_message": "Commencez à explorer et ajoutez les produits que vous aimez. Ils apparaîtront ici!",
+  "browse_products": "Parcourir les Produits",
+  "loading": "Chargement de la liste de souhaits...",
+  "add_to_cart": "Ajouter au Panier",
+  "remove_from_wishlist": "Retirer de la Liste de Souhaits",
+  "move_all_to_cart": "Tout Déplacer vers le Panier",
+  "clear_wishlist": "Vider la Liste de Souhaits",
+  "product_unavailable": "Produit Non Disponible",
+  "added_to_cart": "Ajouté au panier",
+  "removed_from_wishlist": "Retiré de la liste de souhaits"
+}

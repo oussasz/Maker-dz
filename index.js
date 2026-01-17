@@ -3,8 +3,14 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import session from "express-session";
+import path from "path";
+import { fileURLToPath } from "url";
 import passport from "./middleware/mysql/passport.js";
 import { connectDB } from "./config/database.js";
+
+// Get __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // MySQL Routes
 import authRoute from "./Routes/mysql/authRoute.js";
@@ -100,8 +106,7 @@ connectDB().catch((err) => {
   console.error("Failed to connect to MySQL:", err);
 });
 
-// Routes
-app.use("/", indexRoute);
+// API Routes - these must come BEFORE the static files
 app.use("/api", authRoute);
 app.use("/api", productRoute);
 app.use("/api", userRoute);
@@ -110,6 +115,19 @@ app.use("/api", categoryRoute);
 app.use("/api", cartRoute);
 app.use("/api", wishlistRoute);
 app.use("/api", citiesRoute);
+
+// Serve static files from the public folder (frontend build)
+app.use(express.static(path.join(__dirname, "public")));
+
+// For any route that's not an API route, serve the frontend
+// This enables React Router to work properly
+app.get("*", (req, res) => {
+  // Don't serve index.html for API routes
+  if (req.path.startsWith("/api")) {
+    return res.status(404).json({ error: "API endpoint not found" });
+  }
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 // Start server (cPanel will run this in production)
 const PORT = process.env.PORT || 3001;
