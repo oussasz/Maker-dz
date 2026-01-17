@@ -159,7 +159,8 @@ const SellerProductCard = ({ product, index }) => {
 
 const ProductsEnhanced = () => {
   const { user } = useAuth();
-  const { t } = useTranslation("seller_products");
+  const { t, i18n } = useTranslation("seller_products");
+  const isRTL = i18n.language === "ar";
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -185,7 +186,7 @@ const ProductsEnhanced = () => {
 
   const filteredAndSortedProducts = useMemo(() => {
     let filtered = products.filter((product) =>
-      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()),
     );
 
     const [key, direction] = sortBy.split("-");
@@ -215,7 +216,7 @@ const ProductsEnhanced = () => {
   // Stats
   const totalValue = products.reduce((sum, p) => sum + (p.basePrice || 0), 0);
   const activeProducts = products.filter(
-    (p) => p.status === "active" || !p.status
+    (p) => p.status === "active" || !p.status,
   ).length;
 
   if (loading) {
@@ -227,15 +228,17 @@ const ProductsEnhanced = () => {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" dir={isRTL ? "rtl" : "ltr"}>
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
+        className={`flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 ${isRTL ? "lg:flex-row-reverse" : ""}`}
       >
-        <div>
-          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 flex items-center gap-3">
+        <div className={isRTL ? "text-right" : "text-left"}>
+          <h1
+            className={`text-3xl lg:text-4xl font-bold text-gray-900 flex items-center gap-3 ${isRTL ? "flex-row-reverse justify-end" : ""}`}
+          >
             {t("product_management")}
             <Sparkles className="w-8 h-8 text-primary" />
           </h1>
@@ -245,7 +248,9 @@ const ProductsEnhanced = () => {
         </div>
 
         <Link to="/dashboard/products/add">
-          <Button className="gap-2 shadow-lg shadow-primary/25">
+          <Button
+            className={`gap-2 shadow-lg shadow-primary/25 ${isRTL ? "flex-row-reverse" : ""}`}
+          >
             <PlusCircle size={18} />
             Add New Product
           </Button>
@@ -260,11 +265,13 @@ const ProductsEnhanced = () => {
         className="grid grid-cols-2 lg:grid-cols-4 gap-4"
       >
         <Card className="border-0 shadow-md bg-gradient-to-br from-blue-50 to-white">
-          <CardContent className="p-4 flex items-center gap-4">
+          <CardContent
+            className={`p-4 flex items-center gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
+          >
             <div className="p-3 rounded-xl bg-blue-100">
               <Package size={20} className="text-blue-600" />
             </div>
-            <div>
+            <div className={isRTL ? "text-right" : "text-left"}>
               <p className="text-sm text-gray-500">Total Products</p>
               <p className="text-2xl font-bold text-gray-900">
                 {products.length}
@@ -274,11 +281,13 @@ const ProductsEnhanced = () => {
         </Card>
 
         <Card className="border-0 shadow-md bg-gradient-to-br from-green-50 to-white">
-          <CardContent className="p-4 flex items-center gap-4">
+          <CardContent
+            className={`p-4 flex items-center gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
+          >
             <div className="p-3 rounded-xl bg-green-100">
               <TrendingUp size={20} className="text-green-600" />
             </div>
-            <div>
+            <div className={isRTL ? "text-right" : "text-left"}>
               <p className="text-sm text-gray-500">Active</p>
               <p className="text-2xl font-bold text-gray-900">
                 {activeProducts}
@@ -288,11 +297,13 @@ const ProductsEnhanced = () => {
         </Card>
 
         <Card className="border-0 shadow-md bg-gradient-to-br from-purple-50 to-white">
-          <CardContent className="p-4 flex items-center gap-4">
+          <CardContent
+            className={`p-4 flex items-center gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
+          >
             <div className="p-3 rounded-xl bg-purple-100">
               <DollarSign size={20} className="text-purple-600" />
             </div>
-            <div>
+            <div className={isRTL ? "text-right" : "text-left"}>
               <p className="text-sm text-gray-500">Total Value</p>
               <p className="text-xl font-bold text-gray-900">
                 {totalValue.toLocaleString()} DZD
@@ -302,11 +313,13 @@ const ProductsEnhanced = () => {
         </Card>
 
         <Card className="border-0 shadow-md bg-gradient-to-br from-amber-50 to-white">
-          <CardContent className="p-4 flex items-center gap-4">
+          <CardContent
+            className={`p-4 flex items-center gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
+          >
             <div className="p-3 rounded-xl bg-amber-100">
               <Eye size={20} className="text-amber-600" />
             </div>
-            <div>
+            <div className={isRTL ? "text-right" : "text-left"}>
               <p className="text-sm text-gray-500">Total Views</p>
               <p className="text-2xl font-bold text-gray-900">
                 {products.reduce((sum, p) => sum + (p.views || 0), 0)}
@@ -321,19 +334,20 @@ const ProductsEnhanced = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="flex flex-col sm:flex-row gap-4"
+        className={`flex flex-col sm:flex-row gap-4 ${isRTL ? "sm:flex-row-reverse" : ""}`}
       >
         {/* Search */}
         <div className="relative flex-1 max-w-md">
           <Search
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            className={`absolute top-1/2 -translate-y-1/2 text-gray-400 ${isRTL ? "right-3" : "left-3"}`}
             size={18}
           />
           <Input
             placeholder={t("search_products_placeholder")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 h-11 border-gray-200 focus:border-primary focus:ring-primary/20"
+            className={`h-11 border-gray-200 focus:border-primary focus:ring-primary/20 ${isRTL ? "pr-10 text-right" : "pl-10"}`}
+            dir={isRTL ? "rtl" : "ltr"}
           />
         </div>
 

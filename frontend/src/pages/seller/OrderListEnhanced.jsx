@@ -210,7 +210,7 @@ function OrderListEnhanced() {
       completed: tableData.filter((o) => o.state === "completed").length,
       cancelled: tableData.filter((o) => o.state === "cancelled").length,
     }),
-    [tableData]
+    [tableData],
   );
 
   if (loading) {
@@ -222,15 +222,17 @@ function OrderListEnhanced() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" dir={isRTL ? "rtl" : "ltr"}>
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
+        className={`flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 ${isRTL ? "lg:flex-row-reverse" : ""}`}
       >
-        <div>
-          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 flex items-center gap-3">
+        <div className={isRTL ? "text-right" : "text-left"}>
+          <h1
+            className={`text-3xl lg:text-4xl font-bold text-gray-900 flex items-center gap-3 ${isRTL ? "flex-row-reverse justify-end" : ""}`}
+          >
             {t("your_orders")}
             <Sparkles className="w-8 h-8 text-primary" />
           </h1>
@@ -239,7 +241,9 @@ function OrderListEnhanced() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div
+          className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""}`}
+        >
           <Button variant="outline" size="sm" className="gap-2">
             <Download size={16} />
             Export
@@ -495,7 +499,7 @@ function OrderListEnhanced() {
                                           {config.label}
                                         </div>
                                       </SelectItem>
-                                    )
+                                    ),
                                   )}
                                 </SelectContent>
                               </Select>

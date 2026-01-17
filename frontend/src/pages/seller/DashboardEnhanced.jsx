@@ -155,7 +155,8 @@ const StatCard = ({ stat, index }) => {
 
 function DashboardEnhanced() {
   const { user } = useAuth();
-  const { t } = useTranslation("seller_dashboard");
+  const { t, i18n } = useTranslation("seller_dashboard");
+  const isRTL = i18n.language === "ar";
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [dashboardData, setDashboardData] = useState({
@@ -190,7 +191,7 @@ function DashboardEnhanced() {
         setRefreshing(false);
       }
     },
-    [user.id]
+    [user.id],
   );
 
   useEffect(() => {
@@ -284,13 +285,13 @@ function DashboardEnhanced() {
         </span>
       );
     },
-    [t]
+    [t],
   );
 
   const completionRate =
     dashboardData.totalOrders > 0
       ? Math.round(
-          (dashboardData.numCompleted / dashboardData.totalOrders) * 100
+          (dashboardData.numCompleted / dashboardData.totalOrders) * 100,
         )
       : 0;
 
@@ -346,15 +347,17 @@ function DashboardEnhanced() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" dir={isRTL ? "rtl" : "ltr"}>
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
+        className={`flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 ${isRTL ? "lg:flex-row-reverse" : ""}`}
       >
-        <div>
-          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 flex items-center gap-3">
+        <div className={isRTL ? "text-right" : "text-left"}>
+          <h1
+            className={`text-3xl lg:text-4xl font-bold text-gray-900 flex items-center gap-3 ${isRTL ? "flex-row-reverse justify-end" : ""}`}
+          >
             {t("dashboard_overview")}
             <Sparkles className="w-8 h-8 text-primary" />
           </h1>
@@ -363,7 +366,9 @@ function DashboardEnhanced() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div
+          className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""}`}
+        >
           <Button
             variant="outline"
             size="sm"

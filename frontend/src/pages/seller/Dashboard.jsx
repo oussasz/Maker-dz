@@ -30,7 +30,8 @@ import { useTranslation } from "react-i18next";
 
 function Dashboard() {
   const { user } = useAuth();
-  const { t } = useTranslation("seller_dashboard");
+  const { t, i18n } = useTranslation("seller_dashboard");
+  const isRTL = i18n.language === "ar";
   const [loading, setLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState({
     orders: [],
@@ -59,7 +60,6 @@ function Dashboard() {
         numPending: orderResponse.data.numPending || 0,
         totalIncome: orderResponse.data.totalIncome || 0,
       });
-
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
@@ -73,18 +73,20 @@ function Dashboard() {
 
   // Memoized table data transformation
   const tableData = useMemo(() => {
-    return dashboardData.orders.map((order) => {
-      return {
-        id: order.orderId,
-        orderDate: new Date(order.orderDate).toLocaleDateString(),
-        orderNumber: order.orderNumber,
-        customer: order.customerName || "Unknown Customer",
-        status: order.orderStatus || "pending",
-        quantity: order.quantity,
-        rawDate: new Date(order.createdAt).getTime(),
-        total: order.total || 0,
-      };
-    }).slice(0, 5); 
+    return dashboardData.orders
+      .map((order) => {
+        return {
+          id: order.orderId,
+          orderDate: new Date(order.orderDate).toLocaleDateString(),
+          orderNumber: order.orderNumber,
+          customer: order.customerName || "Unknown Customer",
+          status: order.orderStatus || "pending",
+          quantity: order.quantity,
+          rawDate: new Date(order.createdAt).getTime(),
+          total: order.total || 0,
+        };
+      })
+      .slice(0, 5);
   }, [dashboardData.orders]);
 
   // Optimized sorting with better performance
@@ -176,14 +178,23 @@ function Dashboard() {
   }
 
   return (
-    <div className="w-full bg-gradient-to-br from-gray-50 to-gray-100 p-2 lg:p-6">
+    <div
+      className="w-full bg-gradient-to-br from-gray-50 to-gray-100 p-2 lg:p-6"
+      dir={isRTL ? "rtl" : "ltr"}
+    >
       <div className="space-y-6">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-2">
+          <h1
+            className={`text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-2 ${isRTL ? "text-right" : "text-left"}`}
+          >
             {t("dashboard_overview")}
           </h1>
-          <p className="text-gray-600 hidden lg:block">{t("monitor_sales_performance")}</p>
+          <p
+            className={`text-gray-600 hidden lg:block ${isRTL ? "text-right" : "text-left"}`}
+          >
+            {t("monitor_sales_performance")}
+          </p>
         </div>
 
         {/* Stats Grid */}
@@ -191,10 +202,15 @@ function Dashboard() {
           {statCards.map((stat, index) => (
             <Card
               key={stat.title}
-              className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+              className="overflow-hidden hover:shadow-lg transition-shadow duration-300"
+            >
               <CardContent className="p-6">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-2">
+                <div
+                  className={`flex items-start justify-between ${isRTL ? "flex-row-reverse" : ""}`}
+                >
+                  <div
+                    className={`space-y-2 ${isRTL ? "text-right" : "text-left"}`}
+                  >
                     <p className="text-sm font-medium text-gray-600">
                       {stat.title}
                     </p>
@@ -232,7 +248,8 @@ function Dashboard() {
                     <TableRow className="bg-gray-50">
                       <TableHead
                         className="cursor-pointer hover:bg-gray-100 transition-colors font-semibold"
-                        onClick={() => handleSort("orderDate")}>
+                        onClick={() => handleSort("orderDate")}
+                      >
                         {t("order_date")}{" "}
                         {sortConfig.key === "orderDate" &&
                           (sortConfig.direction === "asc" ? "↑" : "↓")}
@@ -248,7 +265,8 @@ function Dashboard() {
                       </TableHead>
                       <TableHead
                         className="cursor-pointer hover:bg-gray-100 transition-colors font-semibold"
-                        onClick={() => handleSort("quantity")}>
+                        onClick={() => handleSort("quantity")}
+                      >
                         {t("quantity")}{" "}
                         {sortConfig.key === "quantity" &&
                           (sortConfig.direction === "asc" ? "↑" : "↓")}
@@ -260,7 +278,8 @@ function Dashboard() {
                       sortedData.map((row) => (
                         <TableRow
                           key={row.id}
-                          className="hover:bg-gray-50 transition-colors">
+                          className="hover:bg-gray-50 transition-colors"
+                        >
                           <TableCell className="font-medium">
                             {row.orderDate}
                           </TableCell>
@@ -280,7 +299,8 @@ function Dashboard() {
                       <TableRow>
                         <TableCell
                           colSpan={5}
-                          className="text-center py-8 text-gray-500">
+                          className="text-center py-8 text-gray-500"
+                        >
                           {t("no_orders_found")}
                         </TableCell>
                       </TableRow>

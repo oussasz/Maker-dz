@@ -167,26 +167,38 @@ body {
   text-align: right;
 }
 
-[dir="rtl"] .flex {
+/* RTL text alignment overrides - use Tailwind's rtl: prefix for specific cases */
+[dir="rtl"] .rtl-reverse {
   flex-direction: row-reverse;
 }
 
-[dir="rtl"] .text-left {
-  text-align: right;
+/* Logical margin/padding utilities for RTL */
+[dir="rtl"] .ms-auto {
+  margin-inline-start: auto;
 }
 
-[dir="rtl"] .text-right {
-  text-align: left;
+[dir="rtl"] .me-auto {
+  margin-inline-end: auto;
 }
 
-[dir="rtl"] .ml-auto {
-  margin-left: 0;
-  margin-right: auto;
+/* Fix sidebar layout for RTL - keep sidebar on right side */
+[dir="rtl"] .seller-dashboard-layout {
+  flex-direction: row-reverse;
 }
 
-[dir="rtl"] .mr-auto {
-  margin-right: 0;
-  margin-left: auto;
+/* Keep navigation items in correct order */
+[dir="rtl"] .nav-item {
+  flex-direction: row-reverse;
+}
+
+/* Fix icon positioning in RTL */
+[dir="rtl"] .icon-text-group {
+  flex-direction: row-reverse;
+}
+
+/* Preserve column layouts in RTL */
+[dir="rtl"] .flex-col {
+  flex-direction: column;
 }
 
 /* Arabic Font Support */
