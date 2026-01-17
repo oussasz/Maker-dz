@@ -3,6 +3,6 @@ PassengerAppRoot "/home/qqbmuabu/Maker-dz"
 PassengerBaseURI "/"
 PassengerNodejs "/home/qqbmuabu/nodevenv/Maker-dz/20/bin/node"
 PassengerAppType node
-PassengerStartupFile server.js
+PassengerStartupFile app.js
 PassengerAppLogFile "/home/qqbmuabu/logs/Maker-dz.log"
 # DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
