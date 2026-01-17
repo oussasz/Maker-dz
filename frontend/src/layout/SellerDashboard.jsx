@@ -13,8 +13,7 @@ import { useTranslation } from "react-i18next";
 const SellerDashboard = () => {
   const [activeTab, setActiveTab] = useState("");
   const location = useLocation().pathname;
-  const { t, i18n } = useTranslation("sidebar");
-  const isRTL = i18n.language === "ar";
+  const { t } = useTranslation("sidebar");
 
   console.log(location);
 
@@ -48,9 +47,7 @@ const SellerDashboard = () => {
   }, [location]);
 
   return (
-    <div
-      className={`flex flex-col lg:flex-row max-h-screen bg-gray-50 w-full ${isRTL ? "lg:flex-row-reverse" : ""}`}
-    >
+    <div className="flex flex-col lg:flex-row max-h-screen bg-gray-50 w-full">
       <Sidebar activeTab={activeTab} navItems={navItems} />
       <main className="flex-grow overflow-y-auto h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-2 lg:p-6">
         <Outlet />

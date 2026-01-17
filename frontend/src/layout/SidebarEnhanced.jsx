@@ -5,10 +5,6 @@ import {
   Star,
   Menu,
   ChevronRight,
-  Settings,
-  HelpCircle,
-  Bell,
-  User,
   Sparkles,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +12,7 @@ import useAuth from "../store/authStore";
 import { useTranslation } from "react-i18next";
 import logo from "../assets/Logo.png";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 const SidebarEnhanced = ({ activeTab, navItems }) => {
   const { logout, user } = useAuth();
@@ -24,7 +20,6 @@ const SidebarEnhanced = ({ activeTab, navItems }) => {
   const { t, i18n } = useTranslation("sidebar");
   const [isOpen, setIsOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const isRTL = i18n.language === "ar";
 
   const importantNavItems = [
     {
@@ -44,7 +39,6 @@ const SidebarEnhanced = ({ activeTab, navItems }) => {
     setIsOpen(false);
   };
 
-  // Get user initials for avatar
   const getInitials = (name) => {
     if (!name) return "U";
     return name
@@ -55,16 +49,11 @@ const SidebarEnhanced = ({ activeTab, navItems }) => {
       .slice(0, 2);
   };
 
-  // Sidebar content component
   const SidebarContent = ({ isMobile = false }) => (
     <div className="flex flex-col h-full bg-white">
       {/* Logo Section */}
       <div className="p-4 lg:p-6 border-b border-gray-100">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="flex items-center gap-3"
-        >
+        <div className="flex items-center gap-3">
           <img src={logo} alt="Maker DZ" className="h-10 w-auto" />
           {!isCollapsed && (
             <div className="hidden lg:block">
@@ -73,66 +62,45 @@ const SidebarEnhanced = ({ activeTab, navItems }) => {
               </span>
             </div>
           )}
-        </motion.div>
+        </div>
       </div>
 
       {/* User Profile Section */}
       <div className="p-4 border-b border-gray-100">
-        <motion.div
-          initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.1 }}
-          className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""}`}
-        >
-          {/* Avatar */}
+        <div className="flex items-center gap-3">
           <div className="relative">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-primary/25">
               {getInitials(user?.usrname)}
             </div>
-            <div
-              className={`absolute -bottom-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white ${isRTL ? "-left-1" : "-right-1"}`}
-            />
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white" />
           </div>
-
-          {/* User Info */}
           {!isCollapsed && (
-            <div
-              className={`flex-1 min-w-0 ${isRTL ? "text-right" : "text-left"}`}
-            >
+            <div className="flex-1 min-w-0">
               <h3 className="font-semibold text-gray-900 truncate">
                 {user?.usrname}
               </h3>
-              <p
-                className={`text-xs text-gray-500 flex items-center gap-1 ${isRTL ? "flex-row-reverse justify-end" : ""}`}
-              >
+              <p className="text-xs text-gray-500 flex items-center gap-1">
                 <Sparkles size={10} className="text-primary" />
                 Verified Seller
               </p>
             </div>
           )}
-        </motion.div>
+        </div>
       </div>
 
       {/* Quick Actions Section */}
       <div className="p-3 border-b border-gray-100">
-        <div
-          className={`flex items-center gap-2 mb-3 px-1 ${isRTL ? "flex-row-reverse" : ""}`}
-        >
+        <div className="flex items-center gap-2 mb-3 px-1">
           <Star size={14} className="text-amber-500 fill-amber-500" />
           <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
             {t("quick_actions")}
           </span>
         </div>
         <ul className="space-y-2">
-          {importantNavItems.map((item, index) => (
-            <motion.li
-              key={item.id}
-              initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1 * (index + 1) }}
-            >
+          {importantNavItems.map((item) => (
+            <li key={item.id}>
               <button
-                className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-300 group ${isRTL ? "flex-row-reverse" : ""} ${
+                className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-300 group ${
                   activeTab === item.id
                     ? "bg-gradient-to-r from-primary to-primary/90 text-white shadow-lg shadow-primary/30"
                     : "bg-gradient-to-r from-primary/5 to-primary/10 text-primary hover:from-primary/10 hover:to-primary/20 hover:shadow-md"
@@ -150,42 +118,33 @@ const SidebarEnhanced = ({ activeTab, navItems }) => {
                 </span>
                 {!isCollapsed && (
                   <>
-                    <span
-                      className={`font-semibold flex-1 ${isRTL ? "text-right" : "text-left"}`}
-                    >
+                    <span className="font-semibold flex-1 text-start">
                       {item.name}
                     </span>
                     <ChevronRight
                       size={16}
-                      className={`opacity-50 group-hover:opacity-100 transition-all ${isRTL ? "rotate-180 group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}
+                      className="opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all"
                     />
                   </>
                 )}
               </button>
-            </motion.li>
+            </li>
           ))}
         </ul>
       </div>
 
       {/* Main Navigation */}
       <nav className="flex-grow p-3 overflow-y-auto">
-        <div
-          className={`flex items-center gap-2 mb-3 px-1 ${isRTL ? "flex-row-reverse" : ""}`}
-        >
+        <div className="flex items-center gap-2 mb-3 px-1">
           <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
             Menu
           </span>
         </div>
         <ul className="space-y-1">
-          {navItems.map((item, index) => (
-            <motion.li
-              key={item.id}
-              initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1 * (index + 2) }}
-            >
+          {navItems.map((item) => (
+            <li key={item.id}>
               <button
-                className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-300 group ${isRTL ? "flex-row-reverse" : ""} ${
+                className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-300 group ${
                   activeTab === item.id
                     ? "bg-gray-900 text-white shadow-lg"
                     : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
@@ -203,9 +162,7 @@ const SidebarEnhanced = ({ activeTab, navItems }) => {
                 </span>
                 {!isCollapsed && (
                   <>
-                    <div
-                      className={`flex-1 ${isRTL ? "text-right" : "text-left"}`}
-                    >
+                    <div className="flex-1 text-start">
                       <span className="font-medium block">{item.name}</span>
                       {item.description && (
                         <span
@@ -224,7 +181,7 @@ const SidebarEnhanced = ({ activeTab, navItems }) => {
                   </>
                 )}
               </button>
-            </motion.li>
+            </li>
           ))}
         </ul>
       </nav>
@@ -235,8 +192,7 @@ const SidebarEnhanced = ({ activeTab, navItems }) => {
         <div className="relative">
           <select
             onChange={(e) => handleLanguageChange(e.target.value)}
-            defaultValue={i18n.language}
-            dir={isRTL ? "rtl" : "ltr"}
+            value={i18n.language}
             className="w-full bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary p-3 appearance-none cursor-pointer transition-all hover:bg-gray-100"
           >
             <option value="en">🇬🇧 {t("english")}</option>
@@ -245,22 +201,20 @@ const SidebarEnhanced = ({ activeTab, navItems }) => {
           </select>
           <ChevronRight
             size={16}
-            className={`absolute top-1/2 -translate-y-1/2 rotate-90 text-gray-400 pointer-events-none ${isRTL ? "left-3" : "right-3"}`}
+            className="absolute right-3 top-1/2 -translate-y-1/2 rotate-90 text-gray-400 pointer-events-none"
           />
         </div>
 
         {/* Logout Button */}
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+        <button
           onClick={logout}
-          className={`w-full flex items-center gap-3 p-3 rounded-xl text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all duration-300 group ${isRTL ? "flex-row-reverse" : ""}`}
+          className="w-full flex items-center gap-3 p-3 rounded-xl text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all duration-300 group"
         >
           <span className="p-2 rounded-lg bg-gray-100 group-hover:bg-red-100 transition-colors">
             <LogOut size={18} />
           </span>
           {!isCollapsed && <span className="font-medium">{t("logout")}</span>}
-        </motion.button>
+        </button>
       </div>
     </div>
   );
@@ -269,27 +223,20 @@ const SidebarEnhanced = ({ activeTab, navItems }) => {
     <>
       {/* Mobile Header */}
       <div className="lg:hidden sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-200/50">
-        <div
-          className={`flex items-center justify-between p-4 ${isRTL ? "flex-row-reverse" : ""}`}
-        >
+        <div className="flex items-center justify-between p-4">
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="p-2.5 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
-              >
+              <button className="p-2.5 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors">
                 <Menu size={22} className="text-gray-700" />
-              </motion.button>
+              </button>
             </SheetTrigger>
-            <SheetContent side={isRTL ? "right" : "left"} className="w-72 p-0">
+            <SheetContent side="left" className="w-72 p-0">
               <SidebarContent isMobile={true} />
             </SheetContent>
           </Sheet>
 
           <img src={logo} alt="Maker DZ" className="h-9 w-auto" />
 
-          {/* Mobile User Avatar */}
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-primary/25">
             {getInitials(user?.usrname)}
           </div>
@@ -297,9 +244,7 @@ const SidebarEnhanced = ({ activeTab, navItems }) => {
       </div>
 
       {/* Desktop Sidebar */}
-      <div
-        className={`hidden lg:flex w-72 bg-white flex-col shadow-xl shadow-gray-200/50 ${isRTL ? "border-l border-gray-200/50" : "border-r border-gray-200/50"}`}
-      >
+      <div className="hidden lg:flex w-72 bg-white border-r border-gray-200/50 flex-col shadow-xl shadow-gray-200/50">
         <SidebarContent />
       </div>
     </>

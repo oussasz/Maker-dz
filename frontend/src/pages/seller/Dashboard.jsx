@@ -30,8 +30,7 @@ import { useTranslation } from "react-i18next";
 
 function Dashboard() {
   const { user } = useAuth();
-  const { t, i18n } = useTranslation("seller_dashboard");
-  const isRTL = i18n.language === "ar";
+  const { t } = useTranslation("seller_dashboard");
   const [loading, setLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState({
     orders: [],
@@ -178,21 +177,14 @@ function Dashboard() {
   }
 
   return (
-    <div
-      className="w-full bg-gradient-to-br from-gray-50 to-gray-100 p-2 lg:p-6"
-      dir={isRTL ? "rtl" : "ltr"}
-    >
+    <div className="w-full bg-gradient-to-br from-gray-50 to-gray-100 p-2 lg:p-6">
       <div className="space-y-6">
         {/* Header */}
         <div className="mb-8">
-          <h1
-            className={`text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-2 ${isRTL ? "text-right" : "text-left"}`}
-          >
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-2">
             {t("dashboard_overview")}
           </h1>
-          <p
-            className={`text-gray-600 hidden lg:block ${isRTL ? "text-right" : "text-left"}`}
-          >
+          <p className="text-gray-600 hidden lg:block">
             {t("monitor_sales_performance")}
           </p>
         </div>
@@ -205,12 +197,8 @@ function Dashboard() {
               className="overflow-hidden hover:shadow-lg transition-shadow duration-300"
             >
               <CardContent className="p-6">
-                <div
-                  className={`flex items-start justify-between ${isRTL ? "flex-row-reverse" : ""}`}
-                >
-                  <div
-                    className={`space-y-2 ${isRTL ? "text-right" : "text-left"}`}
-                  >
+                <div className="flex items-start justify-between">
+                  <div className="space-y-2">
                     <p className="text-sm font-medium text-gray-600">
                       {stat.title}
                     </p>

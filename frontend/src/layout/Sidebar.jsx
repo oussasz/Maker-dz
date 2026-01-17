@@ -11,7 +11,6 @@ const Sidebar = ({ activeTab, navItems }) => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation("sidebar");
   const [isOpen, setIsOpen] = useState(false);
-  const isRTL = i18n.language === "ar";
 
   const importantNavItems = [
     {
@@ -47,9 +46,7 @@ const Sidebar = ({ activeTab, navItems }) => {
 
       {/* Important Actions Section */}
       <div className="p-3 border-b border-gray-200 bg-gray-50">
-        <div
-          className={`flex items-center gap-2 mb-3 ${isRTL ? "flex-row-reverse" : ""}`}
-        >
+        <div className="flex items-center gap-2 mb-3">
           <Star size={16} className="text-amber-500 fill-amber-500" />
           <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
             {t("quick_actions")}
@@ -60,7 +57,7 @@ const Sidebar = ({ activeTab, navItems }) => {
             <li key={item.id} className="mb-3">
               <a
                 href="#"
-                className={`flex gap-3 items-center p-3 rounded-lg transition-all duration-200 transform hover:scale-[1.02] shadow-md ${isRTL ? "flex-row-reverse" : ""} ${
+                className={`flex gap-3 items-center p-3 rounded-lg transition-all duration-200 transform hover:scale-[1.02] shadow-md ${
                   activeTab === item.id
                     ? "bg-gradient-to-r from-primary to-primary/90 text-white shadow-lg"
                     : "bg-white text-primary border-2 border-primary/20 hover:border-primary/40 hover:shadow-lg"
@@ -89,7 +86,7 @@ const Sidebar = ({ activeTab, navItems }) => {
             <li key={item.id} className="mb-2">
               <a
                 href="#"
-                className={`flex gap-3 items-center p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors ${isRTL ? "flex-row-reverse" : ""} ${
+                className={`flex gap-3 items-center p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors ${
                   activeTab === item.id
                     ? "bg-primary text-white hover:bg-primary/90"
                     : ""
@@ -113,7 +110,6 @@ const Sidebar = ({ activeTab, navItems }) => {
           <select
             onChange={(e) => handleLanguageChange(e.target.value)}
             defaultValue={i18n.language}
-            dir={isRTL ? "rtl" : "ltr"}
             className="bg-secondary border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5"
           >
             <option value="en">{t("english")}</option>
@@ -123,7 +119,7 @@ const Sidebar = ({ activeTab, navItems }) => {
         </div>
         <button
           onClick={logout}
-          className={`flex gap-3 cursor-pointer items-center w-full p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors ${isRTL ? "flex-row-reverse" : ""}`}
+          className="flex gap-3 cursor-pointer items-center w-full p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
         >
           <LogOut size={20} />
           <span className="font-medium">{t("logout")}</span>
@@ -144,7 +140,7 @@ const Sidebar = ({ activeTab, navItems }) => {
               </button>
             </SheetTrigger>
             <SheetContent
-              side={isRTL ? "right" : "left"}
+              side="left"
               className="w-64 p-0 flex flex-col"
             >
               <SidebarContent />

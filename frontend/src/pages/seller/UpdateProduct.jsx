@@ -31,9 +31,8 @@ export default function UpdateProduct() {
   const { productId } = useParams();
   const navigate = useNavigate();
   const { updateProduct, getProductDetails } = useProductSubmission();
-  const { t, i18n } = useTranslation("seller_updateproduct");
+  const { t } = useTranslation("seller_updateproduct");
 
-  const isRTL = i18n.language === "ar";
   const [productData, setProductData] = useState(initialProductState);
   const [productAttributes, setProductAttributes] = useState(
     initialProductAttributes
@@ -122,7 +121,7 @@ export default function UpdateProduct() {
           onClick={() => navigate(-1)}
           className="shrink-0"> 
             
-          <ArrowLeft className={`h-4 w-4 ${isRTL && "rotate-180"}`} />
+          <ArrowLeft className="h-4 w-4" />
         </Button>
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800">{t("update_product")}</h1>
       </div>

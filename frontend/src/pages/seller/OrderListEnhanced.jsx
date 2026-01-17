@@ -171,9 +171,8 @@ const OrderCardEnhanced = ({
 
 function OrderListEnhanced() {
   const { user } = useAuth();
-  const { t, i18n } = useTranslation("seller_orderlist");
+  const { t } = useTranslation("seller_orderlist");
   const sellerId = user.id;
-  const isRTL = i18n.language === "ar";
 
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -222,17 +221,15 @@ function OrderListEnhanced() {
   }
 
   return (
-    <div className="space-y-8" dir={isRTL ? "rtl" : "ltr"}>
+    <div className="space-y-8">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 ${isRTL ? "lg:flex-row-reverse" : ""}`}
+        className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
       >
-        <div className={isRTL ? "text-right" : "text-left"}>
-          <h1
-            className={`text-3xl lg:text-4xl font-bold text-gray-900 flex items-center gap-3 ${isRTL ? "flex-row-reverse justify-end" : ""}`}
-          >
+        <div>
+          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 flex items-center gap-3">
             {t("your_orders")}
             <Sparkles className="w-8 h-8 text-primary" />
           </h1>
@@ -241,9 +238,7 @@ function OrderListEnhanced() {
           </p>
         </div>
 
-        <div
-          className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""}`}
-        >
+        <div className="flex items-center gap-3">
           <Button variant="outline" size="sm" className="gap-2">
             <Download size={16} />
             Export
@@ -472,7 +467,6 @@ function OrderListEnhanced() {
                             </TableCell>
                             <TableCell>
                               <Select
-                                dir={isRTL ? "rtl" : "ltr"}
                                 value={order.state}
                                 onValueChange={(value) =>
                                   updateOrderStatus(order.id, value)

@@ -149,8 +149,7 @@ const MobileStepIndicator = ({ currentStep, totalSteps }) => {
 
 export default function AddProductEnhanced() {
   const { addProduct } = useProductSubmission();
-  const { t, i18n } = useTranslation("seller_addproduct");
-  const isRTL = i18n.language === "ar";
+  const { t } = useTranslation("seller_addproduct");
 
   const [productData, setProductData] = useState(initialProductState);
   const [productAttributes, setProductAttributes] = useState(
@@ -212,17 +211,15 @@ export default function AddProductEnhanced() {
   };
 
   return (
-    <div className="space-y-6" dir={isRTL ? "rtl" : "ltr"}>
+    <div className="space-y-6">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 ${isRTL ? "lg:flex-row-reverse" : ""}`}
+        className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
       >
-        <div className={isRTL ? "text-right" : "text-left"}>
-          <h1
-            className={`text-3xl lg:text-4xl font-bold text-gray-900 flex items-center gap-3 ${isRTL ? "flex-row-reverse justify-end" : ""}`}
-          >
+        <div>
+          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 flex items-center gap-3">
             {t("add_new_product")}
             <Sparkles className="w-8 h-8 text-primary" />
           </h1>
@@ -357,29 +354,27 @@ export default function AddProductEnhanced() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 ${isRTL ? "sm:flex-row-reverse" : ""}`}
+        className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4"
       >
         <Button
           variant="outline"
           onClick={back}
           disabled={step === "1"}
-          className={`w-full sm:w-auto gap-2 ${isRTL ? "flex-row-reverse" : ""}`}
+          className="w-full sm:w-auto gap-2"
         >
-          <ChevronLeft size={18} className={isRTL ? "rotate-180" : ""} />
+          <ChevronLeft size={18} />
           {t("back")}
         </Button>
 
-        <div
-          className={`flex items-center gap-3 w-full sm:w-auto ${isRTL ? "flex-row-reverse" : ""}`}
-        >
+        <div className="flex items-center gap-3 w-full sm:w-auto">
           {step !== "3" ? (
             <Button
               onClick={next}
               disabled={!canProceed()}
-              className={`w-full sm:w-auto gap-2 shadow-lg shadow-primary/25 ${isRTL ? "flex-row-reverse" : ""}`}
+              className="w-full sm:w-auto gap-2 shadow-lg shadow-primary/25"
             >
               {t("next")}
-              <ChevronRight size={18} className={isRTL ? "rotate-180" : ""} />
+              <ChevronRight size={18} />
             </Button>
           ) : (
             <Button

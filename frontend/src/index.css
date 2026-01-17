@@ -144,11 +144,6 @@ body {
   }
 }
 
-[dir="rtl"] {
-  text-align: right;
-  font-family: var(--font-noto) !important;
-}
-
 .swiper-pagination-bullet {
   width: 12px !important;
   height: 12px !important;
@@ -161,52 +156,8 @@ body {
   border: white solid 2px !important;
 }
 
-/* RTL Support */
+/* Arabic/RTL Font Support - minimal rules only */
+[lang="ar"],
 [dir="rtl"] {
-  direction: rtl;
-  text-align: right;
-}
-
-/* RTL text alignment overrides - use Tailwind's rtl: prefix for specific cases */
-[dir="rtl"] .rtl-reverse {
-  flex-direction: row-reverse;
-}
-
-/* Logical margin/padding utilities for RTL */
-[dir="rtl"] .ms-auto {
-  margin-inline-start: auto;
-}
-
-[dir="rtl"] .me-auto {
-  margin-inline-end: auto;
-}
-
-/* Fix sidebar layout for RTL - keep sidebar on right side */
-[dir="rtl"] .seller-dashboard-layout {
-  flex-direction: row-reverse;
-}
-
-/* Keep navigation items in correct order */
-[dir="rtl"] .nav-item {
-  flex-direction: row-reverse;
-}
-
-/* Fix icon positioning in RTL */
-[dir="rtl"] .icon-text-group {
-  flex-direction: row-reverse;
-}
-
-/* Preserve column layouts in RTL */
-[dir="rtl"] .flex-col {
-  flex-direction: column;
-}
-
-/* Arabic Font Support */
-[lang="ar"] {
-  font-family: "Cairo", "Noto Sans Arabic", "Arial", sans-serif;
-}
-
-/* Smooth language transitions */
-* {
-  transition: direction 0.3s ease;
+  font-family: "Noto Sans Arabic", "Cairo", "Arial", sans-serif;
 }

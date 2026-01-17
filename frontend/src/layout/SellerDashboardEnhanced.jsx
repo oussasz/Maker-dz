@@ -13,8 +13,7 @@ import { useTranslation } from "react-i18next";
 const SellerDashboardEnhanced = () => {
   const [activeTab, setActiveTab] = useState("");
   const location = useLocation().pathname;
-  const { t, i18n } = useTranslation("sidebar");
-  const isRTL = i18n.language === "ar";
+  const { t } = useTranslation("sidebar");
 
   const navItems = [
     {
@@ -49,9 +48,7 @@ const SellerDashboardEnhanced = () => {
   }, [location]);
 
   return (
-    <div
-      className={`flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 w-full ${isRTL ? "lg:flex-row-reverse" : ""}`}
-    >
+    <div className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 w-full">
       {/* Enhanced Sidebar */}
       <SidebarEnhanced activeTab={activeTab} navItems={navItems} />
 

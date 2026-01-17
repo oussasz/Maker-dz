@@ -155,8 +155,7 @@ const StatCard = ({ stat, index }) => {
 
 function DashboardEnhanced() {
   const { user } = useAuth();
-  const { t, i18n } = useTranslation("seller_dashboard");
-  const isRTL = i18n.language === "ar";
+  const { t } = useTranslation("seller_dashboard");
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [dashboardData, setDashboardData] = useState({
@@ -347,17 +346,15 @@ function DashboardEnhanced() {
   }
 
   return (
-    <div className="space-y-8" dir={isRTL ? "rtl" : "ltr"}>
+    <div className="space-y-8">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 ${isRTL ? "lg:flex-row-reverse" : ""}`}
+        className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
       >
-        <div className={isRTL ? "text-right" : "text-left"}>
-          <h1
-            className={`text-3xl lg:text-4xl font-bold text-gray-900 flex items-center gap-3 ${isRTL ? "flex-row-reverse justify-end" : ""}`}
-          >
+        <div>
+          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 flex items-center gap-3">
             {t("dashboard_overview")}
             <Sparkles className="w-8 h-8 text-primary" />
           </h1>
@@ -366,9 +363,7 @@ function DashboardEnhanced() {
           </p>
         </div>
 
-        <div
-          className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""}`}
-        >
+        <div className="flex items-center gap-3">
           <Button
             variant="outline"
             size="sm"
