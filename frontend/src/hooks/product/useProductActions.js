@@ -13,7 +13,7 @@ const useProductActions = (
   selectedAttributes,
   currentPrice,
   personalization,
-  quantity
+  quantity,
 ) => {
   const [buyNowOpen, setBuyNowOpen] = useState(false);
   const { setCart } = useCartStore();

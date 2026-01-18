@@ -34,7 +34,7 @@ import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
   const { cart, clearCart } = useCartStore();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
 
   const [formData, setFormData] = useState({
@@ -125,9 +125,9 @@ const Checkout = () => {
       if (response.status === 201) {
         toast.success("Your order is placed");
         if (response.data.cart) {
-          clearCart()
+          clearCart();
         }
-        navigate("/cart")
+        navigate("/cart");
       } else {
         toast.error("There was an error placing your order. Please try again");
       }
@@ -197,7 +197,8 @@ const Checkout = () => {
                             <Button
                               variant="outline"
                               role="combobox"
-                              className="w-full justify-between">
+                              className="w-full justify-between"
+                            >
                               {selectedWilaya
                                 ? selectedWilaya.wilaya_name_ascii
                                 : "Select Wilaya"}
@@ -217,14 +218,15 @@ const Checkout = () => {
                                         setSelectedWilaya(w);
                                         setSelectedCommune(null);
                                         setWilayaOpen(false);
-                                      }}>
+                                      }}
+                                    >
                                       <Check
                                         className={cn(
                                           "mr-2 h-4 w-4",
                                           selectedWilaya?.wilaya_code ===
                                             w.wilaya_code
                                             ? "opacity-100"
-                                            : "opacity-0"
+                                            : "opacity-0",
                                         )}
                                       />
                                       {w.wilaya_name_ascii}
@@ -240,13 +242,15 @@ const Checkout = () => {
                         <Label htmlFor="city">City</Label>
                         <Popover
                           open={communeOpen}
-                          onOpenChange={setCommuneOpen}>
+                          onOpenChange={setCommuneOpen}
+                        >
                           <PopoverTrigger asChild>
                             <Button
                               variant="outline"
                               role="combobox"
                               disabled={!selectedWilaya}
-                              className="w-full justify-between">
+                              className="w-full justify-between"
+                            >
                               {selectedCommune
                                 ? selectedCommune.commune_name_ascii
                                 : "Select Commune"}
@@ -266,13 +270,14 @@ const Checkout = () => {
                                       onSelect={() => {
                                         setSelectedCommune(c);
                                         setCommuneOpen(false);
-                                      }}>
+                                      }}
+                                    >
                                       <Check
                                         className={cn(
                                           "mr-2 h-4 w-4",
                                           selectedCommune?.id === c.id
                                             ? "opacity-100"
-                                            : "opacity-0"
+                                            : "opacity-0",
                                         )}
                                       />
                                       {c.commune_name_ascii}

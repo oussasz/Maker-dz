@@ -10,11 +10,7 @@ import {
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "./ui/popover";
+import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 
 import {
   Command,
@@ -117,7 +113,8 @@ export default function BuyNowModal({ open, onClose, onSubmit }) {
                 <Button
                   variant="outline"
                   role="combobox"
-                  className="w-full justify-between">
+                  className="w-full justify-between"
+                >
                   {selectedWilaya
                     ? selectedWilaya.wilaya_name_ascii
                     : "Select Wilaya"}
@@ -137,13 +134,14 @@ export default function BuyNowModal({ open, onClose, onSubmit }) {
                             setSelectedWilaya(w);
                             setSelectedCommune(null);
                             setWilayaOpen(false);
-                          }}>
+                          }}
+                        >
                           <Check
                             className={cn(
                               "mr-2 h-4 w-4",
                               selectedWilaya?.wilaya_code === w.wilaya_code
                                 ? "opacity-100"
-                                : "opacity-0"
+                                : "opacity-0",
                             )}
                           />
                           {w.wilaya_name_ascii}
@@ -166,7 +164,8 @@ export default function BuyNowModal({ open, onClose, onSubmit }) {
                   variant="outline"
                   role="combobox"
                   disabled={!selectedWilaya}
-                  className="w-full justify-between">
+                  className="w-full justify-between"
+                >
                   {selectedCommune
                     ? selectedCommune.commune_name_ascii
                     : "Select Commune"}
@@ -186,13 +185,14 @@ export default function BuyNowModal({ open, onClose, onSubmit }) {
                           onSelect={() => {
                             setSelectedCommune(c);
                             setCommuneOpen(false);
-                          }}>
+                          }}
+                        >
                           <Check
                             className={cn(
                               "mr-2 h-4 w-4",
                               selectedCommune?.id === c.id
                                 ? "opacity-100"
-                                : "opacity-0"
+                                : "opacity-0",
                             )}
                           />
                           {c.commune_name_ascii}
