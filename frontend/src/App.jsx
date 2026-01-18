@@ -66,18 +66,20 @@ function App() {
   const fetchWishlist = async () => {
     try {
       const res = await axiosPrivate.get("/wishlist?onlyIDs=true");
+      console.log("Wishlist fetch response:", res.data);
       // Backend returns { productIds: [...] } when onlyIDs=true
       setWishlist(res.data.productIds || []);
     } catch (error) {
-      console.error(error);
+      console.error("Wishlist fetch error:", error);
     }
   };
 
   useEffect(() => {
-    if (isAuthenticated && user.role === "customer") {
+    console.log("App useEffect - isAuthenticated:", isAuthenticated, "user:", user);
+    if (isAuthenticated && user?.role === "customer") {
       fetchWishlist();
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, user]);
 
   return (
     <>
