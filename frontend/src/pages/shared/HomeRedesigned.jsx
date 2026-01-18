@@ -769,42 +769,33 @@ const CTASection = () => {
         </svg>
       </div>
 
-      <div className="max-w-4xl mx-auto px-6 md:px-12 text-center relative z-10">
+      <div className="max-w-5xl mx-auto px-6 md:px-12 text-center relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          whileHover={{ scale: 1.02 }}
+          transition={{ duration: 0.4 }}
+          className="mx-auto max-w-3xl rounded-3xl bg-white/95 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-shadow px-8 py-12 md:px-14 md:py-16"
         >
-          <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">
+          <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-5">
             {t("cta_title")}
           </h2>
 
-          <p className="text-xl md:text-2xl text-white/90 mb-10 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             {t("cta_subtitle")}
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/products">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="px-10 py-4 bg-white text-orange-600 font-bold rounded-full shadow-2xl hover:shadow-white/30 transition-shadow flex items-center gap-3 justify-center"
-              >
-                {t("cta_shop")}
-                <ArrowRight className="w-5 h-5" />
-              </motion.button>
-            </Link>
-
-            <Link to="/signup">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="px-10 py-4 bg-transparent text-white font-bold rounded-full border-2 border-white hover:bg-white/10 transition-colors"
-              >
-                {t("cta_artisan")}
-              </motion.button>
-            </Link>
-          </div>
+          <Link to="/products" className="inline-flex">
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              className="px-10 py-4 bg-primary text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-shadow flex items-center gap-3 justify-center"
+            >
+              {t("cta_shop")}
+              <ArrowRight className="w-5 h-5" />
+            </motion.button>
+          </Link>
         </motion.div>
       </div>
     </section>
