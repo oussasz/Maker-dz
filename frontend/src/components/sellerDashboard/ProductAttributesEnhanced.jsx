@@ -18,7 +18,7 @@ const ProductAttributesEnhanced = ({ data, setData }) => {
     useProductAttributes(data, setData);
   const { addSpec, removeSpec, keyVal, setKeyVal } = useSpecInput(
     setData,
-    data.specifications
+    data.specifications,
   );
 
   const handleTagKeyDown = (e) => {
@@ -38,7 +38,7 @@ const ProductAttributesEnhanced = ({ data, setData }) => {
     "Limited Edition",
   ];
   const availableSuggestions = suggestedTags.filter(
-    (tag) => !data.tags.includes(tag)
+    (tag) => !data.tags.includes(tag),
   );
 
   return (
@@ -55,7 +55,7 @@ const ProductAttributesEnhanced = ({ data, setData }) => {
             value={data.categories}
             onChange={(selected) => setData({ ...data, categories: selected })}
             placeholder={t("select_categories_placeholder")}
-            selector={"_id"}
+            selector={"id"}
           />
           <p className="text-xs text-gray-500 mt-2">
             Select categories that best describe your product
