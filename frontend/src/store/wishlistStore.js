@@ -5,18 +5,21 @@ const useWishlistStore = create((set, get) => ({
 
   addToWishlist: (productId) =>
     set((state) => ({
-      wishlist: [...state.wishlist, productId],
+      wishlist: Array.isArray(state.wishlist) ? [...state.wishlist, productId] : [productId],
     })),
 
   removeFromWishlist: (productId) => {
     set((state) => ({
-      wishlist: state.wishlist.filter((id) => id !== productId),
+      wishlist: Array.isArray(state.wishlist) ? state.wishlist.filter((id) => id !== productId) : [],
     }));
   },
 
   clearWishlist: () => set({ wishlist: [] }),
-  setWishlist: (newWishlist) => set({ wishlist: newWishlist }),
-  isInWishlist: (productId) => get().wishlist.includes(productId),
+  setWishlist: (newWishlist) => set({ wishlist: Array.isArray(newWishlist) ? newWishlist : [] }),
+  isInWishlist: (productId) => {
+    const wishlist = get().wishlist;
+    return Array.isArray(wishlist) && wishlist.includes(productId);
+  },
 }));
 
 export default useWishlistStore;
