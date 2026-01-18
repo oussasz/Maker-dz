@@ -101,6 +101,11 @@ export const getCart = async (req, res) => {
 
     const cart = await Cart.findByUserId(userId);
 
+    // Prevent caching of cart data
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+
     if (!cart) {
       return res.status(200).json({
         cart: { items: [], totalAmount: 0 },
