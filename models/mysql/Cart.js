@@ -81,15 +81,13 @@ export const Cart = {
   },
 
   // Add item to cart
-  async addItem(userId, itemData) {
+  async addItem(cartId, itemData) {
     const pool = await getConnection();
-
-    const cart = await this.getOrCreate(userId);
 
     // Check if item already exists
     const [existing] = await pool.query(
       "SELECT * FROM cart_items WHERE cart_id = ? AND product_id = ? AND variant_id = ?",
-      [cart.id, itemData.productId, itemData.variantId],
+      [cartId, itemData.product_id, itemData.variant_id],
     );
 
     if (existing.length > 0) {
@@ -103,9 +101,9 @@ export const Cart = {
       await pool.query(
         "INSERT INTO cart_items (cart_id, product_id, variant_id, personalization, quantity, price) VALUES (?, ?, ?, ?, ?, ?)",
         [
-          cart.id,
-          itemData.productId,
-          itemData.variantId,
+          cartId,
+          itemData.product_id,
+          itemData.variant_id,
           itemData.personalization || null,
           itemData.quantity || 1,
           itemData.price,
@@ -114,9 +112,7 @@ export const Cart = {
     }
 
     // Update total
-    await this.updateTotal(cart.id);
-
-    return this.findByUserId(userId);
+    await this.updateTotal(cartId);
   },
 
   // Update item quantity
