@@ -30,7 +30,9 @@ const ProductCard = ({
     useWishlistStore();
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
-  const productId = product._id;
+  // Support both MongoDB (_id) and MySQL (id)
+  const productId = product.id || product._id;
+  const productSlug = product.slug || productId;
 
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -85,7 +87,7 @@ const ProductCard = ({
     if (seller) {
       navigate(`/dashboard/products/update/${productId}`);
     } else {
-      navigate(`/products/${productId}`);
+      navigate(`/products/${productSlug}`);
     }
   };
 

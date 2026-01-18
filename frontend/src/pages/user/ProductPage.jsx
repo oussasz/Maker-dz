@@ -290,7 +290,7 @@ const ProductPage = () => {
             >
               <GridContainer cols={4} gap={5}>
                 {relatedProducts.map((prod) => (
-                  <ProductCard product={prod} key={prod._id} />
+                  <ProductCard product={prod} key={prod.id || prod._id} />
                 ))}
               </GridContainer>
             </HomeSection>
