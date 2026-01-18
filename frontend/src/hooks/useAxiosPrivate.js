@@ -3,6 +3,27 @@ import { useEffect, useRef } from "react";
 import useRefreshToken from "./useRefreshToken";
 import useAuth from "../store/authStore";
 
+const decodeJwtPayload = (token) => {
+  try {
+    const payload = token.split(".")[1];
+    const normalized = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = normalized.padEnd(
+      normalized.length + ((4 - (normalized.length % 4)) % 4),
+      "=",
+    );
+    return JSON.parse(atob(padded));
+  } catch {
+    return null;
+  }
+};
+
+const isTokenExpired = (token, skewSeconds = 30) => {
+  const payload = decodeJwtPayload(token);
+  if (!payload?.exp) return true;
+  const now = Math.floor(Date.now() / 1000);
+  return payload.exp - skewSeconds <= now;
+};
+
 const useAxiosPrivate = () => {
   const refresh = useRefreshToken();
   const { accessToken, refreshToken, logout } = useAuth();
@@ -25,6 +46,17 @@ const useAxiosPrivate = () => {
       async (config) => {
         if (!config.headers["Authorization"]) {
           let token = accessToken;
+
+          // If token exists but is expired/near expiry, refresh before request
+          if (token && isTokenExpired(token)) {
+            try {
+              token = await getFreshAccessToken();
+            } catch (refreshError) {
+              console.error("Unable to refresh token:", refreshError);
+              logout();
+              return Promise.reject(refreshError);
+            }
+          }
 
           // If no access token but refresh token exists, refresh before request
           if (!token && refreshToken) {
