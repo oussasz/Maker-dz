@@ -3,13 +3,26 @@ import { v2 as cloudinary } from "cloudinary";
 import path from "path";
 import sharp from "sharp";
 import slugify from "slugify";
+import { promises as fs } from "fs";
 
-// Configure Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+const cloudinaryEnabled = Boolean(
+  process.env.CLOUDINARY_CLOUD_NAME &&
+  process.env.CLOUDINARY_API_KEY &&
+  process.env.CLOUDINARY_API_SECRET,
+);
+
+// Configure Cloudinary (if enabled)
+if (cloudinaryEnabled) {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+} else {
+  console.warn(
+    "⚠️ Cloudinary is not configured. Falling back to local uploads.",
+  );
+}
 
 // Helper function to upload to Cloudinary
 const uploadToCloudinary = async (buffer, folder) => {
@@ -27,6 +40,33 @@ const uploadToCloudinary = async (buffer, folder) => {
     );
     uploadStream.end(buffer);
   });
+};
+
+const ensureDir = async (dirPath) => {
+  await fs.mkdir(dirPath, { recursive: true });
+};
+
+const uploadToLocal = async (buffer, folder, originalname) => {
+  const safeFolder = folder.split("/").pop() || "uploads";
+  const uploadsRoot = path.join(process.cwd(), "public", "uploads", safeFolder);
+  await ensureDir(uploadsRoot);
+  const ext = path.extname(originalname || "") || ".jpg";
+  const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+  const filePath = path.join(uploadsRoot, filename);
+  await fs.writeFile(filePath, buffer);
+  return `/uploads/${safeFolder}/${filename}`;
+};
+
+const uploadImage = async (file, folder) => {
+  const optimizedBuffer = await sharp(file.buffer)
+    .resize({ width: 1280 })
+    .jpeg({ quality: 80 })
+    .toBuffer();
+
+  if (cloudinaryEnabled) {
+    return await uploadToCloudinary(optimizedBuffer, folder);
+  }
+  return await uploadToLocal(optimizedBuffer, folder, file.originalname);
 };
 
 // Helper function to generate URL-friendly slug
@@ -89,13 +129,7 @@ export const createProduct = async (req, res) => {
       (f) => f.fieldname === "productImages",
     );
     const mainImages = await Promise.all(
-      productImageFiles.map(async (file) => {
-        const optimizedBuffer = await sharp(file.buffer)
-          .resize({ width: 1280 })
-          .jpeg({ quality: 80 })
-          .toBuffer();
-        return await uploadToCloudinary(optimizedBuffer, "maker-dz/products");
-      }),
+      productImageFiles.map((file) => uploadImage(file, "maker-dz/products")),
     );
 
     // Upload variant images
@@ -106,14 +140,7 @@ export const createProduct = async (req, res) => {
       variantImageFiles.map(async (file) => {
         const index = file.fieldname.split("_")[1];
         if (!parsedVariants[index].images) parsedVariants[index].images = [];
-        const optimizedBuffer = await sharp(file.buffer)
-          .resize({ width: 1280 })
-          .jpeg({ quality: 80 })
-          .toBuffer();
-        const url = await uploadToCloudinary(
-          optimizedBuffer,
-          "maker-dz/variants",
-        );
+        const url = await uploadImage(file, "maker-dz/variants");
         parsedVariants[index].images.push(url);
       }),
     );

@@ -23,14 +23,13 @@ export default function useProductAttributes(initialData, setData) {
 
   const getCategories = async () => {
     try {
-      const response = await axios.get("/category/all");
+      const response = await axios.get("/categories");
       console.log("Categories fetched:", response.data);
       setCategories(response.data);
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
   };
-
 
   const addSpec = () => {
     if (keyVal.key && keyVal.value) {
@@ -61,6 +60,6 @@ export default function useProductAttributes(initialData, setData) {
     addSpec,
     removeSpec,
     keyVal,
-    setKeyVal
+    setKeyVal,
   };
 }

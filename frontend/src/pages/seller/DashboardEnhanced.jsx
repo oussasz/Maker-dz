@@ -35,7 +35,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import useAuth from "../../store/authStore";
-import axios from "../../api/axios";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
@@ -156,6 +156,7 @@ const StatCard = ({ stat, index }) => {
 function DashboardEnhanced() {
   const { user } = useAuth();
   const { t } = useTranslation("seller_dashboard");
+  const axiosPrivate = useAxiosPrivate();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [dashboardData, setDashboardData] = useState({
@@ -174,7 +175,9 @@ function DashboardEnhanced() {
         else setLoading(true);
 
         const sellerId = user.id;
-        const orderResponse = await axios.get(`/sellers/${sellerId}/dashboard`);
+        const orderResponse = await axiosPrivate.get(
+          `/sellers/${sellerId}/dashboard`,
+        );
 
         setDashboardData({
           orders: orderResponse.data.orders || [],
@@ -190,7 +193,7 @@ function DashboardEnhanced() {
         setRefreshing(false);
       }
     },
-    [user.id],
+    [axiosPrivate, user.id],
   );
 
   useEffect(() => {
