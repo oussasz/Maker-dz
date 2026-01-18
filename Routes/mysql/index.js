@@ -6,3 +6,4 @@ export { default as cartRoute } from "./cartRoute.js";
 export { default as orderRoute } from "./orderRoute.js";
 export { default as wishlistRoute } from "./wishlistRoute.js";
 export { default as userRoute } from "./userRoute.js";
+export { default as citiesRoute } from "./citiesRoute.js";

@@ -44,7 +44,7 @@ export default function BuyNowModal({ open, onClose, onSubmit }) {
   const [communeOpen, setCommuneOpen] = useState(false);
 
   const getWilayas = async () => {
-    const res = await axios.get("/wilayas");
+    const res = await axios.get("/cities");
     setWilayas(res.data);
   };
 

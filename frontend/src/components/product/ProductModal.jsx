@@ -44,11 +44,16 @@ const ProductModal = () => {
               <div className="flex gap-0.5">
                 <StarRating rating={product.averageRating} maxRating={5} />
               </div>
-              <p className="text-sm text-gray-500">{product.totalReviews} Reviews</p>
+              <p className="text-sm text-gray-500">
+                {product.totalReviews} Reviews
+              </p>
             </div>
 
             <div className="text-sm text-gray-700 font-medium">
-              SKU: <span className="text-gray-500 font-normal">{product.id || product._id}</span>
+              SKU:{" "}
+              <span className="text-gray-500 font-normal">
+                {product.id || product._id}
+              </span>
             </div>
           </div>
 
@@ -80,7 +85,9 @@ const ProductModal = () => {
             <Button
               grow
               onClick={() => {
-                navigate(`/products/${product.slug || product.id || product._id}`);
+                navigate(
+                  `/products/${product.slug || product.id || product._id}`,
+                );
                 closeProductModal();
               }}
             >

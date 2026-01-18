@@ -44,7 +44,7 @@ const ProductCard = ({
   const handleRemoveFromWishlist = async () => {
     try {
       const res = await axiosPrivate.delete(
-        `/wishlist/remove?productId=${productId}`
+        `/wishlist/remove?productId=${productId}`,
       );
       if (res.status === 200) {
         removeFromWishlist(productId);
@@ -97,7 +97,7 @@ const ProductCard = ({
   const discountPercent = hasDiscount
     ? Math.round(
         ((product.originalPrice - product.basePrice) / product.originalPrice) *
-          100
+          100,
       )
     : 0;
 
