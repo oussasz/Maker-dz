@@ -73,13 +73,12 @@ const CategoriesPage = () => {
     fetchData();
   }, [category]);
 
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [category]);
 
   const currentSortLabel = sortOptions.find(
-    (opt) => opt.value === sortBy
+    (opt) => opt.value === sortBy,
   )?.label;
 
   if (loading) {
@@ -146,9 +145,11 @@ const CategoriesPage = () => {
                 <DropdownMenuItem
                   key={option.value}
                   onClick={() => handleSorting(option.value)}
-                  className="cursor-pointer">
+                  className="cursor-pointer"
+                >
                   <span
-                    className={sortBy === option.value ? "font-semibold" : ""}>
+                    className={sortBy === option.value ? "font-semibold" : ""}
+                  >
                     {option.label}
                   </span>
                 </DropdownMenuItem>

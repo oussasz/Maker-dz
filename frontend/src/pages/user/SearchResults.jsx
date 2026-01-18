@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "../../api/axios.js";
 import { useParams } from "react-router-dom";
-import { Search, SlidersHorizontal, X, ChevronDown, Package } from "lucide-react";
+import {
+  Search,
+  SlidersHorizontal,
+  X,
+  ChevronDown,
+  Package,
+} from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -45,13 +51,13 @@ const SearchResults = () => {
 
   const handleSorting = (sortType) => {
     let sorted = [...searchResults];
-    
+
     if (sortType === "price_low") {
       sorted.sort((a, b) => a.basePrice - b.basePrice);
     } else if (sortType === "price_high") {
       sorted.sort((a, b) => b.basePrice - a.basePrice);
     }
-    
+
     setDisplay(sorted);
   };
 
@@ -60,7 +66,7 @@ const SearchResults = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `/products/search/searched?keyword=${query}`
+          `/products/search/searched?keyword=${query}`,
         );
         setSearchResults(response.data.products);
         setDisplay(response.data.products);
@@ -82,7 +88,9 @@ const SearchResults = () => {
     window.scrollTo(0, 0);
   }, [query]);
 
-  const currentSortLabel = sortOptions.find(opt => opt.value === sortBy)?.label;
+  const currentSortLabel = sortOptions.find(
+    (opt) => opt.value === sortBy,
+  )?.label;
 
   if (loading) {
     return <LoadingSpinner text={`Searching for "${query}"...`} />;
@@ -97,11 +105,10 @@ const SearchResults = () => {
             <Search className="w-4 h-4" />
             <span>Search results</span>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            "{query}"
-          </h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">"{query}"</h1>
           <p className="text-gray-600">
-            {display.length} {display.length === 1 ? 'product' : 'products'} found
+            {display.length} {display.length === 1 ? "product" : "products"}{" "}
+            found
           </p>
         </div>
 
@@ -148,7 +155,9 @@ const SearchResults = () => {
                   onClick={() => setSortBy(option.value)}
                   className="cursor-pointer"
                 >
-                  <span className={sortBy === option.value ? "font-semibold" : ""}>
+                  <span
+                    className={sortBy === option.value ? "font-semibold" : ""}
+                  >
                     {option.label}
                   </span>
                 </DropdownMenuItem>
@@ -173,7 +182,8 @@ const SearchResults = () => {
               No products found
             </h3>
             <p className="text-gray-500 max-w-md">
-              We couldn't find any products matching "{query}". Try adjusting your filters or search terms.
+              We couldn't find any products matching "{query}". Try adjusting
+              your filters or search terms.
             </p>
           </div>
         )}

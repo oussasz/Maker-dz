@@ -60,7 +60,7 @@ const ProductPage = () => {
     selectedAttributes,
     currentPrice,
     personalization,
-    quantity
+    quantity,
   );
 
   useEffect(() => {
@@ -181,7 +181,7 @@ const ProductPage = () => {
                         {idx > 0 && ", "}
                         {key}: {value}
                       </span>
-                    )
+                    ),
                   )}
                 </div>
               </>
@@ -236,7 +236,7 @@ const ProductPage = () => {
                             </span>
                             <span className="text-gray-600">{value}</span>
                           </div>
-                        )
+                        ),
                       )}
                     </div>
                   </div>

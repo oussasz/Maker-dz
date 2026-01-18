@@ -94,7 +94,7 @@ const AllProductsPage = () => {
     return displayProducts.filter(
       (product) =>
         product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.description?.toLowerCase().includes(searchTerm.toLowerCase())
+        product.description?.toLowerCase().includes(searchTerm.toLowerCase()),
     );
   }, [displayProducts, searchTerm]);
 
@@ -121,7 +121,7 @@ const AllProductsPage = () => {
   }, []);
 
   const currentSortLabel = sortOptions.find(
-    (opt) => opt.value === sortBy
+    (opt) => opt.value === sortBy,
   )?.label;
 
   if (loading) {
