@@ -43,9 +43,7 @@ const ProductCard = ({
 
   const handleRemoveFromWishlist = async () => {
     try {
-      const res = await axiosPrivate.delete(
-        `/wishlist/remove?productId=${productId}`,
-      );
+      const res = await axiosPrivate.delete(`/wishlist?productId=${productId}`);
       if (res.status === 200) {
         removeFromWishlist(productId);
       }
@@ -56,7 +54,7 @@ const ProductCard = ({
 
   const handleAddToWishlist = async () => {
     try {
-      const res = await axiosPrivate.post("/wishlist/add", { productId });
+      const res = await axiosPrivate.post("/wishlist", { productId });
       if (res.status === 200) {
         addToWishlist(productId);
       }

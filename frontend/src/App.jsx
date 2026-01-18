@@ -66,7 +66,8 @@ function App() {
   const fetchWishlist = async () => {
     try {
       const res = await axiosPrivate.get("/wishlist?onlyIDs=true");
-      setWishlist(res.data.wishlist);
+      // Backend returns { productIds: [...] } when onlyIDs=true
+      setWishlist(res.data.productIds || []);
     } catch (error) {
       console.error(error);
     }

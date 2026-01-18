@@ -7,18 +7,25 @@ import { Heart } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate.js";
 import LoadingSpinner from "../../components/ui/loading-spinner.jsx";
+import useWishlistStore from "../../store/wishlistStore.js";
 
 const Wishlist = () => {
   const { t } = useTranslation("wishlist");
   const [wishlistProducts, setWishlistProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const axiosPrivate = useAxiosPrivate();
+  const { wishlist } = useWishlistStore();
 
   const fetchWishlist = async () => {
     setLoading(true);
     try {
       const res = await axiosPrivate.get("/wishlist");
-      setWishlistProducts(res.data.wishlist);
+      // Backend returns { wishlist: { products: [{ productId, product: {...} }] } }
+      // We need to extract the product objects
+      const wishlistData = res.data.wishlist;
+      const products =
+        wishlistData?.products?.map((item) => item.product) || [];
+      setWishlistProducts(products);
     } catch (error) {
       console.error(error);
     }
@@ -29,7 +36,18 @@ const Wishlist = () => {
     fetchWishlist();
   }, []);
 
-  console.log("products: ", wishlistProducts);
+  // Update displayed products when wishlist store changes (item removed via heart button)
+  useEffect(() => {
+    if (!loading && wishlistProducts.length > 0) {
+      // Filter out products that are no longer in the wishlist store
+      const filteredProducts = wishlistProducts.filter(
+        (prod) => wishlist.includes(prod.id) || wishlist.includes(prod._id),
+      );
+      if (filteredProducts.length !== wishlistProducts.length) {
+        setWishlistProducts(filteredProducts);
+      }
+    }
+  }, [wishlist]);
 
   return loading ? (
     <LoadingSpinner />
@@ -47,7 +65,7 @@ const Wishlist = () => {
       <div className="animate-fadeIn">
         <GridContainer cols={4} gap={6}>
           {wishlistProducts.map((prod) => (
-            <ProductCard product={prod} key={prod._id} />
+            <ProductCard product={prod} key={prod.id || prod._id} />
           ))}
         </GridContainer>
       </div>
