@@ -3,7 +3,7 @@ import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import HttpApi from "i18next-http-backend";
 
-i18n
+const i18nInitPromise = i18n
   .use(initReactI18next)
   .use(LanguageDetector)
   .use(HttpApi)
@@ -72,4 +72,5 @@ i18n.on("languageChanged", (lng) => {
   document.cookie = `i18next=${lng};path=/;max-age=604800`; // 7 days
 });
 
+export { i18nInitPromise };
 export default i18n;
