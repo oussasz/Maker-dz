@@ -44,34 +44,32 @@ const useAxiosPrivate = () => {
     // --- REQUEST INTERCEPTOR ---
     const requestIntercept = axiosPrivate.interceptors.request.use(
       async (config) => {
-        if (!config.headers["Authorization"]) {
-          let token = accessToken;
+        let token = accessToken;
 
-          // If token exists but is expired/near expiry, refresh before request
-          if (token && isTokenExpired(token)) {
-            try {
-              token = await getFreshAccessToken();
-            } catch (refreshError) {
-              console.error("Unable to refresh token:", refreshError);
-              logout();
-              return Promise.reject(refreshError);
-            }
+        // If token exists but is expired/near expiry, refresh before request
+        if (token && isTokenExpired(token)) {
+          try {
+            token = await getFreshAccessToken();
+          } catch (refreshError) {
+            console.error("Unable to refresh token:", refreshError);
+            logout();
+            return Promise.reject(refreshError);
           }
+        }
 
-          // If no access token but refresh token exists, refresh before request
-          if (!token && refreshToken) {
-            try {
-              token = await getFreshAccessToken();
-            } catch (refreshError) {
-              console.error("Unable to refresh token:", refreshError);
-              logout();
-              return Promise.reject(refreshError);
-            }
+        // If no access token but refresh token exists, refresh before request
+        if (!token && refreshToken) {
+          try {
+            token = await getFreshAccessToken();
+          } catch (refreshError) {
+            console.error("Unable to refresh token:", refreshError);
+            logout();
+            return Promise.reject(refreshError);
           }
+        }
 
-          if (token) {
-            config.headers["Authorization"] = `Bearer ${token}`;
-          }
+        if (token) {
+          config.headers["Authorization"] = `Bearer ${token}`;
         }
         return config;
       },
@@ -85,12 +83,15 @@ const useAxiosPrivate = () => {
         const prevRequest = error?.config;
 
         if (
-          (error?.response?.status === 401 ||
-            error?.response?.status === 403) &&
+          (error?.response?.status === 401 || error?.response?.status === 403) &&
           !prevRequest?.sent
         ) {
           prevRequest.sent = true;
           try {
+            if (!refreshToken) {
+              logout();
+              return Promise.reject(error);
+            }
             const newAccessToken = await getFreshAccessToken();
             prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
             return axiosPrivate(prevRequest);
