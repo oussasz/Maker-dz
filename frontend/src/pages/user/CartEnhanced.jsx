@@ -59,9 +59,15 @@ const CartProgress = ({ currentAmount, freeShippingThreshold = 5000 }) => {
 
 // Enhanced Cart Item Component
 const CartItemCard = ({ item, actions, index }) => {
-  const variant = item.productId.variants?.find(
-    (v) => v._id === item.variantId
-  );
+  // Support both old MongoDB structure (productId as object) and new MySQL structure (product as object)
+  const product = item.product || item.productId || {};
+  const variant = item.variant || (product.variants?.find(
+    (v) => (v.id || v._id) === item.variantId
+  ));
+  const productId = product.id || product._id || item.productId;
+  const productSlug = product.slug || productId;
+  const productImages = product.mainImages || [];
+  const variantAttributes = variant?.attributes || {};
 
   return (
     <motion.div
@@ -74,17 +80,17 @@ const CartItemCard = ({ item, actions, index }) => {
       <div className="flex gap-4 md:gap-6">
         {/* Product Image */}
         <Link
-          to={`/products/${item.productId._id}`}
+          to={`/products/${productSlug}`}
           className="relative w-24 md:w-32 aspect-square rounded-xl overflow-hidden flex-shrink-0"
         >
           <img
-            src={item.productId.mainImages[0]}
-            alt={item.productId.name}
+            src={productImages[0] || '/placeholder.png'}
+            alt={product.name || 'Product'}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
-          {variant && (
+          {variant && Object.keys(variantAttributes).length > 0 && (
             <div className="absolute bottom-1 right-1 bg-black/70 text-white text-xs px-2 py-0.5 rounded-full">
-              {Object.values(variant.attributes)[0]}
+              {Object.values(variantAttributes)[0]}
             </div>
           )}
         </Link>
@@ -94,16 +100,16 @@ const CartItemCard = ({ item, actions, index }) => {
           <div className="flex items-start justify-between gap-2">
             <div>
               <Link
-                to={`/products/${item.productId._id}`}
+                to={`/products/${productSlug}`}
                 className="font-semibold text-gray-900 hover:text-primary transition-colors line-clamp-2"
               >
-                {item.productId.name}
+                {product.name || 'Unknown Product'}
               </Link>
 
               {/* Variant Info */}
-              {variant && (
+              {variant && Object.keys(variantAttributes).length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {Object.entries(variant.attributes).map(([key, value]) => (
+                  {Object.entries(variantAttributes).map(([key, value]) => (
                     <span
                       key={key}
                       className="inline-flex items-center gap-1 text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full"

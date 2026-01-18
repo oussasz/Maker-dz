@@ -80,13 +80,18 @@ const useCartActions = () => {
       return;
     }
 
+    // Support both MySQL (id) and MongoDB (_id) structures
+    const itemId = item.id || item._id;
+    const product = item.product || item.productId || {};
+    const productId = product.id || product._id || item.productId;
+
     // Optimistic UI
-    updateItemQuantity(item._id, newQuantity);
+    updateItemQuantity(itemId, newQuantity);
 
     // Debounced backend update
     await updateCartDebounced({
-      itemId: item._id,
-      productId: item.productId._id,
+      itemId: itemId,
+      productId: productId,
       variantId: item.variantId,
       quantity: newQuantity,
     });
@@ -106,8 +111,11 @@ const useCartActions = () => {
    * Removing an item should be INSTANT, not debounced
    */
   const handleItemRemove = async (item) => {
+    const product = item.product || item.productId || {};
+    const productId = product.id || product._id || item.productId;
+
     await updateCartInstant({
-      productId: item.productId._id,
+      productId: productId,
       variantId: item.variantId,
       quantity: 0,
     });
@@ -119,16 +127,25 @@ const useCartActions = () => {
    * Changing variant should also be INSTANT
    */
   const handleVariantChange = async (item, attributeName, newValue) => {
-    const currentVariant = item.productId.variants.find(
-      (v) => v._id === item.variantId
+    const product = item.product || item.productId || {};
+    const productId = product.id || product._id || item.productId;
+    const variants = product.variants || [];
+    
+    const currentVariant = variants.find(
+      (v) => (v.id || v._id) === item.variantId
     );
+
+    if (!currentVariant) {
+      toast.error("Current variant not found");
+      return;
+    }
 
     const updatedAttributes = {
       ...currentVariant.attributes,
       [attributeName]: newValue,
     };
 
-    const newVariant = item.productId.variants.find((v) =>
+    const newVariant = variants.find((v) =>
       Object.entries(updatedAttributes).every(
         ([key, value]) => v.attributes[key] === value
       )
@@ -140,8 +157,8 @@ const useCartActions = () => {
     }
 
     await updateCartInstant({
-      productId: item.productId._id,
-      variantId: newVariant._id,
+      productId: productId,
+      variantId: newVariant.id || newVariant._id,
       quantity: item.quantity,
     });
 
@@ -150,8 +167,11 @@ const useCartActions = () => {
 
 
   const handlePersonalizationChange = async (item, newValue) => {
+    const product = item.product || item.productId || {};
+    const productId = product.id || product._id || item.productId;
+
     await updateCartInstant({
-      productId: item.productId._id,
+      productId: productId,
       variantId: item.variantId,
       personalization: newValue,
     });
