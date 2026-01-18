@@ -14,16 +14,16 @@ export const Product = {
     // Support both direct options and nested filters
     const sellerId = filters.seller_id || options.sellerId;
     const categoryId = filters.category_id || options.categoryId;
-    const isActive =
-      filters.is_active !== undefined
-        ? filters.is_active
-        : options.isActive !== undefined
-          ? options.isActive
-          : true;
+    // Only filter by isActive if explicitly set
+    const isActive = filters.is_active !== undefined
+      ? filters.is_active
+      : options.isActive;
     const isFeatured = filters.is_featured;
     const minPrice = filters.min_price;
     const maxPrice = filters.max_price;
     const search = filters.search || options.search;
+
+    console.log("Product.findAll - isActive filter:", isActive);
 
     let query = `
       SELECT p.*, 

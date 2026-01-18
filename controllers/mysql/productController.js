@@ -197,9 +197,8 @@ export const getProducts = async (req, res) => {
     const offset = (page - 1) * limit;
     const sort = req.query.sort || "created_at DESC";
 
-    const filters = {
-      is_active: true,
-    };
+    // Don't filter by is_active for now - show all products
+    const filters = {};
 
     if (req.query.category) filters.category_id = req.query.category;
     if (req.query.seller) filters.seller_id = req.query.seller;
