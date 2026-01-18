@@ -5,10 +5,14 @@ const useRefreshToken = () => {
   const { setAccessToken, refreshToken } = useAuth();
 
   const refresh = async () => {
+    if (!refreshToken) {
+      throw new Error("Missing refresh token");
+    }
+
     const response = await axios.get("/refresh", {
       headers: {
-        'Authorization': `Bearer ${refreshToken}`
-      }
+        Authorization: `Bearer ${refreshToken}`,
+      },
     });
 
     setAccessToken(response.data.accessToken);
