@@ -155,32 +155,23 @@ export const createProduct = async (req, res) => {
       counter++;
     }
 
-    // Create product
-    const productId = await Product.create({
-      seller_id: req.user.id,
+    // Create product (model handles categories and variants internally)
+    const product = await Product.create({
+      sellerId: req.user.id,
       name,
       slug,
       description,
-      base_price: parseFloat(basePrice),
-      main_images: JSON.stringify(mainImages),
-      specifications: JSON.stringify(parsedSpecs),
-      variant_options: JSON.stringify(parsedVariantOptions),
-      variant_variables: JSON.stringify(parsedVariantVariables),
-      tags: JSON.stringify(parsedTags),
-      is_featured: isFeatured === "true" || isFeatured === true,
+      basePrice: parseFloat(basePrice),
+      mainImages: mainImages,
+      specifications: parsedSpecs,
+      variantOptions: parsedVariantOptions,
+      variantVariables: parsedVariantVariables,
+      tags: parsedTags,
+      isActive: true,
+      isFeatured: isFeatured === "true" || isFeatured === true,
+      categories: parsedCategories,
+      variants: parsedVariants,
     });
-
-    // Add variants
-    if (parsedVariants && parsedVariants.length > 0) {
-      await Product.addVariants(productId, parsedVariants);
-    }
-
-    // Add category associations
-    if (parsedCategories && parsedCategories.length > 0) {
-      await Product.addCategories(productId, parsedCategories);
-    }
-
-    const product = await Product.findById(productId);
 
     return res.status(201).json({
       message: "Product created successfully",
