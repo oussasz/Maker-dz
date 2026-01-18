@@ -1,5 +1,8 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/qqbmuabu/Maker-dz
-    - /bin/cp -R ./* $DEPLOYPATH/
+    - export WEBPATH=/home/qqbmuabu/public_html
+    - cd frontend
+    - npm install
+    - npm run build
+    - /bin/cp -R dist/* $WEBPATH/
