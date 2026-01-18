@@ -14,9 +14,12 @@ export const addToWishlist = async (req, res) => {
     // Check if already in wishlist
     const isInWishlist = await Wishlist.hasProduct(userId, productId);
     if (isInWishlist) {
-      return res
-        .status(409)
-        .json({ error: "The product is already in wishlist" });
+      // Idempotent success - return 200 instead of 409
+      const wishlist = await Wishlist.findByUserId(userId);
+      return res.status(200).json({
+        message: "The product is already in wishlist",
+        wishlist,
+      });
     }
 
     await Wishlist.addProduct(userId, productId);
@@ -46,7 +49,12 @@ export const removeFromWishlist = async (req, res) => {
 
     const isInWishlist = await Wishlist.hasProduct(userId, productId);
     if (!isInWishlist) {
-      return res.status(409).json({ error: "The product is not in wishlist" });
+      // Idempotent success - return 200 instead of 409
+      const wishlist = await Wishlist.findByUserId(userId);
+      return res.status(200).json({
+        message: "The product is not in wishlist",
+        wishlist,
+      });
     }
 
     await Wishlist.removeProduct(userId, productId);

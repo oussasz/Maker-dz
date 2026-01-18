@@ -75,7 +75,12 @@ function App() {
   };
 
   useEffect(() => {
-    console.log("App useEffect - isAuthenticated:", isAuthenticated, "user:", user);
+    console.log(
+      "App useEffect - isAuthenticated:",
+      isAuthenticated,
+      "user:",
+      user,
+    );
     if (isAuthenticated && user?.role === "customer") {
       fetchWishlist();
     }

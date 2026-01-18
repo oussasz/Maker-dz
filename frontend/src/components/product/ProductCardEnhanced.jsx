@@ -48,10 +48,6 @@ const ProductCard = ({
         removeFromWishlist(productId);
       }
     } catch (error) {
-      // If 409 (not in wishlist), still remove from local state
-      if (error?.response?.status === 409) {
-        removeFromWishlist(productId);
-      }
       console.error(error);
     }
   };
@@ -63,10 +59,6 @@ const ProductCard = ({
         addToWishlist(productId);
       }
     } catch (error) {
-      // If 409 (already in wishlist), still add to local state to sync
-      if (error?.response?.status === 409) {
-        addToWishlist(productId);
-      }
       console.error(error);
     }
   };
