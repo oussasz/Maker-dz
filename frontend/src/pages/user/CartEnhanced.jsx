@@ -351,7 +351,7 @@ const Cart = () => {
   } = useCartActions();
 
   const cartItems = cart?.items || [];
-  
+
   console.log("CartEnhanced render - cart:", cart);
   console.log("CartEnhanced render - cartItems:", cartItems);
   console.log("CartEnhanced render - cartItems length:", cartItems.length);
