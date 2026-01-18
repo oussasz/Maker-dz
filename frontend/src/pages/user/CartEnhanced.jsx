@@ -180,7 +180,18 @@ const CartItemCard = ({ item, actions, index }) => {
 // Order Summary Component
 const OrderSummary = ({ cart, onCheckout }) => {
   const { t } = useTranslation("cart");
-  const subtotal = cart.totalAmount || 0;
+
+  // Calculate subtotal dynamically from items (handles both API formats)
+  const calculatedSubtotal = (cart.items || []).reduce((sum, item) => {
+    return sum + (parseFloat(item.price) || 0) * (item.quantity || 1);
+  }, 0);
+
+  // Use calculated subtotal, or fall back to totalAmount/total_amount from API
+  const subtotal =
+    calculatedSubtotal ||
+    parseFloat(cart.totalAmount) ||
+    parseFloat(cart.total_amount) ||
+    0;
   const shipping = subtotal >= 5000 ? 0 : 500;
   const total = subtotal + shipping;
 

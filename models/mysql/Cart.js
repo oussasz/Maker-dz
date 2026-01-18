@@ -139,20 +139,23 @@ export const Cart = {
     return this.findByUserId(userId);
   },
 
-  // Remove item from cart
-  async removeItem(userId, itemId) {
+  // Remove item from cart by productId and variantId
+  async removeItem(cartId, productId, variantId) {
     const pool = await getConnection();
 
-    const cart = await this.findByUserId(userId);
-    if (!cart) return null;
+    if (variantId) {
+      await pool.query(
+        "DELETE FROM cart_items WHERE cart_id = ? AND product_id = ? AND variant_id = ?",
+        [cartId, productId, variantId],
+      );
+    } else {
+      await pool.query(
+        "DELETE FROM cart_items WHERE cart_id = ? AND product_id = ?",
+        [cartId, productId],
+      );
+    }
 
-    await pool.query("DELETE FROM cart_items WHERE id = ? AND cart_id = ?", [
-      itemId,
-      cart.id,
-    ]);
-    await this.updateTotal(cart.id);
-
-    return this.findByUserId(userId);
+    await this.updateTotal(cartId);
   },
 
   // Clear cart
