@@ -89,7 +89,8 @@ const FileUpload = ({ onFileChange, previewImages, onImageDelete }) => {
           type="button"
           variant="outline"
           className="gap-2"
-          onClick={() => fileInputRef.current?.click()}>
+          onClick={() => fileInputRef.current?.click()}
+        >
           <Upload className="h-4 w-4" />
           Choose Files
         </Button>
@@ -110,7 +111,8 @@ const FileUpload = ({ onFileChange, previewImages, onImageDelete }) => {
               size="icon"
               variant="destructive"
               className="absolute -top-2 -right-2 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-              onClick={() => onImageDelete(index)}>
+              onClick={() => onImageDelete(index)}
+            >
               <X className="h-3 w-3" />
             </Button>
           </div>
@@ -138,7 +140,8 @@ export const MultiSelect = ({
           role="combobox"
           aria-expanded={open}
           className="w-full justify-between mt-2 hover:bg-primary/10"
-          disabled={disabled}>
+          disabled={disabled}
+        >
           <span className="truncate">
             {value.length > 0
               ? options
@@ -161,14 +164,16 @@ export const MultiSelect = ({
               return (
                 <CommandItem
                   key={option[selector || "name"]}
+                  value={option.name}
                   onSelect={() => {
                     const newValue = isSelected
                       ? value.filter(
-                          (item) => item !== option[selector || "name"]
+                          (item) => item !== option[selector || "name"],
                         )
                       : [...value, option[selector || "name"]];
                     onChange(newValue);
-                  }}>
+                  }}
+                >
                   <div className="flex items-center gap-2 flex-1">
                     {option.value && (
                       <div
@@ -201,7 +206,8 @@ const CategorySelector = ({
       <div key={category.name} className="space-y-1">
         <div
           className={`flex items-center p-3 rounded-lg border cursor-pointer transition-colors ${category.selected ? "bg-primary/10 border-primary" : "bg-muted/50 hover:bg-muted"}`}
-          onClick={() => onCategoryClick(category)}>
+          onClick={() => onCategoryClick(category)}
+        >
           <span className="font-medium">{category.name}</span>
         </div>
         {category.selected && (
@@ -210,7 +216,8 @@ const CategorySelector = ({
               <div
                 key={subCat.name}
                 className={`flex items-center p-2 rounded-lg border cursor-pointer transition-colors ${subCat.selected ? "bg-primary/10 border-primary" : "bg-muted/30 hover:bg-muted"}`}
-                onClick={() => onSubCategoryClick(subCat, category)}>
+                onClick={() => onSubCategoryClick(subCat, category)}
+              >
                 <span>{subCat.name}</span>
               </div>
             ))}
@@ -242,13 +249,13 @@ const AddProductModal = ({ open, onOpenChange, onProductAdded }) => {
   const [selectedCustom, setSelectedCustom] = useState("");
   const [selectedMaterials, setSeletedMaterials] = useState("");
   const [categoryList, setCategoryList] = useState(
-    JSON.parse(JSON.stringify(initialCategoryList))
+    JSON.parse(JSON.stringify(initialCategoryList)),
   );
   const [subCategoriesToShow, setSubCategoriesToShow] = useState(
-    JSON.parse(JSON.stringify(initialSubCategories))
+    JSON.parse(JSON.stringify(initialSubCategories)),
   );
 
-  const {user} = useAuth()
+  const { user } = useAuth();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -258,7 +265,7 @@ const AddProductModal = ({ open, onOpenChange, onProductAdded }) => {
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files).slice(
       0,
-      10 - productData.photos.length
+      10 - productData.photos.length,
     );
     const newPhotos = [...productData.photos, ...files];
     const newPreviews = files.map((file) => URL.createObjectURL(file));
@@ -294,12 +301,12 @@ const AddProductModal = ({ open, onOpenChange, onProductAdded }) => {
     const updatedCategories = categoryList.map((category) =>
       category.name === clickedCategory.name
         ? { ...category, selected: !category.selected }
-        : category
+        : category,
     );
     setCategoryList(updatedCategories);
     const updatedSubCategories = subCategoriesToShow[clickedCategory.name].map(
       (subCat) =>
-        clickedCategory.selected ? { ...subCat, selected: false } : subCat
+        clickedCategory.selected ? { ...subCat, selected: false } : subCat,
     );
     setSubCategoriesToShow((prev) => ({
       ...prev,
@@ -312,7 +319,7 @@ const AddProductModal = ({ open, onOpenChange, onProductAdded }) => {
       (subCat) =>
         subCat.name === subCategory.name
           ? { ...subCat, selected: !subCat.selected }
-          : subCat
+          : subCat,
     );
     setSubCategoriesToShow((prev) => ({
       ...prev,
@@ -454,13 +461,14 @@ const AddProductModal = ({ open, onOpenChange, onProductAdded }) => {
                   <div className="flex flex-wrap gap-2 mt-2">
                     {productData.colors.map((color) => {
                       const colorObj = predefinedColors.find(
-                        (c) => c.name === color
+                        (c) => c.name === color,
                       );
                       return (
                         <Badge
                           key={color}
                           variant="secondary"
-                          className="gap-2">
+                          className="gap-2"
+                        >
                           {colorObj?.value && (
                             <div
                               className="w-3 h-3 rounded-full"
@@ -570,7 +578,7 @@ const AddProductModal = ({ open, onOpenChange, onProductAdded }) => {
                             <Badge key={index} variant="outline">
                               {size.trim()}
                             </Badge>
-                          )
+                          ),
                       )}
                     </div>
                   </div>
@@ -583,7 +591,8 @@ const AddProductModal = ({ open, onOpenChange, onProductAdded }) => {
               type="submit"
               disabled={isSubmitting}
               size="lg"
-              className="min-w-48">
+              className="min-w-48"
+            >
               {isSubmitting ? "Adding Product..." : "Add Product"}
             </Button>
           </div>

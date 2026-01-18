@@ -24,8 +24,14 @@ export default function useProductAttributes(initialData, setData) {
   const getCategories = async () => {
     try {
       const response = await axios.get("/categories");
-      console.log("Categories fetched:", response.data);
-      setCategories(response.data);
+      const payload = response?.data;
+      const list = Array.isArray(payload)
+        ? payload
+        : Array.isArray(payload?.categories)
+          ? payload.categories
+          : [];
+      console.log("Categories fetched:", list);
+      setCategories(list);
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
