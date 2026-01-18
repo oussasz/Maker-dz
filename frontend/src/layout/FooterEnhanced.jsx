@@ -6,8 +6,6 @@ import Logo from "../assets/Logo.png";
 import {
   Facebook,
   Instagram,
-  Twitter,
-  Youtube,
   Mail,
   Phone,
   MapPin,
@@ -62,10 +60,16 @@ const Footer = () => {
   };
 
   const socialLinks = [
-    { icon: Facebook, href: "https://facebook.com", label: "Facebook" },
-    { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
-    { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
-    { icon: Youtube, href: "https://youtube.com", label: "YouTube" },
+    {
+      icon: Instagram,
+      href: "https://www.instagram.com/makerdz9?igsh=bmdmdmE4N2piNGZs",
+      label: "Instagram",
+    },
+    {
+      icon: Facebook,
+      href: "https://www.facebook.com/profile.php?id=61583485027931",
+      label: "Facebook",
+    },
   ];
 
   return (

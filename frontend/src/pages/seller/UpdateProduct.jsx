@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
-import ProductAttributes from "../../components/sellerDashboard/ProductAttributes";
-import ProductForm from "../../components/sellerDashboard/ProductForm";
+import ProductAttributes from "../../components/sellerDashboard/ProductAttributesEnhanced";
+import ProductForm from "../../components/sellerDashboard/ProductFormEnhanced";
 import VariantOptions from "../../components/sellerDashboard/VariantOptions";
 import VariantsTable from "../../components/sellerDashboard/VariantsTable";
 import LoadingSpinner from "../../components/ui/loading-spinner";

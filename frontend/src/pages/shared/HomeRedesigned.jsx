@@ -9,7 +9,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useGeneralStore } from "../../store/globalGeneralStore";
 import axios from "../../api/axios";
-import ProductCard from "../../components/product/ProductCard";
+import ProductCard from "../../components/product/ProductCardEnhanced";
 import {
   ArrowRight,
   Heart,

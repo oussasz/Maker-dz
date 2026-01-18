@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import axios from "../../api/axios.js";
-import ProductCard from "../../components/product/ProductCard";
+import ProductCard from "../../components/product/ProductCardEnhanced";
 import GridContainer from "../../components/ui/grid-container.jsx";
 import { Input } from "../../components/ui/input.tsx";
 import {

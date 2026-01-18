@@ -6,7 +6,7 @@ import axios from "../../api/axios";
 import useAuth from "../../store/authStore";
 import useCartStore from "../../store/cartStore";
 import useWishlistStore from "../../store/wishlistStore";
-import ProductCard from "../../components/product/ProductCard";
+import ProductCard from "../../components/product/ProductCardEnhanced";
 import LoadingSpinner from "../../components/ui/loading-spinner";
 import {
   Search,

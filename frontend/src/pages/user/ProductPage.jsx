@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import Button from "../../components/ui/my-button.jsx";
 import HomeSection from "../../components/sections/HomeSection";
-import ProductCard from "../../components/product/ProductCard";
+import ProductCard from "../../components/product/ProductCardEnhanced";
 import LoadingSpinner from "../../components/ui/loading-spinner";
 
 // New Imports

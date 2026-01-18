@@ -29,7 +29,7 @@ import { Separator } from "../../components/ui/separator.tsx";
 import { Input } from "../../components/ui/input.tsx";
 import FilterComponent from "../../components/common/Filter";
 import { GridContainer } from "../../components/ui/index";
-import ProductCard from "../../components/product/ProductCard";
+import ProductCard from "../../components/product/ProductCardEnhanced";
 import LoadingSpinner from "../../components/ui/loading-spinner";
 import { motion, AnimatePresence } from "framer-motion";
 

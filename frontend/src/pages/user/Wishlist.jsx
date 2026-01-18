@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { GridContainer } from "../../components/ui";
-import ProductCard from "../../components/product/ProductCard";
+import ProductCard from "../../components/product/ProductCardEnhanced";
 import { Heart } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate.js";
