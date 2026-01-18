@@ -11,9 +11,9 @@ const useCart = () => {
       // Add cache-busting parameter to prevent browser/CDN caching
       const res = await axiosPrivate.get(`/cart?_t=${Date.now()}`, {
         headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache'
-        }
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+        },
       });
       console.log("useCart fetch response:", res.data);
       console.log("Cart items count:", res.data.cart?.items?.length);
