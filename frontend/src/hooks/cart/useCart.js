@@ -3,12 +3,14 @@ import useCartStore from "../../store/cartStore.js";
 import useAxiosPrivate from "../useAxiosPrivate.js";
 
 const useCart = () => {
-  const { setCart } = useCartStore();
+  const { setCart, cart } = useCartStore();
   const axiosPrivate = useAxiosPrivate();
 
   const fetchCart = async () => {
     try {
       const res = await axiosPrivate.get(`/cart`);
+      console.log("useCart fetch response:", res.data);
+      console.log("Cart items count:", res.data.cart?.items?.length);
       setCart(res.data.cart);
     } catch (error) {
       console.error("Failed to update cart", error);
@@ -16,6 +18,7 @@ const useCart = () => {
   };
 
   useEffect(() => {
+    console.log("useCart effect running, current cart:", cart);
     fetchCart();
   }, []);
 
