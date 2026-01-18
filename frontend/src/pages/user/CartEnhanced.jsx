@@ -61,9 +61,9 @@ const CartProgress = ({ currentAmount, freeShippingThreshold = 5000 }) => {
 const CartItemCard = ({ item, actions, index }) => {
   // Support both old MongoDB structure (productId as object) and new MySQL structure (product as object)
   const product = item.product || item.productId || {};
-  const variant = item.variant || (product.variants?.find(
-    (v) => (v.id || v._id) === item.variantId
-  ));
+  const variant =
+    item.variant ||
+    product.variants?.find((v) => (v.id || v._id) === item.variantId);
   const productId = product.id || product._id || item.productId;
   const productSlug = product.slug || productId;
   const productImages = product.mainImages || [];
@@ -84,8 +84,8 @@ const CartItemCard = ({ item, actions, index }) => {
           className="relative w-24 md:w-32 aspect-square rounded-xl overflow-hidden flex-shrink-0"
         >
           <img
-            src={productImages[0] || '/placeholder.png'}
-            alt={product.name || 'Product'}
+            src={productImages[0] || "/placeholder.png"}
+            alt={product.name || "Product"}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
           {variant && Object.keys(variantAttributes).length > 0 && (
@@ -103,7 +103,7 @@ const CartItemCard = ({ item, actions, index }) => {
                 to={`/products/${productSlug}`}
                 className="font-semibold text-gray-900 hover:text-primary transition-colors line-clamp-2"
               >
-                {product.name || 'Unknown Product'}
+                {product.name || "Unknown Product"}
               </Link>
 
               {/* Variant Info */}

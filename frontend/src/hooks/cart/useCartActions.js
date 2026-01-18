@@ -11,15 +11,23 @@ const useCartActions = () => {
 
   /**
    * DIRECT server update (no debounce)
+   * For removing items (quantity=0) or instant updates
    */
   const updateCartInstant = useCallback(
     async ({ productId, variantId, quantity, personalization }) => {
       try {
-        const res = await axiosPrivate.put("/cart/item/update", {
-          productId,
-          variantId,
-          quantity,
-          personalization,
+        // If quantity is 0, use DELETE endpoint
+        if (quantity <= 0) {
+          const res = await axiosPrivate.delete("/cart/item", {
+            params: { productId, variantId },
+          });
+          setCart(res.data.cart);
+          return res.data;
+        }
+
+        // Otherwise use PUT with updates array format
+        const res = await axiosPrivate.put("/cart", {
+          updates: [{ productId, variantId, quantity, personalization }],
         });
 
         setCart(res.data.cart);
@@ -30,7 +38,7 @@ const useCartActions = () => {
         throw err;
       }
     },
-    [setCart, axiosPrivate]
+    [setCart, axiosPrivate],
   );
 
   /**
@@ -64,7 +72,7 @@ const useCartActions = () => {
         }, 600); // debounce duration
       });
     },
-    [updateCartInstant]
+    [updateCartInstant],
   );
 
   // ------------------------------------------------------------------------------------
@@ -130,9 +138,9 @@ const useCartActions = () => {
     const product = item.product || item.productId || {};
     const productId = product.id || product._id || item.productId;
     const variants = product.variants || [];
-    
+
     const currentVariant = variants.find(
-      (v) => (v.id || v._id) === item.variantId
+      (v) => (v.id || v._id) === item.variantId,
     );
 
     if (!currentVariant) {
@@ -147,8 +155,8 @@ const useCartActions = () => {
 
     const newVariant = variants.find((v) =>
       Object.entries(updatedAttributes).every(
-        ([key, value]) => v.attributes[key] === value
-      )
+        ([key, value]) => v.attributes[key] === value,
+      ),
     );
 
     if (!newVariant) {
@@ -165,7 +173,6 @@ const useCartActions = () => {
     toast.success("Variant updated");
   };
 
-
   const handlePersonalizationChange = async (item, newValue) => {
     const product = item.product || item.productId || {};
     const productId = product.id || product._id || item.productId;
@@ -177,7 +184,7 @@ const useCartActions = () => {
     });
 
     toast.success("Item updated");
-  }
+  };
 
   // ------------------------------------------------------------------------------------
 
@@ -186,7 +193,7 @@ const useCartActions = () => {
     handleDecrement,
     handleVariantChange,
     handleItemRemove,
-    handlePersonalizationChange
+    handlePersonalizationChange,
   };
 };
 
