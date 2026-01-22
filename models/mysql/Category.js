@@ -16,6 +16,28 @@ export const Category = {
     return rows;
   },
 
+  // Find all categories with product counts
+  async findAllWithProductCounts(options = {}) {
+    const pool = await getConnection();
+    const { activeOnly = false } = options;
+
+    let query = `
+      SELECT c.*, COALESCE(COUNT(DISTINCT p.id), 0) AS product_count
+      FROM categories c
+      LEFT JOIN product_categories pc ON c.id = pc.category_id
+      LEFT JOIN products p ON p.id = pc.product_id AND p.is_active = TRUE
+    `;
+
+    if (activeOnly) {
+      query += " WHERE c.is_active = TRUE";
+    }
+
+    query += " GROUP BY c.id ORDER BY c.name ASC";
+
+    const [rows] = await pool.query(query);
+    return rows;
+  },
+
   // Find by ID
   async findById(id) {
     const pool = await getConnection();

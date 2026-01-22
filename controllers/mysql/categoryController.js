@@ -27,7 +27,12 @@ export const createCategory = async (req, res) => {
 
 export const getCategories = async (req, res) => {
   try {
-    const categories = await Category.findAll();
+    const activeOnly = req.query.activeOnly === "true";
+    const withCounts = req.query.withCounts === "true";
+
+    const categories = withCounts
+      ? await Category.findAllWithProductCounts({ activeOnly })
+      : await Category.findAll({ activeOnly });
     res.status(200).json(categories);
   } catch (error) {
     console.error("Error fetching categories:", error);

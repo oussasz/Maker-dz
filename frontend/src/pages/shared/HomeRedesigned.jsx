@@ -91,7 +91,7 @@ const HeroSection = () => {
             alt={heroContent[currentSlide].title}
             className="absolute inset-0 w-full h-full object-cover"
             // Start loading the first image immediately with high priority
-            fetchPriority={currentSlide === 0 ? "high" : "auto"}
+            fetchpriority={currentSlide === 0 ? "high" : "auto"}
             loading={currentSlide === 0 ? "eager" : "lazy"}
           />
           {/* Gradient Overlays */}
@@ -133,14 +133,14 @@ const HeroSection = () => {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.8 }}
               >
-                <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-tight mb-6">
+                <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-tight mb-6">
                   {heroContent[currentSlide].title}
                   <br />
                   <span className="bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 bg-clip-text text-transparent">
                     {heroContent[currentSlide].titleHighlight}
                   </span>
                 </h1>
-                <p className="text-xl md:text-2xl text-white/80 leading-relaxed mb-10 max-w-2xl">
+                <p className="text-base sm:text-lg md:text-2xl text-white/80 leading-relaxed mb-8 sm:mb-10 max-w-2xl">
                   {heroContent[currentSlide].subtitle}
                 </p>
               </motion.div>
@@ -228,10 +228,10 @@ const StorySection = () => {
   return (
     <section
       ref={ref}
-      className="py-24 md:py-32 bg-gradient-to-b from-stone-50 to-white overflow-hidden"
+      className="relative py-24 md:py-32 bg-gradient-to-b from-stone-50 to-white overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
           {/* Image Composition */}
           <div className="relative">
             <motion.div style={{ y }} className="relative z-10">
@@ -247,7 +247,7 @@ const StorySection = () => {
                   <img
                     src="png-transparent-algerian-zellige-mosaic-pattern-illustration.png"
                     alt="Algerian artisan at work"
-                    className="w-full h-[500px] object-cover"
+                    className="w-full h-[320px] sm:h-[420px] md:h-[500px] object-cover"
                   />
                 </motion.div>
 
@@ -257,14 +257,14 @@ const StorySection = () => {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.4 }}
-                  className="absolute -bottom-8 -right-8 md:right-8 bg-white rounded-2xl p-6 shadow-xl max-w-[280px]"
+                  className="absolute -bottom-6 -right-6 sm:-bottom-8 sm:-right-8 md:right-8 bg-white rounded-2xl p-4 sm:p-5 md:p-6 shadow-xl max-w-[240px] sm:max-w-[260px]"
                 >
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
                       <HandHeart className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <p className="font-bold text-gray-900">
+                      <p className="text-lg sm:text-xl font-bold text-gray-900">
                         {t("story_card_number")}
                       </p>
                       <p className="text-sm text-gray-500">
@@ -340,7 +340,7 @@ const StorySection = () => {
                 { number: t("story_stat3"), label: t("story_stat3_label") },
               ].map((stat) => (
                 <div key={stat.label}>
-                  <p className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-600">
+                  <p className="text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-600">
                     {stat.number}
                   </p>
                   <p className="text-sm text-gray-500 mt-1">{stat.label}</p>
@@ -357,135 +357,106 @@ const StorySection = () => {
 // ============================================
 // CRAFT CATEGORIES - Visual Craft Showcase
 // ============================================
-const craftCategories = [
+const craftCategoryMeta = [
   {
     id: 1,
-    name: "Pottery & Ceramics",
-    nameAr: "الفخار والسيراميك",
-    description: "Traditional clay work from Kabylie and beyond",
+    slug: "pottery-ceramics",
+    nameKey: "category_pottery",
+    descriptionKey: "category_pottery_desc",
     image:
       "https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=600&q=80",
     color: "from-amber-600 to-orange-700",
-    items: 245,
   },
   {
     id: 2,
-    name: "Textiles & Weaving",
-    nameAr: "المنسوجات والنسيج",
-    description: "Handwoven carpets, blankets, and traditional fabrics",
+    slug: "textiles-weaving",
+    nameKey: "category_textiles",
+    descriptionKey: "category_textiles_desc",
     image:
       "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80",
     color: "from-red-600 to-rose-700",
-    items: 189,
   },
   {
     id: 3,
-    name: "Jewelry & Silver",
-    nameAr: "المجوهرات والفضة",
-    description: "Berber silver, traditional Kabyle pieces",
+    slug: "jewelry-silver",
+    nameKey: "category_jewelry",
+    descriptionKey: "category_jewelry_desc",
     image:
       "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&q=80",
     color: "from-slate-600 to-zinc-700",
-    items: 156,
   },
   {
     id: 4,
-    name: "Leather Goods",
-    nameAr: "المنتجات الجلدية",
-    description: "Handcrafted bags, shoes, and accessories",
+    slug: "leather-goods",
+    nameKey: "category_leather",
+    descriptionKey: "category_leather_desc",
     image:
       "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80",
     color: "from-amber-700 to-yellow-800",
-    items: 134,
   },
   {
     id: 5,
-    name: "Woodwork & Carving",
-    nameAr: "الأعمال الخشبية",
-    description: "Intricate wooden art and furniture",
+    slug: "woodwork-carving",
+    nameKey: "category_woodwork",
+    descriptionKey: "category_woodwork_desc",
     image:
       "https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=600&q=80",
     color: "from-stone-600 to-stone-800",
-    items: 98,
   },
   {
     id: 6,
-    name: "Traditional Dress",
-    nameAr: "الأزياء التقليدية",
-    description: "Karakou, Chedda, and regional costumes",
+    slug: "traditional-dress",
+    nameKey: "category_dress",
+    descriptionKey: "category_dress_desc",
     image:
       "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&q=80",
     color: "from-emerald-600 to-teal-700",
-    items: 167,
   },
 ];
 
 const CraftCategoriesSection = () => {
   const navigate = useNavigate();
   const { t } = useTranslation("home");
+  const [categoryCounts, setCategoryCounts] = useState({});
+  const [isLoadingCounts, setIsLoadingCounts] = useState(true);
 
-  const craftCategories = [
-    {
-      id: 1,
-      name: "Pottery & Ceramics",
-      nameTranslated: t("category_pottery"),
-      description: t("category_pottery_desc"),
-      image:
-        "https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=600&q=80",
-      color: "from-amber-600 to-orange-700",
-      items: 245,
-    },
-    {
-      id: 2,
-      name: "Textiles & Weaving",
-      nameTranslated: t("category_textiles"),
-      description: t("category_textiles_desc"),
-      image:
-        "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80",
-      color: "from-red-600 to-rose-700",
-      items: 189,
-    },
-    {
-      id: 3,
-      name: "Jewelry & Silver",
-      nameTranslated: t("category_jewelry"),
-      description: t("category_jewelry_desc"),
-      image:
-        "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&q=80",
-      color: "from-slate-600 to-zinc-700",
-      items: 156,
-    },
-    {
-      id: 4,
-      name: "Leather Goods",
-      nameTranslated: t("category_leather"),
-      description: t("category_leather_desc"),
-      image:
-        "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80",
-      color: "from-amber-700 to-yellow-800",
-      items: 134,
-    },
-    {
-      id: 5,
-      name: "Woodwork & Carving",
-      nameTranslated: t("category_woodwork"),
-      description: t("category_woodwork_desc"),
-      image:
-        "https://images.unsplash.com/photo-1452860606245-08befc0ff44b?w=600&q=80",
-      color: "from-stone-600 to-stone-800",
-      items: 98,
-    },
-    {
-      id: 6,
-      name: "Traditional Dress",
-      nameTranslated: t("category_dress"),
-      description: t("category_dress_desc"),
-      image:
-        "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&q=80",
-      color: "from-emerald-600 to-teal-700",
-      items: 167,
-    },
-  ];
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchCategoryCounts = async () => {
+      try {
+        const response = await axios.get(
+          "/categories?withCounts=true&activeOnly=true",
+        );
+        const counts = (response.data || []).reduce((acc, category) => {
+          acc[category.slug] = Number(category.product_count) || 0;
+          return acc;
+        }, {});
+        if (isMounted) {
+          setCategoryCounts(counts);
+        }
+      } catch (error) {
+        console.error("Error fetching category counts:", error);
+      } finally {
+        if (isMounted) {
+          setIsLoadingCounts(false);
+        }
+      }
+    };
+
+    fetchCategoryCounts();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const craftCategories = craftCategoryMeta.map((category) => ({
+    ...category,
+    nameTranslated: t(category.nameKey),
+    description: t(category.descriptionKey),
+    items: categoryCounts[category.slug] ?? 0,
+  }));
 
   return (
     <section className="py-24 md:py-32 bg-white">
@@ -512,7 +483,7 @@ const CraftCategoriesSection = () => {
         </motion.div>
 
         {/* Category Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {craftCategories.map((category, index) => (
             <motion.div
               key={category.id}
@@ -520,8 +491,10 @@ const CraftCategoriesSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              onClick={() => navigate(`/products/categories/${category.name}`)}
-              className="group relative h-80 rounded-3xl overflow-hidden cursor-pointer"
+              onClick={() =>
+                navigate(`/products/categories/${category.slug || category.name}`)
+              }
+              className="group relative h-64 sm:h-72 lg:h-80 rounded-2xl sm:rounded-3xl overflow-hidden cursor-pointer"
             >
               {/* Background Image */}
               <div className="absolute inset-0">
@@ -536,17 +509,17 @@ const CraftCategoriesSection = () => {
               </div>
 
               {/* Content */}
-              <div className="absolute inset-0 p-6 flex flex-col justify-end text-white">
+              <div className="absolute inset-0 p-4 sm:p-5 md:p-6 flex flex-col justify-end text-white">
                 <div className="transform transition-transform duration-300 group-hover:translate-y-[-10px]">
-                  <h3 className="text-2xl font-bold mb-2">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-2">
                     {category.nameTranslated}
                   </h3>
-                  <p className="text-white/80 text-sm mb-4">
+                  <p className="text-white/80 text-xs sm:text-sm mb-3 sm:mb-4">
                     {category.description}
                   </p>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm opacity-80">
-                      {category.items} {t("items")}
+                    <span className="text-xs sm:text-sm opacity-80">
+                      {isLoadingCounts ? "…" : category.items} {t("items")}
                     </span>
                     <motion.div
                       initial={{ x: -10, opacity: 0 }}
@@ -604,7 +577,7 @@ const FeaturedProductsSection = ({ products }) => {
         </motion.div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           {safeProducts.slice(0, 8).map((product, index) => (
             <motion.div
               key={product._id || index}

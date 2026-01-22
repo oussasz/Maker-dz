@@ -50,7 +50,7 @@ Upload these to your cPanel Node.js app folder (e.g., `/home/username/Maker-dz/`
 1. Build: `cd frontend && npm run build`
 2. Upload `frontend/dist/*` contents to `public_html/`
 
-### Environment Variables (Set in cPanel)
+### Environment Variables
 
 ```
 DB_HOST=localhost
