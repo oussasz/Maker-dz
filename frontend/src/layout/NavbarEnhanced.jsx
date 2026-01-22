@@ -20,13 +20,21 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../components/ui/sheet";
-import { Menu, X, Heart, ShoppingCart, Search, Globe } from "lucide-react";
+import {
+  Menu,
+  X,
+  Heart,
+  ShoppingCart,
+  Search,
+  Globe,
+  LogOut,
+} from "lucide-react";
 import { Button } from "../components/ui/button";
 import useWishlistStore from "../store/wishlistStore";
 import useCartStore from "../store/cartStore";
 
 const Navbar = () => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -419,18 +427,32 @@ const Navbar = () => {
                 {/* Auth Button Mobile */}
                 <div className="mt-8 px-4">
                   {isAuthenticated ? (
-                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span className="text-primary font-semibold">
-                          {user?.username?.charAt(0)?.toUpperCase() || "U"}
-                        </span>
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <span className="text-primary font-semibold">
+                            {user?.username?.charAt(0)?.toUpperCase() || "U"}
+                          </span>
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900">
+                            {user?.username}
+                          </p>
+                          <p className="text-sm text-gray-500">{user?.email}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-medium text-gray-900">
-                          {user?.username}
-                        </p>
-                        <p className="text-sm text-gray-500">{user?.email}</p>
-                      </div>
+                      {/* Logout Button */}
+                      <Button
+                        variant="outline"
+                        className="w-full text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 hover:border-red-300"
+                        onClick={() => {
+                          logout();
+                          setMobileMenuOpen(false);
+                        }}
+                      >
+                        <LogOut className="h-4 w-4 mr-2" />
+                        {t("logout")}
+                      </Button>
                     </div>
                   ) : (
                     <div className="flex flex-col gap-3">
