@@ -5,6 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "./ui/dialog";
 
 import { Button } from "./ui/button";
@@ -81,6 +82,9 @@ export default function BuyNowModal({ open, onClose, onSubmit }) {
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>Complete Your Order</DialogTitle>
+          <DialogDescription>
+            Enter your delivery details to place the order.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">

@@ -85,7 +85,8 @@ const Profile = () => {
                   <Button
                     size="icon"
                     variant="outline"
-                    className="absolute bottom-0 right-0 rounded-full h-8 w-8">
+                    className="absolute bottom-0 right-0 rounded-full h-8 w-8"
+                  >
                     <Camera className="h-4 w-4" />
                   </Button>
                 </div>
@@ -131,6 +132,7 @@ const Profile = () => {
                   <Input
                     id="password"
                     type="password"
+                    autoComplete="current-password"
                     value="**********"
                     disabled
                   />

@@ -112,16 +112,16 @@ const Signup = () => {
       hasNumber: /\d/.test(password),
       hasSpecial: /[^a-zA-Z0-9]/.test(password),
     }),
-    [password]
+    [password],
   );
 
   const passwordStrength = useMemo(
     () => calculatePasswordStrength(password),
-    [password]
+    [password],
   );
   const strengthInfo = useMemo(
     () => getPasswordStrengthLabel(passwordStrength),
-    [passwordStrength]
+    [passwordStrength],
   );
 
   const isStep1Valid = username.length >= 3 && validateEmail(email);
@@ -153,7 +153,7 @@ const Signup = () => {
     } catch (error) {
       if (error.response?.status === 400) {
         setError(
-          error.response.data.message || "Username or email already exists"
+          error.response.data.message || "Username or email already exists",
         );
       } else {
         setError("Something went wrong. Please try again.");
@@ -389,6 +389,7 @@ const Signup = () => {
                     <input
                       id="password"
                       type={showPassword ? "text" : "password"}
+                      autoComplete="new-password"
                       value={password}
                       onChange={(e) => updateField("password", e.target.value)}
                       placeholder="••••••••"

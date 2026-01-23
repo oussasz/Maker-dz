@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "../../components/ui/dialog";
 import { Button } from "../../components/ui/button.tsx";
 import { Input } from "../../components/ui/input";
@@ -48,7 +49,7 @@ const BuyNowModal = ({
   const filterDairas = (wilayaName) => {
     if (!wilayaName) return [];
     const selectedWilaya = sortedAlgeriaData.find(
-      (wilaya) => wilaya.name === wilayaName
+      (wilaya) => wilaya.name === wilayaName,
     );
     return selectedWilaya ? selectedWilaya.dairas : [];
   };
@@ -89,6 +90,9 @@ const BuyNowModal = ({
           <DialogTitle className="text-2xl font-medium text-center">
             {!next ? "Enter Your Information" : "Select Options"}
           </DialogTitle>
+          <DialogDescription className="sr-only">
+            Provide your delivery information and confirm order details.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
@@ -111,7 +115,8 @@ const BuyNowModal = ({
                         variant="outline"
                         role="combobox"
                         aria-expanded={wilayaOpen}
-                        className="w-full justify-between">
+                        className="w-full justify-between"
+                      >
                         {currentWilaya || "Select Wilaya..."}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
@@ -129,7 +134,8 @@ const BuyNowModal = ({
                                 onSelect={(currentValue) => {
                                   handleWilayaChange(currentValue);
                                   setWilayaOpen(false);
-                                }}>
+                                }}
+                              >
                                 <Check
                                   className={`mr-2 h-4 w-4 ${
                                     currentWilaya === wilaya.name
@@ -157,7 +163,8 @@ const BuyNowModal = ({
                         role="combobox"
                         aria-expanded={cityOpen}
                         className="w-full justify-between"
-                        disabled={!currentWilaya}>
+                        disabled={!currentWilaya}
+                      >
                         {selectedOptions.commune || "Select Town..."}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
@@ -175,7 +182,8 @@ const BuyNowModal = ({
                                 onSelect={(currentValue) => {
                                   handleCityChange(currentValue);
                                   setCityOpen(false);
-                                }}>
+                                }}
+                              >
                                 <Check
                                   className={`mr-2 h-4 w-4 ${
                                     selectedOptions.commune === daira.name
@@ -214,7 +222,8 @@ const BuyNowModal = ({
                 <Button
                   type="button"
                   onClick={() => setNext(!next)}
-                  className="w-full bg-primary hover:bg-primary/90">
+                  className="w-full bg-primary hover:bg-primary/90"
+                >
                   Next
                 </Button>
               </div>
@@ -250,13 +259,15 @@ const BuyNowModal = ({
                   type="button"
                   variant="outline"
                   onClick={() => setNext(!next)}
-                  className="flex-1">
+                  className="flex-1"
+                >
                   Back
                 </Button>
                 <Button
                   type="button"
                   onClick={handleInBuyNowClick}
-                  className="flex-1 bg-primary hover:bg-primary/90">
+                  className="flex-1 bg-primary hover:bg-primary/90"
+                >
                   Buy Now
                 </Button>
               </div>
