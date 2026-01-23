@@ -39,10 +39,18 @@ const SidebarEnhanced = ({ activeTab, navItems }) => {
     setIsOpen(false);
   };
 
+  const getDisplayName = () => {
+    const first = user?.first_name || user?.firstName || "";
+    const last = user?.last_name || user?.lastName || "";
+    const full = `${first} ${last}`.trim();
+    return full || user?.username || user?.email || "User";
+  };
+
   const getInitials = (name) => {
     if (!name) return "U";
     return name
       .split(" ")
+      .filter(Boolean)
       .map((n) => n[0])
       .join("")
       .toUpperCase()
@@ -67,17 +75,22 @@ const SidebarEnhanced = ({ activeTab, navItems }) => {
 
       {/* User Profile Section */}
       <div className="p-4 border-b border-gray-100">
-        <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={() => handleNavigation("/dashboard/profile")}
+          className="w-full flex items-center gap-3 text-left hover:bg-gray-50 rounded-xl p-2 -m-2 transition-colors"
+          aria-label="Edit profile"
+        >
           <div className="relative">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-primary/25">
-              {getInitials(user?.usrname)}
+              {getInitials(getDisplayName())}
             </div>
             <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white" />
           </div>
           {!isCollapsed && (
             <div className="flex-1 min-w-0">
               <h3 className="font-semibold text-gray-900 truncate">
-                {user?.usrname}
+                {getDisplayName()}
               </h3>
               <p className="text-xs text-gray-500 flex items-center gap-1">
                 <Sparkles size={10} className="text-primary" />
@@ -85,7 +98,7 @@ const SidebarEnhanced = ({ activeTab, navItems }) => {
               </p>
             </div>
           )}
-        </div>
+        </button>
       </div>
 
       {/* Quick Actions Section */}
@@ -237,9 +250,14 @@ const SidebarEnhanced = ({ activeTab, navItems }) => {
 
           <img src={logo} alt="Maker DZ" className="h-9 w-auto" />
 
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-primary/25">
-            {getInitials(user?.usrname)}
-          </div>
+          <button
+            type="button"
+            onClick={() => handleNavigation("/dashboard/profile")}
+            className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-primary/25"
+            aria-label="Edit profile"
+          >
+            {getInitials(getDisplayName())}
+          </button>
         </div>
       </div>
 

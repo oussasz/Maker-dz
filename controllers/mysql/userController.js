@@ -207,7 +207,7 @@ export const getSellerProfile = async (req, res) => {
     const profile = await SellerProfile.findByUserId(sellerId);
 
     if (!profile) {
-      return res.status(404).json({ error: "Seller profile not found" });
+      return res.status(200).json({ profile: null });
     }
 
     res.status(200).json({ profile });

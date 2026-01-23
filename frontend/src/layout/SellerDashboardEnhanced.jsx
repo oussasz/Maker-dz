@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from "react";
 import SidebarEnhanced from "./SidebarEnhanced";
 import { Outlet, useLocation } from "react-router-dom";
-import {
-  LayoutDashboard,
-  ShoppingCart,
-  Package,
-  TrendingUp,
-  UserCircle,
-} from "lucide-react";
+import { LayoutDashboard, ShoppingCart, Package } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 
@@ -37,13 +31,6 @@ const SellerDashboardEnhanced = () => {
       icon: <Package size={20} />,
       id: "products",
       description: "Your product catalog",
-    },
-    {
-      link: "/dashboard/profile",
-      name: t("profile"),
-      icon: <UserCircle size={20} />,
-      id: "profile",
-      description: "Manage your profile",
     },
   ];
 

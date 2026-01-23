@@ -31,7 +31,7 @@ maker-app-cpanel/
 
 ## Deployment to cPanel
 
-1. Build: `cd frontend && npm run build`
+1. Build: `cd frontend && npm run build:cpanel`
 2. Upload files
 
 ### Environment Variables

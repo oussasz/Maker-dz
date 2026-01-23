@@ -22,6 +22,10 @@ export const login = async (req, res) => {
       email: user.email,
       username: user.username,
       role: user.role,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      phone: user.phone,
+      avatar: user.avatar,
     };
 
     const accessToken = jwt.sign(userData, process.env.JWT_SECRET, {
@@ -130,6 +134,10 @@ export const refresh = async (req, res) => {
       email: user.email,
       username: user.username,
       role: user.role,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      phone: user.phone,
+      avatar: user.avatar,
     };
 
     const newAccessToken = jwt.sign(userData, process.env.JWT_SECRET, {
@@ -143,6 +151,10 @@ export const refresh = async (req, res) => {
         email: user.email,
         username: user.username,
         role: user.role,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        phone: user.phone,
+        avatar: user.avatar,
       },
     });
   } catch (error) {
@@ -184,6 +196,10 @@ export const googleAuthCallback = (req, res, next) => {
         email: user.email,
         username: user.username,
         role: user.role,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        phone: user.phone,
+        avatar: user.avatar,
       };
 
       const accessToken = jwt.sign(userData, process.env.JWT_SECRET, {
