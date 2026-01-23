@@ -54,13 +54,22 @@ export const updateUser = async (req, res) => {
         .json({ error: "You can only update your own profile" });
     }
 
-    const { username, email, phone, profile } = req.body;
+    const { username, email, phone, profile, firstName, lastName, avatar } =
+      req.body;
     const updates = {};
 
     if (username) updates.username = username;
     if (email) updates.email = email;
-    if (phone) updates.phone = phone;
-    if (profile) updates.profile = JSON.stringify(profile);
+    const profileUpdates =
+      profile && typeof profile === "object" ? { ...profile } : {};
+    if (firstName !== undefined) profileUpdates.firstName = firstName;
+    if (lastName !== undefined) profileUpdates.lastName = lastName;
+    if (phone !== undefined) profileUpdates.phone = phone;
+    if (avatar !== undefined) profileUpdates.avatar = avatar;
+
+    if (Object.keys(profileUpdates).length > 0) {
+      updates.profile = profileUpdates;
+    }
 
     const success = await User.updateById(userId, updates);
     if (!success) {
@@ -211,29 +220,32 @@ export const getSellerProfile = async (req, res) => {
 export const updateSellerProfile = async (req, res) => {
   try {
     const sellerId = req.user.id;
-    const { shopName, shopDescription, shopLogo, shopBanner, businessType } =
-      req.body;
+    const { shopName, shopDescription, shopLogo, shopBanner } = req.body;
 
     let profile = await SellerProfile.findByUserId(sellerId);
 
     if (!profile) {
+      if (!shopName) {
+        return res
+          .status(400)
+          .json({ error: "Shop name is required to create profile" });
+      }
       // Create new profile
       await SellerProfile.create({
-        user_id: sellerId,
-        shop_name: shopName,
-        shop_description: shopDescription,
-        shop_logo: shopLogo,
-        shop_banner: shopBanner,
-        business_type: businessType,
+        userId: sellerId,
+        shopName,
+        shopDescription,
+        shopLogo,
+        shopBanner,
       });
     } else {
       // Update existing profile
       const updates = {};
-      if (shopName) updates.shop_name = shopName;
-      if (shopDescription) updates.shop_description = shopDescription;
-      if (shopLogo) updates.shop_logo = shopLogo;
-      if (shopBanner) updates.shop_banner = shopBanner;
-      if (businessType) updates.business_type = businessType;
+      if (shopName !== undefined) updates.shopName = shopName;
+      if (shopDescription !== undefined)
+        updates.shopDescription = shopDescription;
+      if (shopLogo !== undefined) updates.shopLogo = shopLogo;
+      if (shopBanner !== undefined) updates.shopBanner = shopBanner;
 
       await SellerProfile.updateByUserId(sellerId, updates);
     }

@@ -114,9 +114,14 @@ export const Product = {
       `SELECT p.*, 
               u.username as seller_username,
               u.first_name as seller_first_name,
-              u.last_name as seller_last_name
+              u.last_name as seller_last_name,
+              sp.shop_name as seller_shop_name,
+              sp.shop_logo as seller_shop_logo,
+              sp.shop_banner as seller_shop_banner,
+              sp.shop_description as seller_shop_description
        FROM products p
        LEFT JOIN users u ON p.seller_id = u.id
+       LEFT JOIN seller_profiles sp ON p.seller_id = sp.user_id
        WHERE p.id = ?`,
       [id],
     );
@@ -140,9 +145,15 @@ export const Product = {
     const [rows] = await pool.query(
       `SELECT p.*, 
               u.username as seller_username,
-              u.first_name as seller_first_name
+              u.first_name as seller_first_name,
+              u.last_name as seller_last_name,
+              sp.shop_name as seller_shop_name,
+              sp.shop_logo as seller_shop_logo,
+              sp.shop_banner as seller_shop_banner,
+              sp.shop_description as seller_shop_description
        FROM products p
        LEFT JOIN users u ON p.seller_id = u.id
+       LEFT JOIN seller_profiles sp ON p.seller_id = sp.user_id
        WHERE p.slug = ?`,
       [slug],
     );
@@ -379,6 +390,10 @@ export const Product = {
             username: row.seller_username,
             firstName: row.seller_first_name,
             lastName: row.seller_last_name,
+            shopName: row.seller_shop_name,
+            shopLogo: row.seller_shop_logo,
+            shopBanner: row.seller_shop_banner,
+            shopDescription: row.seller_shop_description,
           }
         : null,
     };

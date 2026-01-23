@@ -50,6 +50,7 @@ const i18nInitPromise = i18n
       "seller_dashboard",
       "seller_products",
       "seller_addproduct",
+      "seller_profile",
       "seller_updateproduct",
       "seller_orderlist",
       "footer",

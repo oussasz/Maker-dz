@@ -35,6 +35,7 @@ import {
   SellerRoute,
 } from "./utils/routes";
 import Dashboard from "./pages/seller/DashboardEnhanced";
+import SellerProfile from "./pages/seller/SellerProfile";
 import Products from "./pages/seller/ProductsEnhanced";
 import OrderList from "./pages/seller/OrderListEnhanced";
 import AddProduct from "./pages/seller/AddProductEnhanced";
@@ -284,6 +285,14 @@ function App() {
             element={
               <SellerRoute>
                 <UpdateProduct />
+              </SellerRoute>
+            }
+          />
+          <Route
+            path="profile"
+            element={
+              <SellerRoute>
+                <SellerProfile />
               </SellerRoute>
             }
           />

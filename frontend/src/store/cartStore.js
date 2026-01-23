@@ -1,5 +1,17 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import useAuth from "./authStore";
+
+const getCartStorageKey = () => {
+  const userId = useAuth.getState().user?.id;
+  return `cart-storage-${userId ?? "guest"}`;
+};
+
+const userScopedStorage = {
+  getItem: (name) => localStorage.getItem(getCartStorageKey()) ?? null,
+  setItem: (name, value) => localStorage.setItem(getCartStorageKey(), value),
+  removeItem: (name) => localStorage.removeItem(getCartStorageKey()),
+};
 
 const useCartStore = create(
   persist(
@@ -15,7 +27,7 @@ const useCartStore = create(
           cart: {
             ...state.cart,
             items: state.cart.items.map((item) =>
-              item._id === itemId ? { ...item, quantity: newQuantity } : item
+              item._id === itemId ? { ...item, quantity: newQuantity } : item,
             ),
           },
         })),
@@ -23,12 +35,24 @@ const useCartStore = create(
     }),
     {
       name: "cart-storage",
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => userScopedStorage),
       partialize: (state) => ({
         cart: state.cart,
       }),
+    },
+  ),
+);
+
+let currentUserKey = useAuth.getState().user?.id ?? "guest";
+useAuth.subscribe(
+  (state) => state.user?.id ?? "guest",
+  (nextUserKey) => {
+    if (nextUserKey !== currentUserKey) {
+      currentUserKey = nextUserKey;
+      useCartStore.setState({ cart: { totalAmount: 0, items: [] } });
+      useCartStore.persist.rehydrate();
     }
-  )
+  },
 );
 
 export default useCartStore;

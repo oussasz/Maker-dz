@@ -29,6 +29,11 @@ import VariantSelector from "../../components/product-page/VariantSelector";
 import { Textarea } from "../../components/ui/textarea.js";
 import BuyNowModal from "../../components/BuyNowModal.jsx";
 import { useTranslation } from "react-i18next";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "../../components/ui/avatar.tsx";
 
 const ProductPage = () => {
   const { productId } = useParams();
@@ -75,6 +80,23 @@ const ProductPage = () => {
   const currentStock = selectedVariant?.quantity || 0;
 
   const currentSku = productId || "N/A";
+
+  const sellerDisplayName = product?.seller
+    ? product.seller.shopName ||
+      [product.seller.firstName, product.seller.lastName]
+        .filter(Boolean)
+        .join(" ") ||
+      product.seller.username
+    : "";
+
+  const sellerInitials = sellerDisplayName
+    ? sellerDisplayName
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
+    : "S";
 
   if (isLoading || !product) return <LoadingSpinner />;
 
@@ -129,6 +151,30 @@ const ProductPage = () => {
                 {t("sku")}: <span className="text-gray-500">{currentSku}</span>
               </div>
             </div>
+
+            {/* Seller Info */}
+            {product?.seller && (
+              <div className="flex items-center gap-3 mb-5 p-3 rounded-lg border bg-gray-50">
+                <Avatar className="h-12 w-12">
+                  <AvatarImage
+                    src={product.seller.shopLogo || ""}
+                    alt={sellerDisplayName}
+                  />
+                  <AvatarFallback>{sellerInitials}</AvatarFallback>
+                </Avatar>
+                <div className="min-w-0">
+                  <p className="text-xs text-gray-500">{t("seller")}</p>
+                  <p className="font-semibold text-gray-900 truncate">
+                    {sellerDisplayName}
+                  </p>
+                  {product.seller.shopDescription && (
+                    <p className="text-xs text-gray-500 line-clamp-1">
+                      {product.seller.shopDescription}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Price */}
             <div className="mb-5">

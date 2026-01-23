@@ -1,6 +1,6 @@
 # Maker DZ - cPanel Deployment
 
-Algerian handcraft marketplace - Node.js backend + React frontend for cPanel hosting.
+Algerian handcraft marketplace - Node.js backend + React frontend
 
 ## Project Structure
 
@@ -31,39 +31,12 @@ maker-app-cpanel/
 
 ## Deployment to cPanel
 
-### Backend (Node.js App)
-
-Upload these to your cPanel Node.js app folder (e.g., `/home/username/Maker-dz/`):
-
-- `app.js`
-- `.htaccess`
-- `package.json`
-- `config/`
-- `controllers/`
-- `Routes/`
-- `models/`
-- `middleware/`
-- `utils/`
-
-### Frontend (Static Files)
-
 1. Build: `cd frontend && npm run build`
-2. Upload `frontend/dist/*` contents to `public_html/`
+2. Upload files
 
 ### Environment Variables
 
-```
-DB_HOST=localhost
-DB_NAME=your_database
-DB_USER=your_user
-DB_PASSWORD=your_password
-JWT_SECRET=your_secret
-GOOGLE_CLIENT_ID=your_google_id
-GOOGLE_CLIENT_SECRET=your_google_secret
-CLOUDINARY_CLOUD_NAME=your_cloud
-CLOUDINARY_API_KEY=your_key
-CLOUDINARY_API_SECRET=your_secret
-```
+all are set in the node js app in C-panel
 
 ## API Endpoints
 
