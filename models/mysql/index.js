@@ -9,3 +9,4 @@ export { Review } from "./Review.js";
 export { Address } from "./Address.js";
 export { SellerProfile } from "./SellerProfile.js";
 export { PasswordResetToken } from "./PasswordResetToken.js";
+export { EmailVerificationToken } from "./EmailVerificationToken.js";

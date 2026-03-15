@@ -1,8 +1,15 @@
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import argon2 from "argon2";
-import { User, PasswordResetToken } from "../../models/mysql/index.js";
-import { sendPasswordResetEmail } from "../../utils/emailService.js";
+import {
+  User,
+  PasswordResetToken,
+  EmailVerificationToken,
+} from "../../models/mysql/index.js";
+import {
+  sendPasswordResetEmail,
+  sendVerificationEmail,
+} from "../../utils/emailService.js";
 import passport from "../../middleware/mysql/passport.js";
 
 export const login = async (req, res) => {
@@ -100,7 +107,22 @@ export const register = async (req, res) => {
     });
     console.log("User created successfully, ID:", user.id);
 
-    res.status(201).json({ message: "User registered successfully" });
+    // Generate email verification token (24h expiry)
+    const rawToken = crypto.randomBytes(32).toString("hex");
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    await EmailVerificationToken.create(user.id, rawToken, expiresAt);
+
+    try {
+      await sendVerificationEmail(email, rawToken, username);
+    } catch (emailErr) {
+      console.error("register — verification email failed:", emailErr);
+      // Account is created; don't block registration if email fails
+    }
+
+    res.status(201).json({
+      message:
+        "User registered successfully. Please check your email to verify your account.",
+    });
   } catch (error) {
     console.error("Error registering user:", error.message);
     console.error("Error stack:", error.stack);
@@ -267,6 +289,39 @@ export const resetPassword = async (req, res) => {
     return res.status(200).json({ message: "Password reset successfully" });
   } catch (error) {
     console.error("resetPassword error:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// ─── Email Verification ─────────────────────────────────────────────────────
+
+/**
+ * GET /api/verify-email/:token
+ */
+export const verifyEmail = async (req, res) => {
+  try {
+    const { token } = req.params;
+
+    if (!token || typeof token !== "string") {
+      return res.status(400).json({ error: "Token is required" });
+    }
+
+    const record = await EmailVerificationToken.findByToken(token);
+    if (!record) {
+      return res
+        .status(400)
+        .json({ error: "Invalid or expired verification token" });
+    }
+
+    // Mark email as verified
+    await User.updateById(record.user_id, { emailVerified: true });
+
+    // Mark token as used
+    await EmailVerificationToken.markUsed(record.id);
+
+    return res.status(200).json({ message: "Email verified successfully" });
+  } catch (error) {
+    console.error("verifyEmail error:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 };

@@ -17,6 +17,7 @@ import {
   ShoppingBag,
   Check,
   X,
+  MailCheck,
 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import Logo from "../../assets/Logo.png";
@@ -87,6 +88,7 @@ const Signup = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [registered, setRegistered] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [step, setStep] = useState(1); // Multi-step form
 
@@ -146,9 +148,7 @@ const Signup = () => {
       });
 
       if (response.status === 201) {
-        navigate("/login", {
-          state: { message: "Account created successfully! Please log in." },
-        });
+        setRegistered(true);
       }
     } catch (error) {
       if (error.response?.status === 400) {
@@ -225,12 +225,33 @@ const Signup = () => {
             </p>
           </div>
 
-          {/* Progress Indicator */}
-          <div className="flex items-center justify-center gap-2 mb-8">
-            {[1, 2].map((s) => (
-              <React.Fragment key={s}>
-                <div
-                  className={`
+          {registered ? (
+            <div className="text-center py-6">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <MailCheck className="h-8 w-8 text-green-600" />
+              </div>
+              <h2 className="text-xl font-semibold text-gray-800 mb-2">
+                Check your inbox
+              </h2>
+              <p className="text-gray-500 mb-6">
+                We sent a verification link to <strong>{email}</strong>. Please
+                click the link to activate your account.
+              </p>
+              <Link
+                to="/login"
+                className="inline-flex items-center justify-center w-full py-3 px-4 rounded-xl font-medium text-white bg-[#d86f19] hover:bg-[#c0610f] transition-colors"
+              >
+                Go to Login
+              </Link>
+            </div>
+          ) : (
+            <>
+              {/* Progress Indicator */}
+              <div className="flex items-center justify-center gap-2 mb-8">
+                {[1, 2].map((s) => (
+                  <React.Fragment key={s}>
+                    <div
+                      className={`
                   w-8 h-8 rounded-full flex items-center justify-center
                   font-semibold text-sm transition-all
                   ${
@@ -239,353 +260,362 @@ const Signup = () => {
                       : "bg-gray-100 text-gray-400"
                   }
                 `}
+                    >
+                      {step > s ? <Check className="h-4 w-4" /> : s}
+                    </div>
+                    {s < 2 && (
+                      <div
+                        className={`w-12 h-1 rounded-full ${step > 1 ? "bg-primary" : "bg-gray-100"}`}
+                      />
+                    )}
+                  </React.Fragment>
+                ))}
+              </div>
+
+              {/* Error Message */}
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl flex items-start gap-3"
                 >
-                  {step > s ? <Check className="h-4 w-4" /> : s}
-                </div>
-                {s < 2 && (
-                  <div
-                    className={`w-12 h-1 rounded-full ${step > 1 ? "bg-primary" : "bg-gray-100"}`}
-                  />
-                )}
-              </React.Fragment>
-            ))}
-          </div>
+                  <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
+                  <p className="text-red-600 text-sm">{error}</p>
+                </motion.div>
+              )}
 
-          {/* Error Message */}
-          {error && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl flex items-start gap-3"
-            >
-              <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
-              <p className="text-red-600 text-sm">{error}</p>
-            </motion.div>
-          )}
-
-          <form onSubmit={handleSubmit}>
-            {/* Step 1: Basic Info */}
-            {step === 1 && (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-5"
-              >
-                {/* Username Field */}
-                <div className="space-y-2">
-                  <label
-                    htmlFor="username"
-                    className="block text-sm font-medium text-gray-700"
+              <form onSubmit={handleSubmit}>
+                {/* Step 1: Basic Info */}
+                {step === 1 && (
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    className="space-y-5"
                   >
-                    {t("username")}
-                  </label>
-                  <div className="relative">
-                    <User
-                      className={`absolute ${isRTL ? "right-4" : "left-4"} top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400`}
-                    />
-                    <input
-                      id="username"
-                      type="text"
-                      value={username}
-                      onChange={(e) => updateField("username", e.target.value)}
-                      placeholder="johndoe"
-                      required
-                      className={`
+                    {/* Username Field */}
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="username"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        {t("username")}
+                      </label>
+                      <div className="relative">
+                        <User
+                          className={`absolute ${isRTL ? "right-4" : "left-4"} top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400`}
+                        />
+                        <input
+                          id="username"
+                          type="text"
+                          value={username}
+                          onChange={(e) =>
+                            updateField("username", e.target.value)
+                          }
+                          placeholder="johndoe"
+                          required
+                          className={`
                         w-full ${isRTL ? "pr-12 pl-4" : "pl-12 pr-4"} py-3
                         bg-gray-50 border-2 border-gray-100 rounded-xl
                         text-gray-900 placeholder:text-gray-400
                         focus:outline-none focus:border-primary focus:bg-white
                         transition-all duration-200
                       `}
-                    />
-                    {username.length >= 3 && (
-                      <CheckCircle2
-                        className={`absolute ${isRTL ? "left-4" : "right-4"} top-1/2 -translate-y-1/2 h-5 w-5 text-green-500`}
-                      />
-                    )}
-                  </div>
-                  {username.length > 0 && username.length < 3 && (
-                    <p className="text-xs text-orange-500">
-                      Username must be at least 3 characters
-                    </p>
-                  )}
-                </div>
+                        />
+                        {username.length >= 3 && (
+                          <CheckCircle2
+                            className={`absolute ${isRTL ? "left-4" : "right-4"} top-1/2 -translate-y-1/2 h-5 w-5 text-green-500`}
+                          />
+                        )}
+                      </div>
+                      {username.length > 0 && username.length < 3 && (
+                        <p className="text-xs text-orange-500">
+                          Username must be at least 3 characters
+                        </p>
+                      )}
+                    </div>
 
-                {/* Email Field */}
-                <div className="space-y-2">
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    {t("email")}
-                  </label>
-                  <div className="relative">
-                    <Mail
-                      className={`absolute ${isRTL ? "right-4" : "left-4"} top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400`}
-                    />
-                    <input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => updateField("email", e.target.value)}
-                      placeholder="name@example.com"
-                      required
-                      className={`
+                    {/* Email Field */}
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        {t("email")}
+                      </label>
+                      <div className="relative">
+                        <Mail
+                          className={`absolute ${isRTL ? "right-4" : "left-4"} top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400`}
+                        />
+                        <input
+                          id="email"
+                          type="email"
+                          value={email}
+                          onChange={(e) => updateField("email", e.target.value)}
+                          placeholder="name@example.com"
+                          required
+                          className={`
                         w-full ${isRTL ? "pr-12 pl-4" : "pl-12 pr-4"} py-3
                         bg-gray-50 border-2 border-gray-100 rounded-xl
                         text-gray-900 placeholder:text-gray-400
                         focus:outline-none focus:border-primary focus:bg-white
                         transition-all duration-200
                       `}
-                    />
-                    {email && validateEmail(email) && (
-                      <CheckCircle2
-                        className={`absolute ${isRTL ? "left-4" : "right-4"} top-1/2 -translate-y-1/2 h-5 w-5 text-green-500`}
-                      />
-                    )}
-                  </div>
-                </div>
+                        />
+                        {email && validateEmail(email) && (
+                          <CheckCircle2
+                            className={`absolute ${isRTL ? "left-4" : "right-4"} top-1/2 -translate-y-1/2 h-5 w-5 text-green-500`}
+                          />
+                        )}
+                      </div>
+                    </div>
 
-                {/* Next Button */}
-                <Button
-                  type="button"
-                  onClick={() => setStep(2)}
-                  disabled={!isStep1Valid}
-                  className="
+                    {/* Next Button */}
+                    <Button
+                      type="button"
+                      onClick={() => setStep(2)}
+                      disabled={!isStep1Valid}
+                      className="
                     w-full py-6 text-base font-semibold
                     bg-primary hover:bg-primary/90
                     rounded-xl shadow-lg shadow-primary/20
                     disabled:opacity-50 disabled:cursor-not-allowed
                     group
                   "
-                >
-                  Continue
-                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </motion.div>
-            )}
-
-            {/* Step 2: Password & Role */}
-            {step === 2 && (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-5"
-              >
-                {/* Password Field */}
-                <div className="space-y-2">
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    {t("password")}
-                  </label>
-                  <div className="relative">
-                    <Lock
-                      className={`absolute ${isRTL ? "right-4" : "left-4"} top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400`}
-                    />
-                    <input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      autoComplete="new-password"
-                      value={password}
-                      onChange={(e) => updateField("password", e.target.value)}
-                      placeholder="••••••••"
-                      required
-                      className={`
-                        w-full ${isRTL ? "pr-12 pl-12" : "pl-12 pr-12"} py-3
-                        bg-gray-50 border-2 border-gray-100 rounded-xl
-                        text-gray-900 placeholder:text-gray-400
-                        focus:outline-none focus:border-primary focus:bg-white
-                        transition-all duration-200
-                      `}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className={`absolute ${isRTL ? "left-4" : "right-4"} top-1/2 -translate-y-1/2`}
                     >
-                      {showPassword ? (
-                        <EyeOff className="h-5 w-5 text-gray-400" />
-                      ) : (
-                        <Eye className="h-5 w-5 text-gray-400" />
-                      )}
-                    </button>
-                  </div>
+                      Continue
+                      <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </motion.div>
+                )}
 
-                  {/* Password Strength */}
-                  {password && (
-                    <div className="space-y-2 mt-2">
-                      <div className="flex gap-1">
-                        {[1, 2, 3, 4, 5].map((level) => (
-                          <div
-                            key={level}
-                            className={`h-1.5 flex-1 rounded-full ${
-                              passwordStrength >= level
-                                ? strengthInfo.color
-                                : "bg-gray-200"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                      <p
-                        className={`text-xs font-medium ${strengthInfo.textColor}`}
+                {/* Step 2: Password & Role */}
+                {step === 2 && (
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    className="space-y-5"
+                  >
+                    {/* Password Field */}
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="password"
+                        className="block text-sm font-medium text-gray-700"
                       >
-                        {strengthInfo.label}
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Confirm Password */}
-                <div className="space-y-2">
-                  <label
-                    htmlFor="confirmPassword"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Confirm Password
-                  </label>
-                  <div className="relative">
-                    <Lock
-                      className={`absolute ${isRTL ? "right-4" : "left-4"} top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400`}
-                    />
-                    <input
-                      id="confirmPassword"
-                      type={showConfirmPassword ? "text" : "password"}
-                      value={confirmPassword}
-                      onChange={(e) =>
-                        updateField("confirmPassword", e.target.value)
-                      }
-                      placeholder="••••••••"
-                      required
-                      className={`
+                        {t("password")}
+                      </label>
+                      <div className="relative">
+                        <Lock
+                          className={`absolute ${isRTL ? "right-4" : "left-4"} top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400`}
+                        />
+                        <input
+                          id="password"
+                          type={showPassword ? "text" : "password"}
+                          autoComplete="new-password"
+                          value={password}
+                          onChange={(e) =>
+                            updateField("password", e.target.value)
+                          }
+                          placeholder="••••••••"
+                          required
+                          className={`
                         w-full ${isRTL ? "pr-12 pl-12" : "pl-12 pr-12"} py-3
                         bg-gray-50 border-2 border-gray-100 rounded-xl
                         text-gray-900 placeholder:text-gray-400
                         focus:outline-none focus:border-primary focus:bg-white
                         transition-all duration-200
                       `}
-                    />
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
-                      className={`absolute ${isRTL ? "left-4" : "right-4"} top-1/2 -translate-y-1/2`}
-                    >
-                      {showConfirmPassword ? (
-                        <EyeOff className="h-5 w-5 text-gray-400" />
-                      ) : (
-                        <Eye className="h-5 w-5 text-gray-400" />
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className={`absolute ${isRTL ? "left-4" : "right-4"} top-1/2 -translate-y-1/2`}
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-5 w-5 text-gray-400" />
+                          ) : (
+                            <Eye className="h-5 w-5 text-gray-400" />
+                          )}
+                        </button>
+                      </div>
+
+                      {/* Password Strength */}
+                      {password && (
+                        <div className="space-y-2 mt-2">
+                          <div className="flex gap-1">
+                            {[1, 2, 3, 4, 5].map((level) => (
+                              <div
+                                key={level}
+                                className={`h-1.5 flex-1 rounded-full ${
+                                  passwordStrength >= level
+                                    ? strengthInfo.color
+                                    : "bg-gray-200"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                          <p
+                            className={`text-xs font-medium ${strengthInfo.textColor}`}
+                          >
+                            {strengthInfo.label}
+                          </p>
+                        </div>
                       )}
-                    </button>
-                  </div>
-                  {confirmPassword && password !== confirmPassword && (
-                    <p className="text-xs text-red-500">
-                      Passwords do not match
-                    </p>
-                  )}
-                </div>
+                    </div>
 
-                {/* Role Selection */}
-                <div className="space-y-3">
-                  <label className="block text-sm font-medium text-gray-700">
-                    {t("role")}
-                  </label>
-                  <div className="space-y-3">
-                    <RoleCard
-                      roleType="customer"
-                      icon={ShoppingBag}
-                      title={t("customer")}
-                      description="Browse and purchase handmade products"
-                      selected={role === "customer"}
-                      onClick={() => updateField("role", "customer")}
-                    />
-                    <RoleCard
-                      roleType="seller"
-                      icon={Store}
-                      title={t("seller")}
-                      description="Sell your handmade creations"
-                      selected={role === "seller"}
-                      onClick={() => updateField("role", "seller")}
-                    />
-                  </div>
-                </div>
+                    {/* Confirm Password */}
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="confirmPassword"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Confirm Password
+                      </label>
+                      <div className="relative">
+                        <Lock
+                          className={`absolute ${isRTL ? "right-4" : "left-4"} top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400`}
+                        />
+                        <input
+                          id="confirmPassword"
+                          type={showConfirmPassword ? "text" : "password"}
+                          value={confirmPassword}
+                          onChange={(e) =>
+                            updateField("confirmPassword", e.target.value)
+                          }
+                          placeholder="••••••••"
+                          required
+                          className={`
+                        w-full ${isRTL ? "pr-12 pl-12" : "pl-12 pr-12"} py-3
+                        bg-gray-50 border-2 border-gray-100 rounded-xl
+                        text-gray-900 placeholder:text-gray-400
+                        focus:outline-none focus:border-primary focus:bg-white
+                        transition-all duration-200
+                      `}
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                          }
+                          className={`absolute ${isRTL ? "left-4" : "right-4"} top-1/2 -translate-y-1/2`}
+                        >
+                          {showConfirmPassword ? (
+                            <EyeOff className="h-5 w-5 text-gray-400" />
+                          ) : (
+                            <Eye className="h-5 w-5 text-gray-400" />
+                          )}
+                        </button>
+                      </div>
+                      {confirmPassword && password !== confirmPassword && (
+                        <p className="text-xs text-red-500">
+                          Passwords do not match
+                        </p>
+                      )}
+                    </div>
 
-                {/* Terms */}
-                <div className="flex items-start gap-2">
-                  <input
-                    id="terms"
-                    type="checkbox"
-                    checked={acceptedTerms}
-                    onChange={(e) => setAcceptedTerms(e.target.checked)}
-                    className="w-4 h-4 mt-1 rounded border-gray-300 text-primary focus:ring-primary"
-                  />
-                  <label htmlFor="terms" className="text-sm text-gray-600">
-                    I agree to the{" "}
-                    <Link to="/terms" className="text-primary hover:underline">
-                      Terms of Service
-                    </Link>{" "}
-                    and{" "}
-                    <Link
-                      to="/privacy"
-                      className="text-primary hover:underline"
-                    >
-                      Privacy Policy
-                    </Link>
-                  </label>
-                </div>
+                    {/* Role Selection */}
+                    <div className="space-y-3">
+                      <label className="block text-sm font-medium text-gray-700">
+                        {t("role")}
+                      </label>
+                      <div className="space-y-3">
+                        <RoleCard
+                          roleType="customer"
+                          icon={ShoppingBag}
+                          title={t("customer")}
+                          description="Browse and purchase handmade products"
+                          selected={role === "customer"}
+                          onClick={() => updateField("role", "customer")}
+                        />
+                        <RoleCard
+                          roleType="seller"
+                          icon={Store}
+                          title={t("seller")}
+                          description="Sell your handmade creations"
+                          selected={role === "seller"}
+                          onClick={() => updateField("role", "seller")}
+                        />
+                      </div>
+                    </div>
 
-                {/* Buttons */}
-                <div className="flex gap-3">
-                  <Button
-                    type="button"
-                    onClick={() => setStep(1)}
-                    variant="outline"
-                    className="flex-1 py-6"
-                  >
-                    Back
-                  </Button>
-                  <Button
-                    type="submit"
-                    disabled={!isFormValid || isLoading}
-                    className="
+                    {/* Terms */}
+                    <div className="flex items-start gap-2">
+                      <input
+                        id="terms"
+                        type="checkbox"
+                        checked={acceptedTerms}
+                        onChange={(e) => setAcceptedTerms(e.target.checked)}
+                        className="w-4 h-4 mt-1 rounded border-gray-300 text-primary focus:ring-primary"
+                      />
+                      <label htmlFor="terms" className="text-sm text-gray-600">
+                        I agree to the{" "}
+                        <Link
+                          to="/terms"
+                          className="text-primary hover:underline"
+                        >
+                          Terms of Service
+                        </Link>{" "}
+                        and{" "}
+                        <Link
+                          to="/privacy"
+                          className="text-primary hover:underline"
+                        >
+                          Privacy Policy
+                        </Link>
+                      </label>
+                    </div>
+
+                    {/* Buttons */}
+                    <div className="flex gap-3">
+                      <Button
+                        type="button"
+                        onClick={() => setStep(1)}
+                        variant="outline"
+                        className="flex-1 py-6"
+                      >
+                        Back
+                      </Button>
+                      <Button
+                        type="submit"
+                        disabled={!isFormValid || isLoading}
+                        className="
                       flex-[2] py-6 text-base font-semibold
                       bg-primary hover:bg-primary/90
                       rounded-xl shadow-lg shadow-primary/20
                       disabled:opacity-50 disabled:cursor-not-allowed
                       group
                     "
-                  >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                        Creating account...
-                      </>
-                    ) : (
-                      <>
-                        {t("signup_button")}
-                        <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </motion.div>
-            )}
-          </form>
+                      >
+                        {isLoading ? (
+                          <>
+                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                            Creating account...
+                          </>
+                        ) : (
+                          <>
+                            {t("signup_button")}
+                            <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
+              </form>
 
-          {/* Login Link */}
-          <p className="mt-8 text-center text-gray-600">
-            {t("already_have_account")}{" "}
-            <Link
-              to="/login"
-              className="text-primary font-semibold hover:text-primary/80 transition-colors"
-            >
-              {t("login_link")}
-            </Link>
-          </p>
+              {/* Login Link */}
+              <p className="mt-8 text-center text-gray-600">
+                {t("already_have_account")}{" "}
+                <Link
+                  to="/login"
+                  className="text-primary font-semibold hover:text-primary/80 transition-colors"
+                >
+                  {t("login_link")}
+                </Link>
+              </p>
+            </>
+          )}
         </motion.div>
       </div>
     </div>

@@ -7,6 +7,7 @@ import {
   googleAuthCallback,
   forgotPassword,
   resetPassword,
+  verifyEmail,
 } from "../../controllers/mysql/authController.js";
 
 const router = express.Router();
@@ -18,6 +19,9 @@ router.get("/refresh", refresh);
 // Password reset
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
+
+// Email verification
+router.get("/verify-email/:token", verifyEmail);
 
 // Google OAuth routes
 router.get("/auth/google", googleAuth);
