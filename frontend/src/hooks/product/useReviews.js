@@ -1,11 +1,9 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import axios from "../../api/axios";
 import useAxiosPrivate from "../useAxiosPrivate";
-import useAuth from "../../store/authStore";
 
 const useReviews = (productId) => {
   const axiosPrivate = useAxiosPrivate();
-  const { user } = useAuth();
 
   const [reviews, setReviews] = useState([]);
   const [stats, setStats] = useState({
@@ -22,147 +20,79 @@ const useReviews = (productId) => {
   const [sort, setSort] = useState("recent");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Use refs so async callbacks always have the latest values
+  // Ref to track current fetch request ID (prevents race conditions)
+  const fetchCounterRef = useRef(0);
+  // Ref to always have access to the latest sort value
   const sortRef = useRef(sort);
   sortRef.current = sort;
-  const paginationRef = useRef(pagination);
-  paginationRef.current = pagination;
 
+  // Core fetch function — stable identity via useCallback with only productId dep
   const fetchReviews = useCallback(
-    async (page = 1, sortBy) => {
+    async (page = 1, sortOverride) => {
       if (!productId) return;
-      const currentSort = sortBy || sortRef.current;
+
+      const id = ++fetchCounterRef.current;
+      const sortVal = sortOverride ?? sortRef.current;
       setIsLoading(true);
+
       try {
-        const res = await axios.get(`/products/${productId}/reviews`, {
-          params: { page, limit: 10, sort: currentSort },
+        const { data } = await axios.get(`/products/${productId}/reviews`, {
+          params: { page, limit: 10, sort: sortVal, _t: Date.now() },
         });
-        setReviews(res.data.reviews);
-        setStats(res.data.stats);
-        setPagination(res.data.pagination);
+
+        // Discard if a newer fetch was started
+        if (id !== fetchCounterRef.current) return;
+
+        setReviews(data.reviews ?? []);
+        setStats(data.stats ?? { total: 0, average: 0, distribution: {} });
+        setPagination(data.pagination ?? { page: 1, limit: 10, total: 0, totalPages: 0 });
       } catch (err) {
-        console.error("Error fetching reviews:", err);
+        console.error("[useReviews] fetch error:", err?.response?.status, err?.message);
       } finally {
-        setIsLoading(false);
+        if (id === fetchCounterRef.current) setIsLoading(false);
       }
     },
     [productId],
   );
 
+  // Ref so mutation callbacks always call the latest fetchReviews
+  const fetchRef = useRef(fetchReviews);
+  fetchRef.current = fetchReviews;
+
+  // Load reviews on mount and when productId or sort changes
   useEffect(() => {
     fetchReviews(1, sort);
-  }, [productId, sort]);
+  }, [fetchReviews, sort]);
 
-  const changePage = (page) => {
-    fetchReviews(page);
-  };
-
-  const changeSort = (newSort) => {
-    setSort(newSort);
-  };
+  // ─── Mutation helpers (plain functions, no useCallback) ───
 
   const submitReview = async (data) => {
-    const res = await axiosPrivate.post(`/products/${productId}/reviews`, data);
-    const newReview = res.data;
-    const normalizedRating = Number(data.rating);
-
-    // Optimistically add the new review to the top of the list
-    setReviews((prev) => [
-      {
-        ...newReview,
-        user: {
-          id: user?.id,
-          username: user?.username,
-          firstName: user?.firstName || user?.first_name,
-          avatar: user?.avatar,
-        },
-      },
-      ...prev,
-    ]);
-
-    // Update stats immediately
-    setStats((prev) => {
-      const newTotal = prev.total + 1;
-      const newAverage =
-        newTotal > 0
-          ? parseFloat(
-              (
-                (Number(prev.average) * prev.total + normalizedRating) /
-                newTotal
-              ).toFixed(1),
-            )
-          : normalizedRating;
-      return {
-        ...prev,
-        total: newTotal,
-        average: newAverage,
-        distribution: {
-          ...prev.distribution,
-          [normalizedRating]: (prev.distribution[normalizedRating] || 0) + 1,
-        },
-      };
-    });
-
-    // Force canonical state from backend and keep the newest review visible.
-    setSort("recent");
-    await fetchReviews(1, "recent");
-
-    return newReview;
+    const res = await axiosPrivate.post(
+      `/products/${productId}/reviews`,
+      data,
+    );
+    // Wait for server-authoritative refetch
+    await fetchRef.current(1);
+    return res.data;
   };
 
   const updateReview = async (reviewId, data) => {
     const res = await axiosPrivate.put(`/reviews/${reviewId}`, data);
-    await fetchReviews(paginationRef.current.page);
+    await fetchRef.current(pagination.page);
     return res.data;
   };
 
   const deleteReview = async (reviewId) => {
-    const normalizedId = Number(reviewId);
-    // Get the review before deleting to update stats
-    const deletedReview = reviews.find((r) => Number(r.id) === normalizedId);
-    await axiosPrivate.delete(`/reviews/${normalizedId}`);
-
-    // Optimistically remove from UI immediately
-    setReviews((prev) => prev.filter((r) => Number(r.id) !== normalizedId));
-
-    // Update stats immediately
-    if (deletedReview) {
-      setStats((prev) => {
-        const newTotal = Math.max(0, prev.total - 1);
-        const newAverage =
-          newTotal > 0
-            ? parseFloat(
-                (
-                  (prev.average * prev.total - deletedReview.rating) /
-                  newTotal
-                ).toFixed(1),
-              )
-            : 0;
-        const deletedRating = Number(deletedReview.rating);
-        return {
-          ...prev,
-          total: newTotal,
-          average: newAverage,
-          distribution: {
-            ...prev.distribution,
-            [deletedRating]: Math.max(
-              0,
-              (prev.distribution[deletedRating] || 0) - 1,
-            ),
-          },
-        };
-      });
-    }
-
-    // Force canonical state from backend after delete.
-    await fetchReviews(paginationRef.current.page, sortRef.current);
+    await axiosPrivate.delete(`/reviews/${reviewId}`);
+    // Wait for server-authoritative refetch
+    await fetchRef.current(pagination.page);
   };
 
   const markHelpful = async (reviewId) => {
     const res = await axiosPrivate.post(`/reviews/${reviewId}/helpful`);
     setReviews((prev) =>
       prev.map((r) =>
-        Number(r.id) === Number(reviewId)
+        r.id === reviewId
           ? { ...r, helpful_count: res.data.helpful_count }
           : r,
       ),
@@ -175,13 +105,13 @@ const useReviews = (productId) => {
     pagination,
     sort,
     isLoading,
-    changePage,
-    changeSort,
+    changePage: (page) => fetchReviews(page),
+    changeSort: (newSort) => setSort(newSort),
     submitReview,
     updateReview,
     deleteReview,
     markHelpful,
-    refetch: () => fetchReviews(paginationRef.current.page),
+    refetch: () => fetchRef.current(pagination.page),
   };
 };
 
