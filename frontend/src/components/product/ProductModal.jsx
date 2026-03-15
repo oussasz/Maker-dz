@@ -51,9 +51,7 @@ const ProductModal = () => {
 
             <div className="text-sm text-gray-700 font-medium">
               SKU:{" "}
-              <span className="text-gray-500 font-normal">
-                {product.id}
-              </span>
+              <span className="text-gray-500 font-normal">{product.id}</span>
             </div>
           </div>
 
@@ -85,9 +83,7 @@ const ProductModal = () => {
             <Button
               grow
               onClick={() => {
-                navigate(
-                  `/products/${product.slug || product.id}`,
-                );
+                navigate(`/products/${product.slug || product.id}`);
                 closeProductModal();
               }}
             >

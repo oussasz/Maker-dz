@@ -40,8 +40,8 @@ const Wishlist = () => {
   useEffect(() => {
     if (!loading && wishlistProducts.length > 0) {
       // Filter out products that are no longer in the wishlist store
-      const filteredProducts = wishlistProducts.filter(
-        (prod) => wishlist.includes(prod.id),
+      const filteredProducts = wishlistProducts.filter((prod) =>
+        wishlist.includes(prod.id),
       );
       if (filteredProducts.length !== wishlistProducts.length) {
         setWishlistProducts(filteredProducts);

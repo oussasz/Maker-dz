@@ -18,10 +18,10 @@ export const useOrders = (sellerId) => {
           const products = await Promise.all(
             orders.map(async (order) => {
               const productResponse = await axios.get(
-                `/products/${order.productId}`
+                `/products/${order.productId}`,
               );
               return productResponse.data;
-            })
+            }),
           );
           setProductData(products);
         }
@@ -39,7 +39,7 @@ export const useOrders = (sellerId) => {
     try {
       await axios.delete(`/${sellerId}/orders/${orderId}`);
       setSellerOrders((prevOrders) =>
-        prevOrders.filter((order) => order.id !== orderId)
+        prevOrders.filter((order) => order.id !== orderId),
       );
     } catch (error) {
       console.error("Error deleting order:", error);
@@ -52,7 +52,7 @@ export const useOrders = (sellerId) => {
       await axios.put(`/${sellerId}/orders/${orderId}`, { status: newStatus });
       const updatedOrder = { ...order, orderStatus: newStatus };
       setSellerOrders((prevOrders) =>
-        prevOrders.map((o) => (o.orderId === orderId ? updatedOrder : o))
+        prevOrders.map((o) => (o.orderId === orderId ? updatedOrder : o)),
       );
     } catch (error) {
       console.error("Error updating order status:", error);

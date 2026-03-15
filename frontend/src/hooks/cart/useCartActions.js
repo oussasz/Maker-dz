@@ -138,9 +138,7 @@ const useCartActions = () => {
     const productId = product.id || item.productId;
     const variants = product.variants || [];
 
-    const currentVariant = variants.find(
-      (v) => v.id === item.variantId,
-    );
+    const currentVariant = variants.find((v) => v.id === item.variantId);
 
     if (!currentVariant) {
       toast.error("Current variant not found");

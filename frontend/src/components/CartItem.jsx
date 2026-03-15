@@ -13,13 +13,13 @@ import { useState } from "react";
 
 const CartItem = ({ item, actions }) => {
   const [personalization, setPersonalization] = useState(
-    item?.personalization || ""
+    item?.personalization || "",
   );
 
   const [isEditing, setIsEditing] = useState(false);
 
   const variant = item.productId.variants.find(
-    (variant) => variant.id === item.variantId
+    (variant) => variant.id === item.variantId,
   );
 
   return (
@@ -55,9 +55,7 @@ const CartItem = ({ item, actions }) => {
         <div className="flex flex-wrap gap-4 mb-4">
           {Object.entries(variant.attributes).map(([key, value]) => {
             const options = [
-              ...new Set(
-                item.productId.variants.map((v) => v.attributes[key])
-              ),
+              ...new Set(item.productId.variants.map((v) => v.attributes[key])),
             ];
 
             return (

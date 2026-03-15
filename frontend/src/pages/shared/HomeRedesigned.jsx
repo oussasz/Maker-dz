@@ -492,7 +492,9 @@ const CraftCategoriesSection = () => {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
               onClick={() =>
-                navigate(`/products/categories/${category.slug || category.name}`)
+                navigate(
+                  `/products/categories/${category.slug || category.name}`,
+                )
               }
               className="group relative h-64 sm:h-72 lg:h-80 rounded-2xl sm:rounded-3xl overflow-hidden cursor-pointer"
             >

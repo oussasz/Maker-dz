@@ -61,8 +61,7 @@ const CartProgress = ({ currentAmount, freeShippingThreshold = 5000 }) => {
 const CartItemCard = ({ item, actions, index }) => {
   const product = item.product || item.productId || {};
   const variant =
-    item.variant ||
-    product.variants?.find((v) => v.id === item.variantId);
+    item.variant || product.variants?.find((v) => v.id === item.variantId);
   const productId = product.id || item.productId;
   const productSlug = product.slug || productId;
   const productImages = product.mainImages || [];
