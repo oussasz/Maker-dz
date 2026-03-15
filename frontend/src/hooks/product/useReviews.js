@@ -64,6 +64,7 @@ const useReviews = (productId) => {
   const submitReview = async (data) => {
     const res = await axiosPrivate.post(`/products/${productId}/reviews`, data);
     const newReview = res.data;
+    const normalizedRating = Number(data.rating);
 
     // Optimistically add the new review to the top of the list
     setReviews((prev) => [
@@ -85,22 +86,26 @@ const useReviews = (productId) => {
       const newAverage =
         newTotal > 0
           ? parseFloat(
-              ((prev.average * prev.total + data.rating) / newTotal).toFixed(1),
+              (
+                (Number(prev.average) * prev.total + normalizedRating) /
+                newTotal
+              ).toFixed(1),
             )
-          : data.rating;
+          : normalizedRating;
       return {
         ...prev,
         total: newTotal,
         average: newAverage,
         distribution: {
           ...prev.distribution,
-          [data.rating]: (prev.distribution[data.rating] || 0) + 1,
+          [normalizedRating]: (prev.distribution[normalizedRating] || 0) + 1,
         },
       };
     });
 
-    // Background refetch for accurate server data
-    fetchReviews(1);
+    // Force canonical state from backend and keep the newest review visible.
+    setSort("recent");
+    await fetchReviews(1, "recent");
 
     return newReview;
   };
@@ -112,12 +117,13 @@ const useReviews = (productId) => {
   };
 
   const deleteReview = async (reviewId) => {
+    const normalizedId = Number(reviewId);
     // Get the review before deleting to update stats
-    const deletedReview = reviews.find((r) => r.id === reviewId);
-    await axiosPrivate.delete(`/reviews/${reviewId}`);
+    const deletedReview = reviews.find((r) => Number(r.id) === normalizedId);
+    await axiosPrivate.delete(`/reviews/${normalizedId}`);
 
     // Optimistically remove from UI immediately
-    setReviews((prev) => prev.filter((r) => r.id !== reviewId));
+    setReviews((prev) => prev.filter((r) => Number(r.id) !== normalizedId));
 
     // Update stats immediately
     if (deletedReview) {
@@ -132,30 +138,33 @@ const useReviews = (productId) => {
                 ).toFixed(1),
               )
             : 0;
+        const deletedRating = Number(deletedReview.rating);
         return {
           ...prev,
           total: newTotal,
           average: newAverage,
           distribution: {
             ...prev.distribution,
-            [deletedReview.rating]: Math.max(
+            [deletedRating]: Math.max(
               0,
-              (prev.distribution[deletedReview.rating] || 0) - 1,
+              (prev.distribution[deletedRating] || 0) - 1,
             ),
           },
         };
       });
     }
 
-    // Background refetch for accurate server data
-    fetchReviews(paginationRef.current.page);
+    // Force canonical state from backend after delete.
+    await fetchReviews(paginationRef.current.page, sortRef.current);
   };
 
   const markHelpful = async (reviewId) => {
     const res = await axiosPrivate.post(`/reviews/${reviewId}/helpful`);
     setReviews((prev) =>
       prev.map((r) =>
-        r.id === reviewId ? { ...r, helpful_count: res.data.helpful_count } : r,
+        Number(r.id) === Number(reviewId)
+          ? { ...r, helpful_count: res.data.helpful_count }
+          : r,
       ),
     );
   };
