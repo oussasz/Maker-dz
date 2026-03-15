@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "../../api/axios";
 import useAxiosPrivate from "../useAxiosPrivate";
+import useAuth from "../../store/authStore";
 
 const useReviews = (productId) => {
   const axiosPrivate = useAxiosPrivate();
+  const { user } = useAuth();
 
   const [reviews, setReviews] = useState([]);
   const [stats, setStats] = useState({
@@ -61,9 +63,46 @@ const useReviews = (productId) => {
 
   const submitReview = async (data) => {
     const res = await axiosPrivate.post(`/products/${productId}/reviews`, data);
-    // Refresh list to show new review + updated stats
-    await fetchReviews(1);
-    return res.data;
+    const newReview = res.data;
+
+    // Optimistically add the new review to the top of the list
+    setReviews((prev) => [
+      {
+        ...newReview,
+        user: {
+          id: user?.id,
+          username: user?.username,
+          firstName: user?.firstName || user?.first_name,
+          avatar: user?.avatar,
+        },
+      },
+      ...prev,
+    ]);
+
+    // Update stats immediately
+    setStats((prev) => {
+      const newTotal = prev.total + 1;
+      const newAverage =
+        newTotal > 0
+          ? parseFloat(
+              ((prev.average * prev.total + data.rating) / newTotal).toFixed(1),
+            )
+          : data.rating;
+      return {
+        ...prev,
+        total: newTotal,
+        average: newAverage,
+        distribution: {
+          ...prev.distribution,
+          [data.rating]: (prev.distribution[data.rating] || 0) + 1,
+        },
+      };
+    });
+
+    // Background refetch for accurate server data
+    fetchReviews(1);
+
+    return newReview;
   };
 
   const updateReview = async (reviewId, data) => {
@@ -73,11 +112,43 @@ const useReviews = (productId) => {
   };
 
   const deleteReview = async (reviewId) => {
+    // Get the review before deleting to update stats
+    const deletedReview = reviews.find((r) => r.id === reviewId);
     await axiosPrivate.delete(`/reviews/${reviewId}`);
+
     // Optimistically remove from UI immediately
     setReviews((prev) => prev.filter((r) => r.id !== reviewId));
-    // Then refetch for accurate stats + pagination
-    await fetchReviews(paginationRef.current.page);
+
+    // Update stats immediately
+    if (deletedReview) {
+      setStats((prev) => {
+        const newTotal = Math.max(0, prev.total - 1);
+        const newAverage =
+          newTotal > 0
+            ? parseFloat(
+                (
+                  (prev.average * prev.total - deletedReview.rating) /
+                  newTotal
+                ).toFixed(1),
+              )
+            : 0;
+        return {
+          ...prev,
+          total: newTotal,
+          average: newAverage,
+          distribution: {
+            ...prev.distribution,
+            [deletedReview.rating]: Math.max(
+              0,
+              (prev.distribution[deletedReview.rating] || 0) - 1,
+            ),
+          },
+        };
+      });
+    }
+
+    // Background refetch for accurate server data
+    fetchReviews(paginationRef.current.page);
   };
 
   const markHelpful = async (reviewId) => {
