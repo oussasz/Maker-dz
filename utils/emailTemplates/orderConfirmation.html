@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Confirmation de commande - Maker DZ</title>
+  </head>
+  <body
+    style="
+      margin: 0;
+      padding: 0;
+      background-color: #f4f6f8;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #163042;
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    "
+  >
+    <table
+      role="presentation"
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      style="background-color: #f4f6f8; min-width: 100%"
+    >
+      <tr>
+        <td align="center" style="padding: 32px 12px">
+          <table
+            role="presentation"
+            width="640"
+            cellpadding="0"
+            cellspacing="0"
+            style="
+              width: 100%;
+              max-width: 640px;
+              background-color: #ffffff;
+              border: 1px solid #dbe4ea;
+              border-radius: 16px;
+              overflow: hidden;
+            "
+          >
+            <tr>
+              <td
+                style="
+                  height: 6px;
+                  background-color: #d86f19;
+                  font-size: 0;
+                  line-height: 0;
+                "
+              >
+                &nbsp;
+              </td>
+            </tr>
+            <tr>
+              <td
+                style="
+                  padding: 26px 32px 18px 32px;
+                  background-color: #ffffff;
+                  border-bottom: 1px solid #e6edf2;
+                "
+              >
+                <img
+                  src="https://maker-dz.net/logo.svg"
+                  alt="Maker DZ"
+                  width="169"
+                  style="
+                    display: block;
+                    width: 169px;
+                    max-width: 100%;
+                    height: auto;
+                    border: 0;
+                    background-color: #ffffff;
+                  "
+                />
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 32px 32px 24px 32px">
+                <table
+                  role="presentation"
+                  width="100%"
+                  cellpadding="0"
+                  cellspacing="0"
+                >
+                  <tr>
+                    <td width="56" valign="top" style="padding-right: 16px">
+                      <table
+                        role="presentation"
+                        width="56"
+                        height="56"
+                        cellpadding="0"
+                        cellspacing="0"
+                        style="
+                          width: 56px;
+                          height: 56px;
+                          background-color: #fff3eb;
+                          border: 1px solid #f3cfb4;
+                          border-radius: 12px;
+                        "
+                      >
+                        <tr>
+                          <td align="center" valign="middle">
+                            <img
+                              src="https://maker-dz.net/email-icons/package.svg"
+                              alt="Commande"
+                              width="24"
+                              style="
+                                display: block;
+                                width: 24px;
+                                height: 24px;
+                                border: 0;
+                              "
+                            />
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                    <td valign="top">
+                      <p
+                        style="
+                          margin: 0 0 8px 0;
+                          font-size: 12px;
+                          line-height: 12px;
+                          font-weight: 700;
+                          letter-spacing: 1.4px;
+                          text-transform: uppercase;
+                          color: #d86f19;
+                        "
+                      >
+                        Commande enregistree
+                      </p>
+                      <h1
+                        style="
+                          margin: 0 0 6px 0;
+                          font-size: 28px;
+                          line-height: 34px;
+                          font-weight: 700;
+                          color: #163042;
+                        "
+                      >
+                        Merci pour votre commande
+                      </h1>
+                      <p
+                        style="
+                          margin: 0;
+                          font-size: 15px;
+                          line-height: 24px;
+                          color: #586b7a;
+                        "
+                      >
+                        Commande #{{ORDER_ID}} · {{ORDER_DATE}}
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 0 32px 20px 32px">
+                <p
+                  style="
+                    margin: 0 0 14px 0;
+                    font-size: 16px;
+                    line-height: 26px;
+                    color: #44596b;
+                  "
+                >
+                  Bonjour <strong>{{USER_NAME}}</strong>,
+                </p>
+                <p
+                  style="
+                    margin: 0;
+                    font-size: 16px;
+                    line-height: 26px;
+                    color: #44596b;
+                  "
+                >
+                  Votre commande a bien ete prise en compte. Vous trouverez
+                  ci-dessous le recapitulatif de votre achat ainsi que les
+                  prochaines etapes de traitement.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 0 32px 24px 32px">
+                <table
+                  role="presentation"
+                  width="100%"
+                  cellpadding="0"
+                  cellspacing="0"
+                  style="
+                    border: 1px solid #e6edf2;
+                    border-radius: 12px;
+                    overflow: hidden;
+                  "
+                >
+                  <tr style="background-color: #f8fafb">
+                    <th
+                      style="
+                        padding: 14px 16px;
+                        font-size: 12px;
+                        line-height: 16px;
+                        font-weight: 700;
+                        letter-spacing: 1px;
+                        text-transform: uppercase;
+                        color: #657786;
+                        text-align: left;
+                        border-bottom: 1px solid #e6edf2;
+                      "
+                    >
+                      Produit
+                    </th>
+                    <th
+                      style="
+                        padding: 14px 16px;
+                        font-size: 12px;
+                        line-height: 16px;
+                        font-weight: 700;
+                        letter-spacing: 1px;
+                        text-transform: uppercase;
+                        color: #657786;
+                        text-align: center;
+                        border-bottom: 1px solid #e6edf2;
+                      "
+                    >
+                      Qte
+                    </th>
+                    <th
+                      style="
+                        padding: 14px 16px;
+                        font-size: 12px;
+                        line-height: 16px;
+                        font-weight: 700;
+                        letter-spacing: 1px;
+                        text-transform: uppercase;
+                        color: #657786;
+                        text-align: right;
+                        border-bottom: 1px solid #e6edf2;
+                      "
+                    >
+                      Montant
+                    </th>
+                  </tr>
+                  {{ITEMS_ROWS}}
+                  <tr>
+                    <td
+                      colspan="3"
+                      style="
+                        padding: 0;
+                        border-top: 1px solid #e6edf2;
+                        font-size: 0;
+                        line-height: 0;
+                      "
+                    >
+                      &nbsp;
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      colspan="2"
+                      style="
+                        padding: 12px 16px;
+                        font-size: 14px;
+                        line-height: 22px;
+                        color: #586b7a;
+                      "
+                    >
+                      Sous-total
+                    </td>
+                    <td
+                      style="
+                        padding: 12px 16px;
+                        font-size: 14px;
+                        line-height: 22px;
+                        color: #163042;
+                        text-align: right;
+                      "
+                    >
+                      {{SUBTOTAL}} DA
+                    </td>
+                  </tr>
+                  <tr style="background-color: #f8fafb">
+                    <td
+                      colspan="2"
+                      style="
+                        padding: 12px 16px;
+                        font-size: 14px;
+                        line-height: 22px;
+                        color: #586b7a;
+                      "
+                    >
+                      Livraison
+                    </td>
+                    <td
+                      style="
+                        padding: 12px 16px;
+                        font-size: 14px;
+                        line-height: 22px;
+                        color: #163042;
+                        text-align: right;
+                      "
+                    >
+                      {{SHIPPING_COST}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      colspan="2"
+                      style="
+                        padding: 16px;
+                        font-size: 16px;
+                        line-height: 24px;
+                        font-weight: 700;
+                        color: #163042;
+                        border-top: 1px solid #e6edf2;
+                      "
+                    >
+                      Total
+                    </td>
+                    <td
+                      style="
+                        padding: 16px;
+                        font-size: 18px;
+                        line-height: 24px;
+                        font-weight: 700;
+                        color: #d86f19;
+                        text-align: right;
+                        border-top: 1px solid #e6edf2;
+                      "
+                    >
+                      {{TOTAL}} DA
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 0 32px 24px 32px">
+                <table
+                  role="presentation"
+                  width="100%"
+                  cellpadding="0"
+                  cellspacing="0"
+                >
+                  <tr>
+                    <td width="48%" valign="top" style="padding-right: 10px">
+                      <table
+                        role="presentation"
+                        width="100%"
+                        cellpadding="0"
+                        cellspacing="0"
+                        style="
+                          border: 1px solid #e6edf2;
+                          border-radius: 12px;
+                          overflow: hidden;
+                        "
+                      >
+                        <tr>
+                          <td
+                            style="
+                              padding: 14px 16px;
+                              background-color: #f8fafb;
+                              border-bottom: 1px solid #e6edf2;
+                            "
+                          >
+                            <p
+                              style="
+                                margin: 0;
+                                font-size: 12px;
+                                line-height: 16px;
+                                font-weight: 700;
+                                letter-spacing: 1px;
+                                text-transform: uppercase;
+                                color: #657786;
+                              "
+                            >
+                              Adresse de livraison
+                            </p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 16px">
+                            <p
+                              style="
+                                margin: 0;
+                                font-size: 14px;
+                                line-height: 24px;
+                                color: #44596b;
+                              "
+                            >
+                              {{SHIPPING_ADDRESS}}
+                            </p>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                    <td width="52%" valign="top" style="padding-left: 10px">
+                      <table
+                        role="presentation"
+                        width="100%"
+                        cellpadding="0"
+                        cellspacing="0"
+                        style="
+                          border: 1px solid #e6edf2;
+                          border-radius: 12px;
+                          overflow: hidden;
+                        "
+                      >
+                        <tr>
+                          <td
+                            style="
+                              padding: 14px 16px;
+                              background-color: #f8fafb;
+                              border-bottom: 1px solid #e6edf2;
+                            "
+                          >
+                            <p
+                              style="
+                                margin: 0;
+                                font-size: 12px;
+                                line-height: 16px;
+                                font-weight: 700;
+                                letter-spacing: 1px;
+                                text-transform: uppercase;
+                                color: #657786;
+                              "
+                            >
+                              Prochaines etapes
+                            </p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 16px">
+                            <p
+                              style="
+                                margin: 0 0 10px 0;
+                                font-size: 14px;
+                                line-height: 22px;
+                                color: #44596b;
+                              "
+                            >
+                              1. Verification de la commande
+                            </p>
+                            <p
+                              style="
+                                margin: 0 0 10px 0;
+                                font-size: 14px;
+                                line-height: 22px;
+                                color: #44596b;
+                              "
+                            >
+                              2. Preparation par le vendeur
+                            </p>
+                            <p
+                              style="
+                                margin: 0;
+                                font-size: 14px;
+                                line-height: 22px;
+                                color: #44596b;
+                              "
+                            >
+                              3. Expedition et suivi
+                            </p>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 0 32px 30px 32px">
+                <table role="presentation" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td
+                      align="center"
+                      style="border-radius: 10px; background-color: #163042"
+                    >
+                      <a
+                        href="https://maker-dz.net/orders/{{ORDER_ID}}"
+                        target="_blank"
+                        style="
+                          display: inline-block;
+                          padding: 14px 28px;
+                          font-size: 15px;
+                          line-height: 15px;
+                          font-weight: 700;
+                          color: #ffffff;
+                          text-decoration: none;
+                          border-radius: 10px;
+                        "
+                        >Suivre ma commande</a
+                      >
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td
+                style="
+                  padding: 20px 32px;
+                  background-color: #f8fafb;
+                  border-top: 1px solid #e6edf2;
+                "
+              >
+                <p
+                  style="
+                    margin: 0 0 6px 0;
+                    font-size: 12px;
+                    line-height: 20px;
+                    color: #7c8c99;
+                  "
+                >
+                  Besoin d'aide ? Contactez-nous a
+                  <a
+                    href="mailto:support@maker-dz.net"
+                    style="color: #0f5f8c; text-decoration: none"
+                    >support@maker-dz.net</a
+                  >.
+                </p>
+                <p
+                  style="
+                    margin: 0;
+                    font-size: 12px;
+                    line-height: 20px;
+                    color: #7c8c99;
+                  "
+                >
+                  &copy; 2026 Maker DZ ·
+                  <a
+                    href="https://maker-dz.net"
+                    style="color: #0f5f8c; text-decoration: none"
+                    >maker-dz.net</a
+                  >
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

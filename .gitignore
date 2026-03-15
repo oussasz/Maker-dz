@@ -13,3 +13,6 @@ build/
 .vscode/
 .idea/
 coverage/
+Rapport/
+.env.cpanel
+.env

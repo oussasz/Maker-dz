@@ -246,3 +246,31 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
     INDEX idx_token (token(255)),
     INDEX idx_user (user_id)
 );
+
+-- Password Reset Tokens Table
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    token VARCHAR(255) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    used_at TIMESTAMP NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_token (token),
+    INDEX idx_user (user_id),
+    INDEX idx_expires (expires_at)
+);
+
+-- Email Verification Tokens Table
+CREATE TABLE IF NOT EXISTS email_verification_tokens (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    token VARCHAR(255) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    used_at TIMESTAMP NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_token (token),
+    INDEX idx_user (user_id),
+    INDEX idx_expires (expires_at)
+);
