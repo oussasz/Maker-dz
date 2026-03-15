@@ -7,6 +7,8 @@ import Wishlist from "./pages/user/Wishlist";
 import Signup from "./pages/auth/SignupEnhanced";
 import Login from "./pages/auth/LoginEnhanced";
 import AuthCallback from "./pages/auth/AuthCallback";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+import ResetPassword from "./pages/auth/ResetPassword";
 import ProductPage from "./pages/user/ProductPage";
 import CategoriesPage from "./pages/user/CategoriesPage";
 import AllCategoriesPage from "./pages/user/AllCategoriesPage";
@@ -224,6 +226,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route
           path="/products/categories/:category"
           element={

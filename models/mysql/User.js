@@ -140,6 +140,18 @@ export const User = {
     return this.findById(id);
   },
 
+  /**
+   * Directly set an already-hashed password (used after password reset).
+   * Do NOT pass a plain-text password here.
+   */
+  async updatePassword(id, hashedPassword) {
+    const pool = await getConnection();
+    await pool.query("UPDATE users SET password = ? WHERE id = ?", [
+      hashedPassword,
+      id,
+    ]);
+  },
+
   // Compare password
   async comparePassword(storedPassword, candidatePassword) {
     return await argon2.verify(storedPassword, candidatePassword);

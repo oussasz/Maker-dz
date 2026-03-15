@@ -1,5 +1,8 @@
 import jwt from "jsonwebtoken";
-import { User } from "../../models/mysql/index.js";
+import crypto from "crypto";
+import argon2 from "argon2";
+import { User, PasswordResetToken } from "../../models/mysql/index.js";
+import { sendPasswordResetEmail } from "../../utils/emailService.js";
 import passport from "../../middleware/mysql/passport.js";
 
 export const login = async (req, res) => {
@@ -165,6 +168,90 @@ export const refresh = async (req, res) => {
     }
 
     res.status(500).json({ error: "Error refreshing token" });
+  }
+};
+
+// ─── Password Reset ─────────────────────────────────────────────────────────
+
+/**
+ * POST /api/forgot-password
+ * Body: { email }
+ * Always responds 200 to avoid leaking whether an email exists.
+ */
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ error: "Valid email required" });
+    }
+
+    const user = await User.findByEmail(email);
+
+    if (user) {
+      // Remove any existing (unused) tokens for this user
+      await PasswordResetToken.deleteByUserId(user.id);
+
+      // Generate a cryptographically secure token
+      const rawToken = crypto.randomBytes(32).toString("hex");
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+      await PasswordResetToken.create(user.id, rawToken, expiresAt);
+
+      const userName = user.first_name || user.username;
+      await sendPasswordResetEmail(user.email, rawToken, userName);
+    }
+
+    // Always return the same response — do not reveal whether the email exists
+    return res.status(200).json({
+      message:
+        "If this email is associated with an account, a reset link has been sent.",
+    });
+  } catch (error) {
+    console.error("forgotPassword error:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+/**
+ * POST /api/reset-password
+ * Body: { token, newPassword }
+ */
+export const resetPassword = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+
+    if (!token || typeof token !== "string") {
+      return res.status(400).json({ error: "Token is required" });
+    }
+
+    if (!newPassword || newPassword.length < 8) {
+      return res
+        .status(400)
+        .json({ error: "Password must be at least 8 characters" });
+    }
+
+    // Look up the token (also checks expiry and used_at)
+    const record = await PasswordResetToken.findByToken(token);
+    if (!record) {
+      return res.status(400).json({ error: "Invalid or expired reset token" });
+    }
+
+    // Hash the new password with Argon2id
+    const hashedPassword = await argon2.hash(newPassword, {
+      type: argon2.argon2id,
+    });
+
+    // Update the user's password directly (skipping double-hashing)
+    await User.updatePassword(record.user_id, hashedPassword);
+
+    // Mark the token as used so it cannot be replayed
+    await PasswordResetToken.markUsed(record.id);
+
+    return res.status(200).json({ message: "Password reset successfully" });
+  } catch (error) {
+    console.error("resetPassword error:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
 
