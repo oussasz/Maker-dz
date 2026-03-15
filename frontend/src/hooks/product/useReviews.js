@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "../../api/axios";
 import useAxiosPrivate from "../useAxiosPrivate";
 
@@ -20,13 +20,20 @@ const useReviews = (productId) => {
   const [sort, setSort] = useState("recent");
   const [isLoading, setIsLoading] = useState(false);
 
+  // Use refs so async callbacks always have the latest values
+  const sortRef = useRef(sort);
+  sortRef.current = sort;
+  const paginationRef = useRef(pagination);
+  paginationRef.current = pagination;
+
   const fetchReviews = useCallback(
-    async (page = 1, sortBy = sort) => {
+    async (page = 1, sortBy) => {
       if (!productId) return;
+      const currentSort = sortBy || sortRef.current;
       setIsLoading(true);
       try {
         const res = await axios.get(`/products/${productId}/reviews`, {
-          params: { page, limit: 10, sort: sortBy },
+          params: { page, limit: 10, sort: currentSort },
         });
         setReviews(res.data.reviews);
         setStats(res.data.stats);
@@ -37,7 +44,7 @@ const useReviews = (productId) => {
         setIsLoading(false);
       }
     },
-    [productId, sort],
+    [productId],
   );
 
   useEffect(() => {
@@ -45,7 +52,7 @@ const useReviews = (productId) => {
   }, [productId, sort]);
 
   const changePage = (page) => {
-    fetchReviews(page, sort);
+    fetchReviews(page);
   };
 
   const changeSort = (newSort) => {
@@ -55,24 +62,26 @@ const useReviews = (productId) => {
   const submitReview = async (data) => {
     const res = await axiosPrivate.post(`/products/${productId}/reviews`, data);
     // Refresh list to show new review + updated stats
-    await fetchReviews(1, sort);
+    await fetchReviews(1);
     return res.data;
   };
 
   const updateReview = async (reviewId, data) => {
     const res = await axiosPrivate.put(`/reviews/${reviewId}`, data);
-    await fetchReviews(pagination.page, sort);
+    await fetchReviews(paginationRef.current.page);
     return res.data;
   };
 
   const deleteReview = async (reviewId) => {
     await axiosPrivate.delete(`/reviews/${reviewId}`);
-    await fetchReviews(pagination.page, sort);
+    // Optimistically remove from UI immediately
+    setReviews((prev) => prev.filter((r) => r.id !== reviewId));
+    // Then refetch for accurate stats + pagination
+    await fetchReviews(paginationRef.current.page);
   };
 
   const markHelpful = async (reviewId) => {
     const res = await axiosPrivate.post(`/reviews/${reviewId}/helpful`);
-    // Update in-place to avoid full refetch
     setReviews((prev) =>
       prev.map((r) =>
         r.id === reviewId ? { ...r, helpful_count: res.data.helpful_count } : r,
@@ -92,7 +101,7 @@ const useReviews = (productId) => {
     updateReview,
     deleteReview,
     markHelpful,
-    refetch: () => fetchReviews(pagination.page, sort),
+    refetch: () => fetchReviews(paginationRef.current.page),
   };
 };
 
