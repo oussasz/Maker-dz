@@ -26,6 +26,8 @@ export const Product = {
 
     let query = `
       SELECT p.*, 
+             COALESCE((SELECT AVG(r.rating) FROM reviews r WHERE r.product_id = p.id), 0) as average_rating,
+             (SELECT COUNT(*) FROM reviews r WHERE r.product_id = p.id) as total_reviews,
              u.username as seller_username,
              u.first_name as seller_first_name,
              u.last_name as seller_last_name
@@ -112,6 +114,8 @@ export const Product = {
     const pool = await getConnection();
     const [rows] = await pool.query(
       `SELECT p.*, 
+              COALESCE((SELECT AVG(r.rating) FROM reviews r WHERE r.product_id = p.id), 0) as average_rating,
+              (SELECT COUNT(*) FROM reviews r WHERE r.product_id = p.id) as total_reviews,
               u.username as seller_username,
               u.first_name as seller_first_name,
               u.last_name as seller_last_name,
@@ -144,6 +148,8 @@ export const Product = {
     const pool = await getConnection();
     const [rows] = await pool.query(
       `SELECT p.*, 
+              COALESCE((SELECT AVG(r.rating) FROM reviews r WHERE r.product_id = p.id), 0) as average_rating,
+              (SELECT COUNT(*) FROM reviews r WHERE r.product_id = p.id) as total_reviews,
               u.username as seller_username,
               u.first_name as seller_first_name,
               u.last_name as seller_last_name,
@@ -431,7 +437,10 @@ export const Product = {
     const searchTerm = `%${query}%`;
 
     const [rows] = await pool.query(
-      `SELECT p.*, u.username as seller_username
+      `SELECT p.*,
+              COALESCE((SELECT AVG(r.rating) FROM reviews r WHERE r.product_id = p.id), 0) as average_rating,
+              (SELECT COUNT(*) FROM reviews r WHERE r.product_id = p.id) as total_reviews,
+              u.username as seller_username
        FROM products p
        LEFT JOIN users u ON p.seller_id = u.id
        WHERE p.is_active = true 
