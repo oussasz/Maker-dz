@@ -162,7 +162,7 @@ const CategoriesPage = () => {
         {displayProducts.length > 0 ? (
           <GridContainer cols={4} gap={5}>
             {displayProducts.map((prod) => (
-              <ProductCard product={prod} key={prod._id} />
+              <ProductCard product={prod} key={prod.id} />
             ))}
           </GridContainer>
         ) : (

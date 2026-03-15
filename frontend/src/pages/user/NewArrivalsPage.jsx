@@ -48,15 +48,15 @@ const NewArrivalsPage = () => {
   }, []);
 
   const isInWishlist = (productId) => {
-    return wishlistItems.some((item) => item._id === productId);
+    return wishlistItems.some((item) => item.id === productId);
   };
 
   const toggleWishlist = (e, product) => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (isInWishlist(product._id)) {
-      removeFromWishlist(product._id);
+    if (isInWishlist(product.id)) {
+      removeFromWishlist(product.id);
     } else {
       addToWishlist(product);
     }
@@ -131,12 +131,12 @@ const NewArrivalsPage = () => {
             >
               {products.map((product, index) => (
                 <motion.div
-                  key={product._id}
+                  key={product.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
                 >
-                  <Link to={`/products/${product._id}`}>
+                  <Link to={`/products/${product.slug || product.id}`}>
                     {viewMode === "grid" ? (
                       <div className="group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-xl transition-all">
                         <div className="relative aspect-square overflow-hidden bg-gray-100">
@@ -156,7 +156,7 @@ const NewArrivalsPage = () => {
                           >
                             <Heart
                               className={`w-5 h-5 ${
-                                isInWishlist(product._id)
+                                isInWishlist(product.id)
                                   ? "fill-red-500 text-red-500"
                                   : "text-gray-600"
                               }`}
@@ -209,7 +209,7 @@ const NewArrivalsPage = () => {
                         >
                           <Heart
                             className={`w-5 h-5 ${
-                              isInWishlist(product._id)
+                              isInWishlist(product.id)
                                 ? "fill-red-500 text-red-500"
                                 : "text-gray-400"
                             }`}

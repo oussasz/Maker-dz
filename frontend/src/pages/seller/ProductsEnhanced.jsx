@@ -76,14 +76,14 @@ const SellerProductCard = ({ product, index }) => {
           >
             <div className="flex gap-2">
               <Link
-                to={`/dashboard/products/update/${product._id}`}
+                to={`/dashboard/products/update/${product.slug || product.id}`}
                 className="flex-1"
               >
                 <Button size="sm" variant="secondary" className="w-full gap-2">
                   Edit
                 </Button>
               </Link>
-              <Link to={`/products/${product._id}`}>
+              <Link to={`/products/${product.slug || product.id}`}>
                 <Button size="sm" variant="secondary" className="gap-2">
                   <Eye size={14} />
                 </Button>
@@ -394,7 +394,7 @@ const ProductsEnhanced = () => {
           >
             {filteredAndSortedProducts.map((product, index) => (
               <SellerProductCard
-                key={product._id}
+                key={product.id}
                 product={product}
                 index={index}
               />

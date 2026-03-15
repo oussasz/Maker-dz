@@ -30,8 +30,7 @@ const ProductCard = ({
     useWishlistStore();
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
-  // Support both MongoDB (_id) and MySQL (id)
-  const productId = product.id || product._id;
+  const productId = product.id;
   const productSlug = product.slug || productId;
 
   const [isImageLoaded, setIsImageLoaded] = useState(false);

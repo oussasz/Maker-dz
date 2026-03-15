@@ -59,12 +59,11 @@ const CartProgress = ({ currentAmount, freeShippingThreshold = 5000 }) => {
 
 // Enhanced Cart Item Component
 const CartItemCard = ({ item, actions, index }) => {
-  // Support both old MongoDB structure (productId as object) and new MySQL structure (product as object)
   const product = item.product || item.productId || {};
   const variant =
     item.variant ||
-    product.variants?.find((v) => (v.id || v._id) === item.variantId);
-  const productId = product.id || product._id || item.productId;
+    product.variants?.find((v) => v.id === item.variantId);
+  const productId = product.id || item.productId;
   const productSlug = product.slug || productId;
   const productImages = product.mainImages || [];
   const variantAttributes = variant?.attributes || {};
@@ -392,7 +391,7 @@ const Cart = () => {
             <AnimatePresence mode="popLayout">
               {cartItems.map((item, index) => (
                 <CartItemCard
-                  key={item._id}
+                  key={item.id}
                   item={item}
                   index={index}
                   actions={{

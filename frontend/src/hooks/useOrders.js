@@ -39,7 +39,7 @@ export const useOrders = (sellerId) => {
     try {
       await axios.delete(`/${sellerId}/orders/${orderId}`);
       setSellerOrders((prevOrders) =>
-        prevOrders.filter((order) => order._id !== orderId)
+        prevOrders.filter((order) => order.id !== orderId)
       );
     } catch (error) {
       console.error("Error deleting order:", error);

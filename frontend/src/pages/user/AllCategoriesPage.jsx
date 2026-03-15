@@ -68,7 +68,7 @@ const AllCategoriesPage = () => {
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {categories.map((category, index) => (
                 <motion.div
-                  key={category._id}
+                  key={category.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}

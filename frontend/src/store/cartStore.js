@@ -27,7 +27,7 @@ const useCartStore = create(
           cart: {
             ...state.cart,
             items: state.cart.items.map((item) =>
-              item._id === itemId ? { ...item, quantity: newQuantity } : item,
+              item.id === itemId ? { ...item, quantity: newQuantity } : item,
             ),
           },
         })),

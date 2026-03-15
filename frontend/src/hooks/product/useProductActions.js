@@ -35,7 +35,7 @@ const useProductActions = (
       return;
     }
 
-    const productId = product.id || product._id;
+    const productId = product.id;
     isInWishlist(productId)
       ? removeFromWishlist(productId)
       : addToWishlist(productId);
@@ -56,8 +56,8 @@ const useProductActions = (
     try {
       const response = await axiosPrivate.post("/cart", {
         item: {
-          productId: product.id || product._id,
-          variantId: selectedVariant.id || selectedVariant._id,
+          productId: product.id,
+          variantId: selectedVariant.id,
           personalization,
           quantity,
           price: currentPrice,
@@ -90,9 +90,9 @@ const useProductActions = (
       const orderData = {
         items: [
           {
-            productId: product.id || product._id,
+            productId: product.id,
             sellerId: product.sellerId,
-            variantId: selectedVariant.id || selectedVariant._id,
+            variantId: selectedVariant.id,
             personalization,
             name: product.name,
             quantity,
@@ -124,7 +124,7 @@ const useProductActions = (
     handleWishlist,
     handleAddToCart,
     handleBuyNow,
-    isInWishlist: product ? isInWishlist(product.id || product._id) : false,
+    isInWishlist: product ? isInWishlist(product.id) : false,
     userId,
     isAuthenticated,
   };

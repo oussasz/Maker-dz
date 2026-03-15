@@ -61,7 +61,7 @@ export default function UpdateProduct() {
       });
 
       setProductAttributes({
-        categories: product.categories.map((cat) => cat._id),
+        categories: product.categories.map((cat) => cat.id),
         tags: product.tags,
         specifications: new Map(Object.entries(product.specifications || {})),
       });

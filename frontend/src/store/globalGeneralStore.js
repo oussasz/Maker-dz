@@ -14,7 +14,7 @@ export const useGeneralStore = create(
         }
 
         const filteredProducts = products.filter((product) =>
-          productsIds.includes(product._id)
+          productsIds.includes(product.id)
         );
 
         return filteredProducts;

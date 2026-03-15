@@ -88,10 +88,9 @@ const useCartActions = () => {
       return;
     }
 
-    // Support both MySQL (id) and MongoDB (_id) structures
-    const itemId = item.id || item._id;
+    const itemId = item.id;
     const product = item.product || item.productId || {};
-    const productId = product.id || product._id || item.productId;
+    const productId = product.id || item.productId;
 
     // Optimistic UI
     updateItemQuantity(itemId, newQuantity);
@@ -120,7 +119,7 @@ const useCartActions = () => {
    */
   const handleItemRemove = async (item) => {
     const product = item.product || item.productId || {};
-    const productId = product.id || product._id || item.productId;
+    const productId = product.id || item.productId;
 
     await updateCartInstant({
       productId: productId,
@@ -136,11 +135,11 @@ const useCartActions = () => {
    */
   const handleVariantChange = async (item, attributeName, newValue) => {
     const product = item.product || item.productId || {};
-    const productId = product.id || product._id || item.productId;
+    const productId = product.id || item.productId;
     const variants = product.variants || [];
 
     const currentVariant = variants.find(
-      (v) => (v.id || v._id) === item.variantId,
+      (v) => v.id === item.variantId,
     );
 
     if (!currentVariant) {
@@ -166,7 +165,7 @@ const useCartActions = () => {
 
     await updateCartInstant({
       productId: productId,
-      variantId: newVariant.id || newVariant._id,
+      variantId: newVariant.id,
       quantity: item.quantity,
     });
 
@@ -175,7 +174,7 @@ const useCartActions = () => {
 
   const handlePersonalizationChange = async (item, newValue) => {
     const product = item.product || item.productId || {};
-    const productId = product.id || product._id || item.productId;
+    const productId = product.id || item.productId;
 
     await updateCartInstant({
       productId: productId,

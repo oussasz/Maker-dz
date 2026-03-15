@@ -277,7 +277,7 @@ const AllProductsPage = () => {
               <GridContainer cols={viewMode === "grid" ? 4 : 1} gap={6}>
                 {filteredProducts.map((prod, index) => (
                   <motion.div
-                    key={prod._id}
+                    key={prod.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.03 }}

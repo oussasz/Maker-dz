@@ -41,7 +41,7 @@ const Wishlist = () => {
     if (!loading && wishlistProducts.length > 0) {
       // Filter out products that are no longer in the wishlist store
       const filteredProducts = wishlistProducts.filter(
-        (prod) => wishlist.includes(prod.id) || wishlist.includes(prod._id),
+        (prod) => wishlist.includes(prod.id),
       );
       if (filteredProducts.length !== wishlistProducts.length) {
         setWishlistProducts(filteredProducts);
@@ -65,7 +65,7 @@ const Wishlist = () => {
       <div className="animate-fadeIn">
         <GridContainer cols={4} gap={6}>
           {wishlistProducts.map((prod) => (
-            <ProductCard product={prod} key={prod.id || prod._id} />
+            <ProductCard product={prod} key={prod.id} />
           ))}
         </GridContainer>
       </div>

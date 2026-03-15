@@ -19,9 +19,9 @@ export const createOrder = async (req, res) => {
       total,
     });
 
-    // Clear cart if cartId provided
-    if (orderId && cartId) {
-      await Cart.clear(cartId);
+    // Clear cart after successful order
+    if (orderId) {
+      await Cart.clear(userId);
       console.log("Cart is now empty");
     }
 
@@ -173,7 +173,7 @@ export const getDashboardData = async (req, res) => {
 
 export const updateSellerOrders = async (req, res) => {
   try {
-    // This was for MongoDB - in MySQL, orders are already linked via seller_id in items
+    // In MySQL, orders are already linked via seller_id in items
     res.status(200).json({ message: "Seller orders tracked automatically" });
   } catch (error) {
     console.error("Error:", error);

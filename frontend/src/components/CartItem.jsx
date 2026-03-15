@@ -19,7 +19,7 @@ const CartItem = ({ item, actions }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const variant = item.productId.variants.find(
-    (variant) => variant._id === item.variantId
+    (variant) => variant.id === item.variantId
   );
 
   return (

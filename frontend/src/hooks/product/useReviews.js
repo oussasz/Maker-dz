@@ -45,9 +45,15 @@ const useReviews = (productId) => {
 
         setReviews(data.reviews ?? []);
         setStats(data.stats ?? { total: 0, average: 0, distribution: {} });
-        setPagination(data.pagination ?? { page: 1, limit: 10, total: 0, totalPages: 0 });
+        setPagination(
+          data.pagination ?? { page: 1, limit: 10, total: 0, totalPages: 0 },
+        );
       } catch (err) {
-        console.error("[useReviews] fetch error:", err?.response?.status, err?.message);
+        console.error(
+          "[useReviews] fetch error:",
+          err?.response?.status,
+          err?.message,
+        );
       } finally {
         if (id === fetchCounterRef.current) setIsLoading(false);
       }
@@ -67,10 +73,7 @@ const useReviews = (productId) => {
   // ─── Mutation helpers (plain functions, no useCallback) ───
 
   const submitReview = async (data) => {
-    const res = await axiosPrivate.post(
-      `/products/${productId}/reviews`,
-      data,
-    );
+    const res = await axiosPrivate.post(`/products/${productId}/reviews`, data);
     // Wait for server-authoritative refetch
     await fetchRef.current(1);
     return res.data;
@@ -92,9 +95,7 @@ const useReviews = (productId) => {
     const res = await axiosPrivate.post(`/reviews/${reviewId}/helpful`);
     setReviews((prev) =>
       prev.map((r) =>
-        r.id === reviewId
-          ? { ...r, helpful_count: res.data.helpful_count }
-          : r,
+        r.id === reviewId ? { ...r, helpful_count: res.data.helpful_count } : r,
       ),
     );
   };

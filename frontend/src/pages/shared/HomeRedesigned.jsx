@@ -580,7 +580,7 @@ const FeaturedProductsSection = ({ products }) => {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           {safeProducts.slice(0, 8).map((product, index) => (
             <motion.div
-              key={product._id || index}
+              key={product.id || index}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
