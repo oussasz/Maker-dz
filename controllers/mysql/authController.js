@@ -215,10 +215,9 @@ export const forgotPassword = async (req, res) => {
       await sendPasswordResetEmail(user.email, rawToken, userName);
     } catch (emailErr) {
       console.error("forgotPassword — email send failed:", emailErr);
-      // Token is already saved; surface a clear error instead of a silent 200
       return res
         .status(500)
-        .json({ error: "Could not send the reset email. Please try again." });
+        .json({ error: `Could not send the reset email: ${emailErr.message}` });
     }
 
     return res.status(200).json({
