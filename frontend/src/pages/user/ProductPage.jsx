@@ -34,6 +34,8 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "../../components/ui/avatar.tsx";
+import ReviewList from "../../components/product-page/ReviewList.jsx";
+import useReviews from "../../hooks/product/useReviews.js";
 
 const ProductPage = () => {
   const { productId } = useParams();
@@ -48,6 +50,19 @@ const ProductPage = () => {
   const { selectedVariant, selectedAttributes, handleAttributeChange } =
     useProductVariant(product);
   const { relatedProducts } = useRelatedProducts(product);
+  const {
+    reviews,
+    stats: reviewStats,
+    pagination: reviewPagination,
+    sort: reviewSort,
+    isLoading: reviewsLoading,
+    changePage: changeReviewPage,
+    changeSort: changeReviewSort,
+    submitReview,
+    updateReview,
+    deleteReview,
+    markHelpful,
+  } = useReviews(productId);
 
   // Computed Values (needed for actions)
   const currentPrice = selectedVariant?.price || product?.basePrice || 0;
@@ -324,6 +339,29 @@ const ProductPage = () => {
                 <IconButton key={i} icon={<Icon />} />
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* Reviews Section */}
+        <section className="max-w-7xl 2xl:min-w-7xl w-full p-4 mt-4">
+          <Divider />
+          <div className="my-6">
+            <h2 className="text-xl font-semibold mb-6">
+              {t("reviews")} ({reviewStats.total})
+            </h2>
+            <ReviewList
+              reviews={reviews}
+              stats={reviewStats}
+              pagination={reviewPagination}
+              sort={reviewSort}
+              isLoading={reviewsLoading}
+              onPageChange={changeReviewPage}
+              onSortChange={changeReviewSort}
+              onSubmit={submitReview}
+              onUpdate={updateReview}
+              onDelete={deleteReview}
+              onHelpful={markHelpful}
+            />
           </div>
         </section>
 

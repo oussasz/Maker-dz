@@ -421,7 +421,9 @@ export const completeGoogleSignup = async (req, res) => {
     }
 
     if (!role || !["customer", "seller"].includes(role)) {
-      return res.status(400).json({ error: "Valid role is required (customer or seller)" });
+      return res
+        .status(400)
+        .json({ error: "Valid role is required (customer or seller)" });
     }
 
     // Verify the pending-signup JWT
@@ -431,7 +433,10 @@ export const completeGoogleSignup = async (req, res) => {
     } catch (jwtErr) {
       return res
         .status(400)
-        .json({ error: "Invalid or expired signup token. Please try again with Google." });
+        .json({
+          error:
+            "Invalid or expired signup token. Please try again with Google.",
+        });
     }
 
     if (payload.purpose !== "google_signup") {
@@ -441,7 +446,9 @@ export const completeGoogleSignup = async (req, res) => {
     // Double-check user doesn't already exist (race condition guard)
     const existing = await User.findByEmail(payload.email);
     if (existing) {
-      return res.status(400).json({ error: "An account with this email already exists" });
+      return res
+        .status(400)
+        .json({ error: "An account with this email already exists" });
     }
 
     // Create the user with correct field mapping

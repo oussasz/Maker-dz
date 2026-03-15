@@ -122,9 +122,7 @@ const GoogleRoleSelect = () => {
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">
               Welcome, {profile?.firstName || profile?.username || ""}!
             </h1>
-            <p className="text-gray-500 text-sm">
-              {profile?.email}
-            </p>
+            <p className="text-gray-500 text-sm">{profile?.email}</p>
             <p className="text-gray-500 mt-3">
               Choose how you want to use Maker DZ
             </p>

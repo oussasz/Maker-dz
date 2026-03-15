@@ -46,6 +46,7 @@ import categoryRoute from "./Routes/mysql/categoryRoute.js";
 import cartRoute from "./Routes/mysql/cartRoute.js";
 import wishlistRoute from "./Routes/mysql/wishlistRoute.js";
 import citiesRoute from "./Routes/mysql/citiesRoute.js";
+import reviewRoute from "./Routes/mysql/reviewRoute.js";
 
 const app = express();
 
@@ -147,6 +148,7 @@ app.use("/api", categoryRoute);
 app.use("/api", cartRoute);
 app.use("/api", wishlistRoute);
 app.use("/api", citiesRoute);
+app.use("/api", reviewRoute);
 
 console.log("✅ All API routes registered");
 

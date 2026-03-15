@@ -309,9 +309,9 @@ const ProductCard = ({
             rating={product.averageRating || 0}
             className="scale-90 origin-left"
           />
-          {product.reviewCount > 0 && (
+          {product.totalReviews > 0 && (
             <span className="text-xs text-gray-400">
-              ({product.reviewCount})
+              ({product.totalReviews})
             </span>
           )}
         </div>
