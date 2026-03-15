@@ -83,6 +83,9 @@ export const getWishlist = async (req, res) => {
     const wishlist = await Wishlist.findByUserId(userId);
 
     if (!wishlist) {
+      if (onlyIDs === "true" || onlyIDs === true) {
+        return res.status(200).json({ productIds: [] });
+      }
       return res.status(200).json({ wishlist: { products: [] } });
     }
 

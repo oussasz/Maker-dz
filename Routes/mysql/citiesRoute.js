@@ -21,4 +21,21 @@ router.get("/cities", (req, res) => {
   }
 });
 
+// Get communes by wilaya code
+router.get("/communes/:wilayaCode", (req, res) => {
+  try {
+    const wilayaCode = req.params.wilayaCode;
+    const citiesPath = path.join(__dirname, "../../utils/algeria_cities.json");
+    const citiesData = fs.readFileSync(citiesPath, "utf8");
+    const cities = JSON.parse(citiesData);
+    const communes = cities.filter(
+      (c) => String(c.wilaya_code) === String(wilayaCode)
+    );
+    res.json(communes);
+  } catch (error) {
+    console.error("Error loading communes:", error);
+    res.status(500).json({ error: "Failed to load communes data" });
+  }
+});
+
 export default router;

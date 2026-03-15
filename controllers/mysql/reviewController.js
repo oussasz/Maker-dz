@@ -1,13 +1,29 @@
-import { Review } from "../../models/mysql/index.js";
+import { Review, Product } from "../../models/mysql/index.js";
 import { Order } from "../../models/mysql/index.js";
 import { getConnection } from "../../config/database.js";
+
+/**
+ * Resolve a productId param that may be a numeric ID or a slug.
+ * Returns the numeric product ID, or null if not found.
+ */
+async function resolveProductId(param) {
+  // If it's a number, use it directly
+  if (/^\d+$/.test(param)) return Number(param);
+  // Otherwise treat as slug
+  const product = await Product.findBySlug(param);
+  return product ? product.id : null;
+}
 
 /**
  * GET /api/products/:productId/reviews?page=1&limit=10&sort=recent
  */
 export const getProductReviews = async (req, res) => {
   try {
-    const { productId } = req.params;
+    const numericId = await resolveProductId(req.params.productId);
+    if (!numericId) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+    const productId = numericId;
     const page = Math.max(1, parseInt(req.query.page) || 1);
     const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 10));
     const offset = (page - 1) * limit;
@@ -99,7 +115,11 @@ export const getProductReviews = async (req, res) => {
  */
 export const createReview = async (req, res) => {
   try {
-    const { productId } = req.params;
+    const numericId = await resolveProductId(req.params.productId);
+    if (!numericId) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+    const productId = numericId;
     const userId = req.user.id;
     const { rating, title, comment, images } = req.body;
 
@@ -133,7 +153,7 @@ export const createReview = async (req, res) => {
     const orderId = purchaseRows[0]?.order_id || null;
 
     const review = await Review.create({
-      productId: Number(productId),
+      productId,
       userId,
       orderId,
       rating,
