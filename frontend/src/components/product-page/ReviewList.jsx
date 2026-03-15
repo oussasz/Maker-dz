@@ -1,8 +1,16 @@
 import React, { useState } from "react";
-import { Star, ChevronLeft, ChevronRight, MessageSquare } from "lucide-react";
+import { Star, ChevronLeft, ChevronRight, MessageSquare, AlertTriangle } from "lucide-react";
 import ReviewCard from "./ReviewCard";
 import ReviewForm from "./ReviewForm";
 import useAuth from "../../store/authStore";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "../ui/dialog.tsx";
 
 const SORT_OPTIONS = [
   { value: "recent", label: "Most Recent" },
@@ -26,6 +34,8 @@ const ReviewList = ({
 }) => {
   const { isAuthenticated, user } = useAuth();
   const [editingReview, setEditingReview] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Check if user already has a review
   const userReview = isAuthenticated
@@ -49,9 +59,18 @@ const ReviewList = ({
     }
   };
 
-  const handleDelete = async (reviewId) => {
-    if (window.confirm("Are you sure you want to delete this review?")) {
-      await onDelete(reviewId);
+  const handleDelete = (reviewId) => {
+    setDeleteTarget(reviewId);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
+    try {
+      await onDelete(deleteTarget);
+    } finally {
+      setIsDeleting(false);
+      setDeleteTarget(null);
     }
   };
 
@@ -74,6 +93,7 @@ const ReviewList = ({
   };
 
   return (
+    <>
     <div>
       {/* Header with stats */}
       <div className="flex flex-col lg:flex-row gap-8 mb-6">
@@ -199,6 +219,38 @@ const ReviewList = ({
         </div>
       )}
     </div>
+
+      {/* Delete confirmation dialog */}
+      <Dialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <DialogContent showCloseButton={false} className="sm:max-w-md">
+          <DialogHeader>
+            <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
+              <AlertTriangle className="h-6 w-6 text-red-600" />
+            </div>
+            <DialogTitle className="text-center">Delete Review</DialogTitle>
+            <DialogDescription className="text-center">
+              Are you sure you want to delete this review? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="sm:justify-center gap-3 mt-2">
+            <button
+              onClick={() => setDeleteTarget(null)}
+              disabled={isDeleting}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition disabled:opacity-50"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={confirmDelete}
+              disabled={isDeleting}
+              className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition disabled:opacity-50"
+            >
+              {isDeleting ? "Deleting..." : "Delete"}
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
