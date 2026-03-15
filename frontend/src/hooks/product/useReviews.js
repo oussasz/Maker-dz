@@ -53,10 +53,7 @@ const useReviews = (productId) => {
   };
 
   const submitReview = async (data) => {
-    const res = await axiosPrivate.post(
-      `/products/${productId}/reviews`,
-      data,
-    );
+    const res = await axiosPrivate.post(`/products/${productId}/reviews`, data);
     // Refresh list to show new review + updated stats
     await fetchReviews(1, sort);
     return res.data;

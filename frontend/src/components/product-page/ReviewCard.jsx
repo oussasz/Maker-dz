@@ -1,12 +1,15 @@
 import React from "react";
 import { Star, ThumbsUp, BadgeCheck, Trash2, Pencil } from "lucide-react";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "../ui/avatar.tsx";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar.tsx";
 
-const ReviewCard = ({ review, currentUserId, currentUserRole, onHelpful, onEdit, onDelete }) => {
+const ReviewCard = ({
+  review,
+  currentUserId,
+  currentUserRole,
+  onHelpful,
+  onEdit,
+  onDelete,
+}) => {
   const isOwner = currentUserId && review.user_id === currentUserId;
   const isAdmin = currentUserRole === "admin";
 

@@ -44,7 +44,9 @@ export const getProductReviews = async (req, res) => {
     const formattedReviews = reviews.map((row) => ({
       ...row,
       images:
-        typeof row.images === "string" ? JSON.parse(row.images) : row.images || [],
+        typeof row.images === "string"
+          ? JSON.parse(row.images)
+          : row.images || [],
       user: {
         id: row.user_id,
         username: row.username,
@@ -66,7 +68,9 @@ export const getProductReviews = async (req, res) => {
       reviews: formattedReviews,
       stats: {
         total: Number(stats.total),
-        average: stats.average ? parseFloat(Number(stats.average).toFixed(1)) : 0,
+        average: stats.average
+          ? parseFloat(Number(stats.average).toFixed(1))
+          : 0,
         distribution: {
           5: Number(stats.five_star) || 0,
           4: Number(stats.four_star) || 0,
@@ -101,7 +105,9 @@ export const createReview = async (req, res) => {
 
     // Validate rating
     if (!rating || rating < 1 || rating > 5 || !Number.isInteger(rating)) {
-      return res.status(400).json({ error: "Rating must be an integer between 1 and 5" });
+      return res
+        .status(400)
+        .json({ error: "Rating must be an integer between 1 and 5" });
     }
 
     // Check uniqueness — one review per user per product
@@ -161,11 +167,18 @@ export const updateReview = async (req, res) => {
     }
 
     if (review.user_id !== userId) {
-      return res.status(403).json({ error: "You can only edit your own reviews" });
+      return res
+        .status(403)
+        .json({ error: "You can only edit your own reviews" });
     }
 
-    if (rating !== undefined && (rating < 1 || rating > 5 || !Number.isInteger(rating))) {
-      return res.status(400).json({ error: "Rating must be an integer between 1 and 5" });
+    if (
+      rating !== undefined &&
+      (rating < 1 || rating > 5 || !Number.isInteger(rating))
+    ) {
+      return res
+        .status(400)
+        .json({ error: "Rating must be an integer between 1 and 5" });
     }
 
     const updated = await Review.updateById(reviewId, {
@@ -198,7 +211,9 @@ export const deleteReview = async (req, res) => {
     }
 
     if (review.user_id !== userId && userRole !== "admin") {
-      return res.status(403).json({ error: "Not authorized to delete this review" });
+      return res
+        .status(403)
+        .json({ error: "Not authorized to delete this review" });
     }
 
     await Review.deleteById(reviewId);

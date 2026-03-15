@@ -131,9 +131,7 @@ const ReviewForm = ({ onSubmit, editingReview, onCancelEdit }) => {
       </div>
 
       {/* Error */}
-      {error && (
-        <p className="text-sm text-red-600 mb-3">{error}</p>
-      )}
+      {error && <p className="text-sm text-red-600 mb-3">{error}</p>}
 
       {/* Submit */}
       <Button
