@@ -5,6 +5,7 @@ import {
   register,
   googleAuth,
   googleAuthCallback,
+  completeGoogleSignup,
   forgotPassword,
   resetPassword,
   verifyEmail,
@@ -26,5 +27,6 @@ router.get("/verify-email/:token", verifyEmail);
 // Google OAuth routes
 router.get("/auth/google", googleAuth);
 router.get("/auth/google/callback", googleAuthCallback);
+router.post("/auth/google/complete", completeGoogleSignup);
 
 export default router;

@@ -24,11 +24,13 @@ if (hasGoogleOAuth) {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
+          const email = profile.emails[0].value;
+
           // Check if user already exists by email
-          let user = await User.findByEmail(profile.emails[0].value);
+          let user = await User.findByEmail(email);
 
           if (user) {
-            // User exists, update Google ID if not set
+            // User exists — link Google ID if not set
             if (!user.google_id) {
               await User.updateById(user.id, { google_id: profile.id });
               user.google_id = profile.id;
@@ -42,23 +44,17 @@ if (hasGoogleOAuth) {
             return done(null, user);
           }
 
-          // Create new user from Google profile
-          const userId = await User.create({
-            google_id: profile.id,
-            email: profile.emails[0].value,
-            username:
-              profile.displayName || profile.emails[0].value.split("@")[0],
-            first_name: profile.name?.givenName || "",
-            last_name: profile.name?.familyName || "",
-            profile_picture: profile.photos?.[0]?.value || "",
-            role: "customer", // Default role
-            is_email_verified: true, // Google emails are verified
-            auth_provider: "google",
-            password: null, // No password for Google users
+          // New user — do NOT create yet. Return profile data so the
+          // callback handler can redirect to the role-selection page.
+          return done(null, {
+            isNewGoogleUser: true,
+            googleId: profile.id,
+            email,
+            username: profile.displayName || email.split("@")[0],
+            firstName: profile.name?.givenName || "",
+            lastName: profile.name?.familyName || "",
+            avatar: profile.photos?.[0]?.value || "",
           });
-
-          user = await User.findById(userId);
-          return done(null, user);
         } catch (error) {
           console.error("Google OAuth error:", error);
           return done(error, null);
