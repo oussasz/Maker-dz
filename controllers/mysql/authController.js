@@ -176,7 +176,6 @@ export const refresh = async (req, res) => {
 /**
  * POST /api/forgot-password
  * Body: { email }
- * Always responds 200 to avoid leaking whether an email exists.
  */
 export const forgotPassword = async (req, res) => {
   try {
@@ -188,24 +187,42 @@ export const forgotPassword = async (req, res) => {
 
     const user = await User.findByEmail(email);
 
-    if (user) {
-      // Remove any existing (unused) tokens for this user
-      await PasswordResetToken.deleteByUserId(user.id);
-
-      // Generate a cryptographically secure token
-      const rawToken = crypto.randomBytes(32).toString("hex");
-      const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
-
-      await PasswordResetToken.create(user.id, rawToken, expiresAt);
-
-      const userName = user.first_name || user.username;
-      await sendPasswordResetEmail(user.email, rawToken, userName);
+    // No account with that email
+    if (!user) {
+      return res
+        .status(404)
+        .json({ error: "No account found with this email address." });
     }
 
-    // Always return the same response — do not reveal whether the email exists
+    // Account created via Google — no password to reset
+    if (user.auth_provider === "google") {
+      return res.status(400).json({
+        error:
+          "This account was created with Google. Please sign in with Google.",
+      });
+    }
+
+    // Remove any existing tokens for this user, then create a fresh one
+    await PasswordResetToken.deleteByUserId(user.id);
+
+    const rawToken = crypto.randomBytes(32).toString("hex");
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    await PasswordResetToken.create(user.id, rawToken, expiresAt);
+
+    try {
+      const userName = user.first_name || user.username;
+      await sendPasswordResetEmail(user.email, rawToken, userName);
+    } catch (emailErr) {
+      console.error("forgotPassword — email send failed:", emailErr);
+      // Token is already saved; surface a clear error instead of a silent 200
+      return res
+        .status(500)
+        .json({ error: "Could not send the reset email. Please try again." });
+    }
+
     return res.status(200).json({
-      message:
-        "If this email is associated with an account, a reset link has been sent.",
+      message: "A password reset link has been sent to your email.",
     });
   } catch (error) {
     console.error("forgotPassword error:", error);

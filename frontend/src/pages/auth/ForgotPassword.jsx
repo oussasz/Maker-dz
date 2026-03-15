@@ -37,7 +37,12 @@ const ForgotPassword = () => {
       setSubmitted(true);
     } catch (err) {
       console.error("Forgot password error:", err);
-      setError("Something went wrong. Please try again later.");
+      const serverMessage = err.response?.data?.error;
+      if (serverMessage) {
+        setError(serverMessage);
+      } else {
+        setError("Something went wrong. Please try again later.");
+      }
     } finally {
       setIsLoading(false);
     }
