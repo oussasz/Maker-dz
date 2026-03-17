@@ -35,11 +35,6 @@ import {
   Clock,
   Calendar,
   Filter,
-  Download,
-  MoreVertical,
-  ChevronDown,
-  ArrowUpDown,
-  Trash2,
   Eye,
   RefreshCw,
   Sparkles,
@@ -76,13 +71,7 @@ const statusConfig = {
 };
 
 // Enhanced Order Card for Mobile
-const OrderCardEnhanced = ({
-  order,
-  updateOrderStatus,
-  deleteOrder,
-  t,
-  index,
-}) => {
+const OrderCardEnhanced = ({ order, updateOrderStatus, t, index }) => {
   const status = statusConfig[order.state] || statusConfig.pending;
   const StatusIcon = status.icon;
 
@@ -102,7 +91,7 @@ const OrderCardEnhanced = ({
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900">{order.product}</h3>
-                <p className="text-xs text-gray-500">#{order.id?.slice(-8)}</p>
+                <p className="text-xs text-gray-500">#{order.id}</p>
               </div>
             </div>
             <Select
@@ -153,14 +142,6 @@ const OrderCardEnhanced = ({
                 <p className="text-xs text-gray-500">{t("total")}</p>
                 <p className="text-xl font-bold text-primary">{order.total}</p>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => deleteOrder(order.id)}
-                className="text-red-500 hover:text-red-600 hover:bg-red-50"
-              >
-                <Trash2 size={16} />
-              </Button>
             </div>
           </div>
         </CardContent>
@@ -178,13 +159,8 @@ function OrderListEnhanced() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [refreshing, setRefreshing] = useState(false);
 
-  const {
-    loading,
-    sellerOrders,
-    deleteOrder,
-    updateOrderStatus,
-    formatTableData,
-  } = useOrders(sellerId);
+  const { loading, sellerOrders, updateOrderStatus, formatTableData, refetch } =
+    useOrders(sellerId);
 
   const tableData = formatTableData(t);
 
@@ -193,7 +169,7 @@ function OrderListEnhanced() {
     return tableData.filter((order) => {
       const matchesSearch =
         order.product.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.id?.toLowerCase().includes(searchTerm.toLowerCase());
+        String(order.id).includes(searchTerm);
       const matchesStatus =
         statusFilter === "all" || order.state === statusFilter;
       return matchesSearch && matchesStatus;
@@ -229,9 +205,9 @@ function OrderListEnhanced() {
         className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
       >
         <div>
-          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 flex items-center gap-3">
+          <h1 className="text-2xl lg:text-4xl font-bold text-gray-900 flex items-center gap-3">
             {t("your_orders")}
-            <Sparkles className="w-8 h-8 text-primary" />
+            <Sparkles className="w-6 h-6 lg:w-8 lg:h-8 text-primary" />
           </h1>
           <p className="text-gray-500 mt-1 hidden lg:block">
             Manage and track all your customer orders
@@ -239,19 +215,18 @@ function OrderListEnhanced() {
         </div>
 
         <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm" className="gap-2">
-            <Download size={16} />
-            Export
-          </Button>
           <Button
             variant="outline"
             size="sm"
             className="gap-2"
-            onClick={() => setRefreshing(true)}
+            onClick={() => {
+              setRefreshing(true);
+              refetch().finally(() => setRefreshing(false));
+            }}
             disabled={refreshing}
           >
             <RefreshCw size={16} className={refreshing ? "animate-spin" : ""} />
-            Refresh
+            {t("refresh", "Refresh")}
           </Button>
         </div>
       </motion.div>
@@ -449,7 +424,7 @@ function OrderListEnhanced() {
                             </TableCell>
                             <TableCell>
                               <code className="text-xs bg-gray-100 px-2 py-1 rounded-md font-mono">
-                                #{order.id?.slice(-8)}
+                                #{order.id}
                               </code>
                             </TableCell>
                             <TableCell>
@@ -518,14 +493,6 @@ function OrderListEnhanced() {
                                 >
                                   <Eye size={16} className="text-gray-400" />
                                 </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => deleteOrder(order.id)}
-                                  className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50"
-                                >
-                                  <Trash2 size={16} />
-                                </Button>
                               </div>
                             </TableCell>
                           </motion.tr>
@@ -544,7 +511,6 @@ function OrderListEnhanced() {
                   key={order.id || index}
                   order={order}
                   updateOrderStatus={updateOrderStatus}
-                  deleteOrder={deleteOrder}
                   t={t}
                   index={index}
                 />

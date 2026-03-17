@@ -14,7 +14,6 @@ import {
   CardHeader,
   CardTitle,
 } from "../../components/ui/card";
-import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
 import LoadingSpinner from "../../components/ui/loading-spinner";
 import {
@@ -26,11 +25,8 @@ import {
   Package,
   ArrowUpRight,
   ArrowDownRight,
-  MoreHorizontal,
   Eye,
   RefreshCw,
-  Calendar,
-  Users,
   Sparkles,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -90,10 +86,10 @@ const StatCard = ({ stat, index }) => {
           className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}
         />
 
-        <CardContent className="p-6 relative">
+        <CardContent className="p-4 sm:p-6 relative">
           <div className="flex items-start justify-between">
-            <div className="space-y-3">
-              <p className="text-sm font-medium text-gray-500 flex items-center gap-2">
+            <div className="space-y-2 sm:space-y-3 min-w-0 flex-1">
+              <p className="text-xs sm:text-sm font-medium text-gray-500 flex items-center gap-2 truncate">
                 {stat.title}
                 {stat.trend && (
                   <span
@@ -110,7 +106,7 @@ const StatCard = ({ stat, index }) => {
                   </span>
                 )}
               </p>
-              <h3 className="text-3xl font-bold text-gray-900">
+              <h3 className="text-xl sm:text-3xl font-bold text-gray-900">
                 {typeof stat.value === "number" ? (
                   <AnimatedCounter
                     value={stat.value}
@@ -128,9 +124,11 @@ const StatCard = ({ stat, index }) => {
                 rotate: isHovered ? 12 : 0,
                 scale: isHovered ? 1.1 : 1,
               }}
-              className={`p-4 rounded-2xl ${stat.bgColor}`}
+              className={`p-2 sm:p-4 rounded-2xl ${stat.bgColor}`}
             >
-              <stat.icon className={`h-6 w-6 ${stat.iconColor}`} />
+              <stat.icon
+                className={`h-5 w-5 sm:h-6 sm:w-6 ${stat.iconColor}`}
+              />
             </motion.div>
           </div>
 
@@ -160,11 +158,12 @@ function DashboardEnhanced() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [dashboardData, setDashboardData] = useState({
-    orders: [],
+    recentOrders: [],
     totalOrders: 0,
-    numCompleted: 0,
-    numPending: 0,
-    totalIncome: 0,
+    completedOrders: 0,
+    pendingOrders: 0,
+    totalRevenue: 0,
+    totalProducts: 0,
   });
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
@@ -175,16 +174,19 @@ function DashboardEnhanced() {
         else setLoading(true);
 
         const sellerId = user.id;
-        const orderResponse = await axiosPrivate.get(
+        const response = await axiosPrivate.get(
           `/sellers/${sellerId}/dashboard`,
         );
 
+        const { stats, recentOrders } = response.data;
+
         setDashboardData({
-          orders: orderResponse.data.orders || [],
-          totalOrders: orderResponse.data.totalOrders || 0,
-          numCompleted: orderResponse.data.numCompleted || 0,
-          numPending: orderResponse.data.numPending || 0,
-          totalIncome: orderResponse.data.totalIncome || 0,
+          recentOrders: recentOrders || [],
+          totalOrders: stats?.totalOrders || 0,
+          completedOrders: stats?.completedOrders || 0,
+          pendingOrders: stats?.pendingOrders || 0,
+          totalRevenue: stats?.totalRevenue || 0,
+          totalProducts: stats?.totalProducts || 0,
         });
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
@@ -201,19 +203,43 @@ function DashboardEnhanced() {
   }, [fetchDashboardData]);
 
   const tableData = useMemo(() => {
-    return dashboardData.orders
-      .map((order) => ({
-        id: order.orderId,
-        orderDate: new Date(order.orderDate).toLocaleDateString(),
-        orderNumber: order.orderNumber,
-        customer: order.customerName || "Unknown Customer",
-        status: order.orderStatus || "pending",
-        quantity: order.quantity,
-        rawDate: new Date(order.createdAt).getTime(),
-        total: order.total || 0,
-      }))
+    return dashboardData.recentOrders
+      .map((order) => {
+        const items = Array.isArray(order.items) ? order.items : [];
+        const sellerItems = items.filter(
+          (item) => String(item.seller_id) === String(user.id),
+        );
+        const totalQty = sellerItems.reduce(
+          (sum, item) => sum + (item.quantity || 0),
+          0,
+        );
+        const orderTotal = sellerItems.reduce(
+          (sum, item) =>
+            sum + (item.subtotal || item.price * item.quantity || 0),
+          0,
+        );
+        const shippingAddr =
+          typeof order.shipping_address === "string"
+            ? JSON.parse(order.shipping_address || "{}")
+            : order.shippingAddress || order.shipping_address || {};
+        const customerName =
+          shippingAddr.fullName ||
+          shippingAddr.name ||
+          `${shippingAddr.firstName || ""} ${shippingAddr.lastName || ""}`.trim() ||
+          t("customer");
+
+        return {
+          id: order.id,
+          orderDate: new Date(order.created_at).toLocaleDateString(),
+          customer: customerName,
+          status: order.order_status || "pending",
+          quantity: totalQty,
+          rawDate: new Date(order.created_at).getTime(),
+          total: orderTotal,
+        };
+      })
       .slice(0, 5);
-  }, [dashboardData.orders]);
+  }, [dashboardData.recentOrders, user.id, t]);
 
   const sortedData = useMemo(() => {
     if (!sortConfig.key) return tableData;
@@ -293,7 +319,7 @@ function DashboardEnhanced() {
   const completionRate =
     dashboardData.totalOrders > 0
       ? Math.round(
-          (dashboardData.numCompleted / dashboardData.totalOrders) * 100,
+          (dashboardData.completedOrders / dashboardData.totalOrders) * 100,
         )
       : 0;
 
@@ -306,11 +332,10 @@ function DashboardEnhanced() {
       bgColor: "bg-blue-100",
       iconColor: "text-blue-600",
       gradient: "from-blue-500 to-blue-600",
-      trend: 12,
     },
     {
       title: t("completed_sales"),
-      value: dashboardData.numCompleted,
+      value: dashboardData.completedOrders,
       icon: CheckCircle,
       description: t("successfully_delivered"),
       bgColor: "bg-green-100",
@@ -321,7 +346,7 @@ function DashboardEnhanced() {
     },
     {
       title: t("pending_orders"),
-      value: dashboardData.numPending,
+      value: dashboardData.pendingOrders,
       icon: Clock,
       description: t("awaiting_fulfillment"),
       bgColor: "bg-amber-100",
@@ -330,13 +355,12 @@ function DashboardEnhanced() {
     },
     {
       title: t("total_revenue"),
-      value: `DZD ${dashboardData.totalIncome.toLocaleString()}`,
+      value: `${dashboardData.totalRevenue.toLocaleString()} DZD`,
       icon: DollarSign,
       description: t("total_income"),
       bgColor: "bg-purple-100",
       iconColor: "text-purple-600",
       gradient: "from-purple-500 to-purple-600",
-      trend: 8,
     },
   ];
 
@@ -357,9 +381,9 @@ function DashboardEnhanced() {
         className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
       >
         <div>
-          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 flex items-center gap-3">
+          <h1 className="text-2xl lg:text-4xl font-bold text-gray-900 flex items-center gap-3">
             {t("dashboard_overview")}
-            <Sparkles className="w-8 h-8 text-primary" />
+            <Sparkles className="w-6 h-6 lg:w-8 lg:h-8 text-primary" />
           </h1>
           <p className="text-gray-500 mt-1 hidden lg:block">
             {t("monitor_sales_performance")}
@@ -375,17 +399,13 @@ function DashboardEnhanced() {
             className="gap-2"
           >
             <RefreshCw size={16} className={refreshing ? "animate-spin" : ""} />
-            Refresh
-          </Button>
-          <Button variant="outline" size="sm" className="gap-2">
-            <Calendar size={16} />
-            This Month
+            {t("refresh", "Refresh")}
           </Button>
         </div>
       </motion.div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         {statCards.map((stat, index) => (
           <StatCard key={stat.title} stat={stat} index={index} />
         ))}
@@ -425,7 +445,8 @@ function DashboardEnhanced() {
               </div>
             </CardHeader>
             <CardContent className="p-0">
-              <div className="overflow-x-auto">
+              {/* Desktop table */}
+              <div className="hidden md:block overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-gray-50/50 hover:bg-gray-50/50">
@@ -479,7 +500,7 @@ function DashboardEnhanced() {
                             </TableCell>
                             <TableCell>
                               <code className="text-xs bg-gray-100 px-2 py-1 rounded-md font-mono">
-                                #{row.id.slice(-6)}
+                                #{row.id}
                               </code>
                             </TableCell>
                             <TableCell>
@@ -523,6 +544,39 @@ function DashboardEnhanced() {
                   </TableBody>
                 </Table>
               </div>
+
+              {/* Mobile cards */}
+              <div className="md:hidden divide-y divide-gray-100">
+                {sortedData.length > 0 ? (
+                  sortedData.map((row) => (
+                    <div key={row.id} className="p-4 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium text-gray-900">
+                          {row.customer}
+                        </span>
+                        {getStatusBadge(row.status)}
+                      </div>
+                      <div className="flex items-center justify-between text-sm text-gray-500">
+                        <span>#{row.id}</span>
+                        <span>{row.orderDate}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-500">
+                          {t("quantity")}: {row.quantity}
+                        </span>
+                        <span className="font-semibold text-primary">
+                          {row.total.toLocaleString()} DZD
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex flex-col items-center gap-3 text-gray-400 py-12">
+                    <ShoppingCart size={40} strokeWidth={1.5} />
+                    <p>{t("no_orders_found")}</p>
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
         </motion.div>
@@ -539,17 +593,16 @@ function DashboardEnhanced() {
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <TrendingUp className="h-5 w-5 text-green-600" />
-                  Performance
+                  {t("performance", "Performance")}
                 </CardTitle>
-                <CardDescription>
-                  Your seller metrics this month
-                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* Completion Rate */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">Order Completion</span>
+                    <span className="text-gray-600">
+                      {t("order_completion", "Order Completion")}
+                    </span>
                     <span className="font-semibold text-green-600">
                       {completionRate}%
                     </span>
@@ -564,67 +617,27 @@ function DashboardEnhanced() {
                   </div>
                 </div>
 
-                {/* Response Rate */}
-                <div className="space-y-2">
+                {/* Order Summary */}
+                <div className="space-y-3 pt-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">Response Rate</span>
-                    <span className="font-semibold text-blue-600">95%</span>
+                    <span className="text-gray-600">
+                      {t("total_products", "Total Products")}
+                    </span>
+                    <span className="font-semibold text-gray-900">
+                      {dashboardData.totalProducts}
+                    </span>
                   </div>
-                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: "95%" }}
-                      transition={{ delay: 0.9, duration: 1 }}
-                      className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"
-                    />
-                  </div>
-                </div>
-
-                {/* Customer Rating */}
-                <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">Customer Rating</span>
-                    <span className="font-semibold text-amber-600">4.8/5</span>
-                  </div>
-                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: "96%" }}
-                      transition={{ delay: 1, duration: 1 }}
-                      className="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full"
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Top Products Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-          >
-            <Card className="border-0 shadow-lg overflow-hidden">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Package className="h-5 w-5 text-purple-600" />
-                  {t("top_products")}
-                </CardTitle>
-                <CardDescription>
-                  {t("best_selling_items_this_month")}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-center h-32 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl border-2 border-dashed border-purple-200">
-                  <div className="text-center">
-                    <Package className="h-10 w-10 text-purple-400 mx-auto mb-2" />
-                    <p className="text-sm font-medium text-purple-600">
-                      {t("product_analytics")}
-                    </p>
-                    <p className="text-xs text-purple-400">
-                      {t("coming_soon")}
-                    </p>
+                    <span className="text-gray-600">
+                      {t("processing", "Processing")}
+                    </span>
+                    <span className="font-semibold text-purple-600">
+                      {
+                        dashboardData.recentOrders.filter(
+                          (o) => o.order_status === "processing",
+                        ).length
+                      }
+                    </span>
                   </div>
                 </div>
               </CardContent>
@@ -635,18 +648,23 @@ function DashboardEnhanced() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
+            transition={{ delay: 0.6 }}
           >
             <Card className="border-0 shadow-lg overflow-hidden bg-gradient-to-br from-primary to-primary/90 text-white">
               <CardContent className="p-6">
-                <h3 className="font-semibold text-lg mb-2">Add New Product</h3>
+                <h3 className="font-semibold text-lg mb-2">
+                  {t("add_new_product", "Add New Product")}
+                </h3>
                 <p className="text-white/80 text-sm mb-4">
-                  List your handcrafted items and reach customers worldwide
+                  {t(
+                    "list_your_items",
+                    "List your handcrafted items and reach customers",
+                  )}
                 </p>
                 <Link to="/dashboard/products/add">
                   <Button variant="secondary" className="w-full gap-2">
                     <Package size={18} />
-                    Create Listing
+                    {t("create_listing", "Create Listing")}
                   </Button>
                 </Link>
               </CardContent>

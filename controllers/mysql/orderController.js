@@ -147,6 +147,9 @@ export const getDashboardData = async (req, res) => {
     const processingOrders = orders.filter(
       (o) => o.order_status === "processing",
     ).length;
+    const completedOrders = orders.filter(
+      (o) => o.order_status === "delivered",
+    ).length;
 
     // Get seller products count
     const { total: totalProducts } = await Product.findAll({
@@ -161,6 +164,7 @@ export const getDashboardData = async (req, res) => {
         totalRevenue,
         pendingOrders,
         processingOrders,
+        completedOrders,
         totalProducts,
       },
       recentOrders,

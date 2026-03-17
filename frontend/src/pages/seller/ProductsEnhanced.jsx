@@ -142,14 +142,11 @@ const SellerProductCard = ({ product, index }) => {
 
           {/* Stats */}
           <div className="flex items-center gap-4 pt-2 border-t border-gray-100">
-            <div className="flex items-center gap-1.5 text-sm text-gray-500">
-              <Eye size={14} />
-              <span>{product.views || 0}</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm text-gray-500">
-              <TrendingUp size={14} />
-              <span>{product.sales || 0} sold</span>
-            </div>
+            <span className="text-sm font-medium text-gray-500">
+              {product.stock !== undefined
+                ? `${t("stock", "Stock")}: ${product.stock}`
+                : ""}
+            </span>
           </div>
         </CardContent>
       </Card>
@@ -235,9 +232,9 @@ const ProductsEnhanced = () => {
         className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
       >
         <div>
-          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 flex items-center gap-3">
+          <h1 className="text-2xl lg:text-4xl font-bold text-gray-900 flex items-center gap-3">
             {t("product_management")}
-            <Sparkles className="w-8 h-8 text-primary" />
+            <Sparkles className="w-6 h-6 lg:w-8 lg:h-8 text-primary" />
           </h1>
           <p className="text-gray-500 mt-1 hidden lg:block">
             Manage your handcrafted products and inventory
@@ -304,12 +301,17 @@ const ProductsEnhanced = () => {
         <Card className="border-0 shadow-md bg-gradient-to-br from-amber-50 to-white">
           <CardContent className="p-4 flex items-center gap-4">
             <div className="p-3 rounded-xl bg-amber-100">
-              <Eye size={20} className="text-amber-600" />
+              <Package size={20} className="text-amber-600" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Total Views</p>
+              <p className="text-sm text-gray-500">
+                {t("low_stock", "Low Stock")}
+              </p>
               <p className="text-2xl font-bold text-gray-900">
-                {products.reduce((sum, p) => sum + (p.views || 0), 0)}
+                {
+                  products.filter((p) => p.stock !== undefined && p.stock < 5)
+                    .length
+                }
               </p>
             </div>
           </CardContent>

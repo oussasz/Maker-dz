@@ -19,7 +19,6 @@ const SidebarEnhanced = ({ activeTab, navItems }) => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation("sidebar");
   const [isOpen, setIsOpen] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const importantNavItems = [
     {
@@ -63,13 +62,11 @@ const SidebarEnhanced = ({ activeTab, navItems }) => {
       <div className="p-4 lg:p-6 border-b border-gray-100">
         <div className="flex items-center gap-3">
           <img src={logo} alt="Maker DZ" className="h-10 w-auto" />
-          {!isCollapsed && (
-            <div className="hidden lg:block">
-              <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">
-                Seller Portal
-              </span>
-            </div>
-          )}
+          <div className="hidden lg:block">
+            <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+              {t("seller_portal", "Seller Portal")}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -87,17 +84,15 @@ const SidebarEnhanced = ({ activeTab, navItems }) => {
             </div>
             <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white" />
           </div>
-          {!isCollapsed && (
-            <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-gray-900 truncate">
-                {getDisplayName()}
-              </h3>
-              <p className="text-xs text-gray-500 flex items-center gap-1">
-                <Sparkles size={10} className="text-primary" />
-                Verified Seller
-              </p>
-            </div>
-          )}
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-gray-900 truncate">
+              {getDisplayName()}
+            </h3>
+            <p className="text-xs text-gray-500 flex items-center gap-1">
+              <Sparkles size={10} className="text-primary" />
+              {t("seller", "Seller")}
+            </p>
+          </div>
         </button>
       </div>
 
@@ -129,17 +124,13 @@ const SidebarEnhanced = ({ activeTab, navItems }) => {
                 >
                   {item.icon}
                 </span>
-                {!isCollapsed && (
-                  <>
-                    <span className="font-semibold flex-1 text-start">
-                      {item.name}
-                    </span>
-                    <ChevronRight
-                      size={16}
-                      className="opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all"
-                    />
-                  </>
-                )}
+                <span className="font-semibold flex-1 text-start">
+                  {item.name}
+                </span>
+                <ChevronRight
+                  size={16}
+                  className="opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all"
+                />
               </button>
             </li>
           ))}
@@ -173,25 +164,21 @@ const SidebarEnhanced = ({ activeTab, navItems }) => {
                 >
                   {item.icon}
                 </span>
-                {!isCollapsed && (
-                  <>
-                    <div className="flex-1 text-start">
-                      <span className="font-medium block">{item.name}</span>
-                      {item.description && (
-                        <span
-                          className={`text-xs ${activeTab === item.id ? "text-gray-300" : "text-gray-400"}`}
-                        >
-                          {item.description}
-                        </span>
-                      )}
-                    </div>
-                    {activeTab === item.id && (
-                      <motion.div
-                        layoutId="activeIndicator"
-                        className="w-1.5 h-8 bg-primary rounded-full"
-                      />
-                    )}
-                  </>
+                <div className="flex-1 text-start">
+                  <span className="font-medium block">{item.name}</span>
+                  {item.description && (
+                    <span
+                      className={`text-xs ${activeTab === item.id ? "text-gray-300" : "text-gray-400"}`}
+                    >
+                      {item.description}
+                    </span>
+                  )}
+                </div>
+                {activeTab === item.id && (
+                  <motion.div
+                    layoutId="activeIndicator"
+                    className="w-1.5 h-8 bg-primary rounded-full"
+                  />
                 )}
               </button>
             </li>
@@ -226,7 +213,7 @@ const SidebarEnhanced = ({ activeTab, navItems }) => {
           <span className="p-2 rounded-lg bg-gray-100 group-hover:bg-red-100 transition-colors">
             <LogOut size={18} />
           </span>
-          {!isCollapsed && <span className="font-medium">{t("logout")}</span>}
+          <span className="font-medium">{t("logout")}</span>
         </button>
       </div>
     </div>
